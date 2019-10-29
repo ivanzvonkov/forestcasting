@@ -23,8 +23,8 @@ def main(fileName):
                         lineList.insert(i + j, ',')
 
                     # create csv string for the line
-                    newLine = ''.join(lineList)
-                    summarisedLine = ''.join(lineList[0:39])
+                    newLine = ''.join(lineList) + "\n"
+                    summarisedLine = ''.join(lineList[0:39]) + "\n"
 
                     # write csv line to the new file
                     summFile.write(summarisedLine)

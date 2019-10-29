@@ -11,8 +11,8 @@ def main(fileName):
     summHeader = "MERIDIAN,RANGE,TOWNSHIP,SECTION,QUARTER SECTION,LATITIUDE,LONGITUDE\n"
 
     #create the two files that will be written to
-    with open("./full_AL_location_grid.csv", "w+") as newFile:
-        with open("./AL_location_grid.csv", "w+") as summFile:
+    with open("../Data/full_AL_location_grid.csv", "w+") as newFile:
+        with open("../Data/AL_location_grid.csv", "w+") as summFile:
             newFile.write(header)
             summFile.write(summHeader)
             with open(fileName) as file:

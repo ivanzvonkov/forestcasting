@@ -4,3 +4,6 @@ data/*
 
 # Common
 .DS_Store
+
+# Pycharm
+.idea/*

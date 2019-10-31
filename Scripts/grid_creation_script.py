@@ -64,13 +64,14 @@ def main():
     for lat in validLat:
         for long in validLong:
             latLong = str(lat) + "|" + str(long)
+            centroid = str(round(lat + 0.1, 5)) + "|" + str(round(long + 0.1, 5))
             # check that lat, long values are within province bounds
             if checkProvinceBonds(lat, long) == True:
-                validLatLong.append([latLong, lat, long])
+                validLatLong.append([latLong, lat, long, centroid])
 
     print(validLatLong)
 
-    validDf = pd.DataFrame(validLatLong, columns = ['KEY', 'LATITUDE', 'LONGITUDE'])
+    validDf = pd.DataFrame(validLatLong, columns = ['KEY', 'LATITUDE', 'LONGITUDE', 'CENTROID'])
     validDf.to_csv("../Data/" + province + "_grid_system.csv", index = False)
 
 

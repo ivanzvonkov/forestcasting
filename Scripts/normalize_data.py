@@ -5,7 +5,7 @@ Inputs: (1) shape file components of province vegetation index:
             (c) AVICrownIndex.shx
         (2) {prov}_location_grid.csv : csv of province location key grid to be narrowed
 Output: {prov}_location_grid_usefulness.csv
-Command: python3.6.5 normalize_data
+Command: python3.6.5 normalize_data {prov}
 """
 
 import pyproj

@@ -16,7 +16,6 @@ from shapely.geometry import Point
 import fiona
 import pandas as pd
 from pathlib import Path
-import argparse
 import sys
 
 

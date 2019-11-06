@@ -1,10 +1,11 @@
 """
-Inputs: (1) shape file components of province vegetation index
+Inputs: (1) shape file components of province vegetation index:
             (a) AVICrownIndex.shp
             (b) AVICrownIndex.prj
             (c) AVICrownIndex.shx
         (2) {prov}_location_grid.csv : csv of province location key grid to be narrowed
 Output: {prov}_location_grid_usefulness.csv
+Command: python3.6.5 normalize_data
 """
 
 import pyproj
@@ -15,6 +16,8 @@ from shapely.geometry import Point
 import fiona
 import pandas as pd
 from pathlib import Path
+import argparse
+import sys
 
 
 def read_shape_file():
@@ -65,13 +68,39 @@ def update_location_grid(input_polygon, location_df):
             else:
                 outside += 1
 
+    print(f'Eliminated: {outside} points.')
+    print(f'Updated dataset has: {inside} points.')
+
     # return updated location grid
     return pd.DataFrame(valid_points, columns=['KEY', 'LATITUDE', 'LONGITUDE'])
 
 
-if __name__ == "__main__":
-    forest_polygon = read_shape_file()
-    df = pd.read_csv(Path('../Data/Location/alberta_grid_system.csv'))
-    updated_df = update_location_grid(forest_polygon, df)
-    updated_df.to_csv('../Data/Location/AL_location_grid_usefulness.csv')
+def setup_script_arguments():
+    """
+    Sets up script arguments
+    :return: Ready made argument parser
+    """
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-p', type=str, default=2018, help='province to narrow location grid for', action='store',
+                    required=False)
 
+    return ap
+
+
+if __name__ == "__main__":
+    # set file name (province) from command line
+    province = sys.argv[1:]
+    filename = f'{province[:1][0]}_location_grid_usefulness.csv'
+
+    # read shape file
+    forest_polygon = read_shape_file()
+
+    # read location key file
+    df = pd.read_csv(Path('../Data/Location/alberta_grid_system.csv'))
+
+    # narrow location key file
+    updated_df = update_location_grid(forest_polygon, df)
+
+    # output updated location key file
+    updated_df.to_csv(Path(f'../Data/Location/{filename}'))
+    print('Wrote to ' + str(Path(f'../Data/Location/{filename}')))

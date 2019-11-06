@@ -75,18 +75,6 @@ def update_location_grid(input_polygon, location_df):
     return pd.DataFrame(valid_points, columns=['KEY', 'LATITUDE', 'LONGITUDE'])
 
 
-def setup_script_arguments():
-    """
-    Sets up script arguments
-    :return: Ready made argument parser
-    """
-    ap = argparse.ArgumentParser()
-    ap.add_argument('-p', type=str, default=2018, help='province to narrow location grid for', action='store',
-                    required=False)
-
-    return ap
-
-
 if __name__ == "__main__":
     # set file name (province) from command line
     province = sys.argv[1:]

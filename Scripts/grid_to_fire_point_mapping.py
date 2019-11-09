@@ -24,7 +24,7 @@ def main():
     fire_point_df = pd.read_csv(fire_point)
 
     fire_point_df['locationKey'] = np.vectorize(createKey)(fire_point_df['LATITUDE'], fire_point_df['LONGITUDE'])
-    fire_point_df.to_csv("../Data/fire_point_location_key.csv", index = False)
+    fire_point_df.to_csv("../Data/al_fire_location_grid.csv", index = False)
 
 if __name__ == "__main__":
     main()

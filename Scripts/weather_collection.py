@@ -74,9 +74,9 @@ def setup_script_arguments():
                     action='store', required=False)
     ap.add_argument('-end', type=int, default=2019, help='last year to get weather for', action='store',
                     required=False)
-    ap.add_argument('-p', type=str, default=2018, help='first year to get weather for', action='store',
+    ap.add_argument('-p', type=str, default='', help='province to get data for', action='store',
                     required=False)
-    ap.add_argument('-m', type=int, nargs='+', default=[], help='first year to get weather for',
+    ap.add_argument('-m', type=int, nargs='+', default=[], help='array of months to filter by',
                     action='store', required=False)
 
     return ap

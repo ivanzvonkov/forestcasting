@@ -8,13 +8,13 @@ import sys
 
 fire_point = sys.argv[1]
 
-def roundToFifth(number):
-    rounded = round(number*5)/5
+def roundToDecimal(number, toDecimal):
+    rounded = round(number*toDecimal)/toDecimal
     return(rounded)
 
 def createKey(lat, long):
-    lowerLat = roundToFifth(lat)
-    lowerLong = roundToFifth(long)
+    lowerLat = roundToDecimal(lat, 5)
+    lowerLong = roundToDecimal(long, 5)
 
     key = str(lowerLat) + "|" + str(lowerLong)
     return(key)

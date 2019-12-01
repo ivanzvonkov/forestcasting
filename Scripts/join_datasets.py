@@ -36,6 +36,7 @@ if __name__ == "__main__":
     # outer merge to combine fire and weather data
     merged_df = pd.merge(fire_df, weather_df, how='outer')
 
+    # convert FIRE ID to string so we can identify null values
     merged_df['FIRE_ID'] = merged_df['FIRE_ID'].astype(str)
 
     # Label fire and no fire rows

@@ -22,6 +22,11 @@ if __name__ == "__main__":
     fire_df = pd.read_csv(Path(f'../Data/Fire/{province}_fire_location_grid.csv'))
     fire_df["KEY"] = fire_df["locationKey"].map(str) + "|" + fire_df["START_DATE"]
 
+    # delete unused columns
+    cols_to_delete = ['LATITUDE', 'LONGITUDE', 'OUT_DATE', 'SIZE_HA', 'START_DATE']
+    for i in cols_to_delete:
+        del fire_df[i]
+
     # read weather data
     weather_df = pd.read_csv(Path('../Data/Weather/AL_weather_location_grid.csv'), low_memory=False)
     cols_to_delete = ['STATION ID', 'Station Name', 'Longitude (x)', 'Latitude (y)', 'Climate ID',
@@ -41,6 +46,9 @@ if __name__ == "__main__":
 
     # Label fire and no fire rows
     merged_df['Fire'] = merged_df['FIRE_ID'].apply(lambda fire_id: 0 if fire_id == "nan" else 1)
+
+    # delete FIRE ID col
+    del merged_df['FIRE_ID']
 
     print(merged_df)
 

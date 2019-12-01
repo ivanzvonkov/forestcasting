@@ -9,6 +9,8 @@ Command: python3.6 join_datasets.py {prov}
 import pandas as pd
 from pathlib import Path
 import sys
+import math
+
 
 if __name__ == "__main__":
     # set file name (province) from command line
@@ -33,6 +35,11 @@ if __name__ == "__main__":
 
     # outer merge to combine fire and weather data
     merged_df = pd.merge(fire_df, weather_df, how='outer')
+
+    merged_df['FIRE_ID'] = merged_df['FIRE_ID'].astype(str)
+
+    # Label fire and no fire rows
+    merged_df['Fire'] = merged_df['FIRE_ID'].apply(lambda fire_id: 0 if fire_id == "nan" else 1)
 
     print(merged_df)
 

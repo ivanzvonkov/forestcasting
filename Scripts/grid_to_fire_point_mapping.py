@@ -14,7 +14,7 @@ def roundToDecimal(number, toDecimal):
 
 def createKey(lat, long):
     lowerLat = roundToDecimal(lat, 5)
-    lowerLong = roundToDecimal(long, 5)
+    lowerLong = roundToDecimal(lng, 5)
 
     key = str(lowerLat) + "|" + str(lowerLong)
     return(key)

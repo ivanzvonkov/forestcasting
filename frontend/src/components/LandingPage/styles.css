@@ -1,0 +1,55 @@
+.landing-page {
+  position: relative;
+  background-image: url("/images/background.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: block;
+  height: 100vh;
+  width: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 700px;
+}
+
+.button {
+  border: none;
+  color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: 2px solid #e7e7e7;
+}
+
+.main-title {
+  margin: 30px;
+  font-family: "Dancing Script", cursive;
+  width: 100%;
+  font-size: 70px;
+  font-weight: 500;
+  line-height: 4rem;
+}
+
+@media (max-width: 600px) {
+  .main-title {
+    font-size: 50px;
+  }
+  .tag-line {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 800px) {
+  .main-title {
+    font-size: 55px;
+  }
+}

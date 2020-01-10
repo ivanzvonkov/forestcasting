@@ -1,17 +1,53 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { useState } from "react";
+import 'antd/dist/antd.css';
 import "./App.css";
-import Map from "./components/Map/Map";
-import LandingPage from "./components/LandingPage/LandingPage";
+import { LoginPage } from "./components/LoginPage/LoginPage";
+import { LoadingPage } from "./components/LoadingPage/LoadingPage";
+import { MapPage } from "./components/MapPage/MapPage";
+import { ResultsPage } from "./components/ResultsPage/ResultsPage";
+import { Card } from 'antd';
+import { TemporaryPageToggle } from "./components/TemporaryPageToggle/TemporaryPageToggle";
+import { MainDiv } from "./components/styled/MainDiv";
 
-function App() {
+const App = () => {
+
+  const [currentPage, setCurrentPage] = useState('results');
+
+  const login = (username, password) => {
+    //rest api call start
+    setCurrentPage('loading');
+
+    // rest api call done
+    setCurrentPage('map');
+  }
+
+  const selectLocation = (latitude, longitude) => {
+    //rest api call start
+    setCurrentPage('loading');
+
+    // rest api call done
+    setCurrentPage('results');
+  }
+
+  const backToMap = () => {
+    setCurrentPage('map');
+  }
+
+  const pageComponent = {
+    'login': <LoginPage login={login}/>,
+    'loading': <LoadingPage/>,
+    'map': <MapPage selectLocation={selectLocation}/>,
+    'results': <ResultsPage backToMap={backToMap}/>
+  };
+
+  const pageToggle = <TemporaryPageToggle currentPage={currentPage} setCurrentPage={setCurrentPage} pageComponent={pageComponent}/>
+
   return (
-    <div className="App">
-      <LandingPage />
-      <svg width="960" height="1000">
-        <Map width={960} height={1000} />
-      </svg>
-    </div>
+    <MainDiv>
+      <Card title={currentPage} extra={pageToggle}>
+        {pageComponent[currentPage]}
+      </Card>
+    </MainDiv>
   );
 }
 export default App;

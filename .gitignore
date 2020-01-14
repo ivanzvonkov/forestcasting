@@ -11,3 +11,5 @@ data/*
 # Node Modules
 node_modules/
 
+#.env files
+.env

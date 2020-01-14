@@ -1,129 +1,52 @@
 import React, { Component } from "react";
-import * as topojson from "topojson";
-import * as d3 from "d3";
+import GoogleMap from "google-map-react";
+import axios from "axios";
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyACzTyxDFrJHcmLz7RpvB17xlE34nIueRE";
+const GEOCODING_API_KEY = "AIzaSyACzTyxDFrJHcmLz7RpvB17xlE34nIueRE";
 
 class Map extends Component {
   constructor() {
     super();
     this.state = {
-      usData: null,
-      usCongress: null
+      center: { lat: 62.227, lng: -105.3809 },
+      zoom: 3,
+      selection: null
     };
-    this.componentWillMount = this.componentWillMount.bind(this);
+    this._onClick = this._onClick.bind(this);
   }
 
-  componentWillMount() {
-    const files = [
-      "https://raw.githubusercontent.com/Swizec/113th-congressional-districts/master/public/us.json",
-      "https://raw.githubusercontent.com/Swizec/113th-congressional-districts/master/public/us-congress-113.json"
-    ];
-    const promises = [];
+  static defaultProps = {
+    center: { lat: 62.227, lng: -105.3809 },
+    zoom: 3
+  };
 
-    files.forEach(function(url) {
-      promises.push(d3.json(url));
-    });
-    Promise.all(promises).then(values => {
-      console.log(values[0]);
-      this.setState({
-        usData: values[0],
-        usCongress: values[1]
-      });
-    });
-
-    // d3.queue()
-    //   .defer(
-    //     d3.json,
-    //     "https://raw.githubusercontent.com/Swizec/113th-congressional-districts/master/public/us.json"
-    //   )
-    //   .defer(
-    //     d3.json,
-    //     "https://raw.githubusercontent.com/Swizec/113th-congressional-districts/master/public/us-congress-113.json"
-    //   )
-    //   .await((error, usData, usCongress) => {
-    //     this.setState({
-    //       usData,
-    //       usCongress
-    //     });
-    //   });
-  }
-
-  componentDidUpdate() {
-    const svg = d3.select(this.refs.anchor),
-      { width, height } = this.props;
-
-    const projection = d3
-      .geoAlbers()
-      .scale(1070)
-      .translate([width / 2, height / 2]);
-
-    const path = d3.geoPath(projection);
-
-    const us = this.state.usData,
-      congress = this.state.usCongress;
-
-    // svg
-    //   .append("defs")
-    //   .append("path")
-    //   .attr("id", "land")
-    //   .datum(topojson.feature(us, us.objects.land))
-    //   .attr("d", path);
-
-    // svg
-    //   .append("clipPath")
-    //   .attr("id", "clip-land")
-    //   .append("use")
-    //   .attr("xlink:href", "#land");
-
-    //   svg
-    //   .append("rect")
-    //   .attr("class", "background")
-    //   .attr("height", "land")
-    //   .datum(topojson.feature(us, us.objects.land))
-    //   .attr("d", path);
-
-    svg
-      .append("g")
-      .attr("class", "districts")
-      .attr("clip-path", "url(#clip-land)")
-      .selectAll("path")
-      .data(topojson.feature(congress, congress.objects.districts).features)
-      .enter()
-      .append("path")
-      .attr("d", path)
-      .append("title")
-      .text(function(d) {
-        return d.id;
-      });
-
-    svg
-      .append("path")
-      .attr("class", "district-boundaries")
-      .datum(
-        topojson.mesh(congress, congress.objects.districts, function(a, b) {
-          return a !== b && ((a.id / 1000) | 0) === ((b.id / 1000) | 0);
-        })
+  _onClick(event) {
+    console.log("Lat:", event.lat);
+    console.log("Lng:", event.lng);
+    axios
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.lat},${event.lng}&key=${GEOCODING_API_KEY}`
       )
-      .attr("d", path);
-
-    svg
-      .append("path")
-      .attr("class", "state-boundaries")
-      .datum(
-        topojson.mesh(us, us.objects.states, function(a, b) {
-          return a !== b;
-        })
-      )
-      .attr("d", path);
+      .then(res => {
+        const selection = res.data.results[0].formatted_address;
+        this.setState({ selection });
+      });
   }
 
   render() {
-    const { usData, usCongress } = this.state;
-
-    if (!usData || !usCongress) {
-      return null;
-    }
-
-    return <g ref="anchor" />;
+    return (
+      <div style={{ height: "90vh", width: "70vw" }}>
+        <h2>{this.state.selection}</h2>
+        <GoogleMap
+          bootstrapURLKeys={{ key: GOOGLE_MAPS_API_KEY }}
+          defaultCenter={this.props.center}
+          center={this.state.center}
+          defaultZoom={this.props.zoom}
+          onClick={this._onClick}
+        />
+      </div>
+    );
   }
 }
 

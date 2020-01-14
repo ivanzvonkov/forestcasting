@@ -11,7 +11,7 @@ class Map extends Component {
     this.state = {
       center: { lat: 62.227, lng: -105.3809 },
       zoom: 3,
-      selection: null
+      selection: "Click to select a location"
     };
     this._onClick = this._onClick.bind(this);
   }

@@ -55,7 +55,7 @@ function findHistoricData(locationKey) {
        // Results will be array of ecoData
        var results = []
 
-       // Build array of ecoData objects
+       // Build array of HistoricData objects
        cursor.forEach(element => results.push(new HistoricData(
          element["locationKey"],
          element["TOTAL_SIZE_HA_OLD"],

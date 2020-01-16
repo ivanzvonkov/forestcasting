@@ -3,8 +3,6 @@ dotenv.config()
 const MongoClient = require('mongodb').MongoClient;
 const uri = 'mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@forestcasting-umgnk.mongodb.net/'
 
-console.log(uri)
-
 function findEcoData(locationKey){
   MongoClient.connect(uri, function(err, client) {
      if(err) {
@@ -24,5 +22,3 @@ function findEcoData(locationKey){
       })
   });
 }
-
-findEcoData("49.0|-113.8")

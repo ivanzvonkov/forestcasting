@@ -32,8 +32,6 @@ async function weather_data(lat, lng){
           element["wind_dir"]
         ))
     })
-    console.log(results)
+
     return results
   }
-
-weather_data(49.2, -113.6)

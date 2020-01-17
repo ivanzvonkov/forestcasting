@@ -52,7 +52,7 @@ function findHistoricData(locationKey) {
        //close the connection
        client.close();
 
-       // Results will be array of ecoData
+       // Results will be array of HistoricData
        var results = []
 
        // Build array of HistoricData objects

@@ -21,7 +21,7 @@ function findEcoData(locationKey){
        client.close();
 
        // Results will be array of ecoData
-       var results = []
+       let results = []
 
        // Build array of ecoData objects
        cursor.forEach(element => results.push(new EcoData(
@@ -53,7 +53,7 @@ function findHistoricData(locationKey) {
        client.close();
 
        // Results will be array of HistoricData
-       var results = []
+       let results = []
 
        // Build array of HistoricData objects
        cursor.forEach(element => results.push(new HistoricData(

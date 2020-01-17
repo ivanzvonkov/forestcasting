@@ -7,8 +7,8 @@ class HistoricData {
       }
 
      size() {
-        print("The historic data contains a total size of: " + str(this.TOTAL_SIZE_HA_OLD))
-        print("And an average size of: " + str(this.AVERAGE_SIZE_HA_OLD))
+        console.log("The historic data contains a total size of: " + str(this.TOTAL_SIZE_HA_OLD))
+        console.log("And an average size of: " + str(this.AVERAGE_SIZE_HA_OLD))
       }
     }
 

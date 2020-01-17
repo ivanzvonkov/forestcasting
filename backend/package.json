@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.4.1"
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.4.1",
+    "request": "^2.88.0"
   }
 }

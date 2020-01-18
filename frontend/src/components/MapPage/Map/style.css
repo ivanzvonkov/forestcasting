@@ -1,3 +1,22 @@
+.steps-content {
+  border-radius: 6px;
+  height: 653px;
+  text-align: center;
+  padding-top: 5px;
+}
+
+.steps-action {
+  margin-top: 5px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0px;
+  border: none;
+}
 .pin {
   width: 30px;
   height: 30px;
@@ -9,8 +28,8 @@
   -o-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  left: 50%;
-  top: 50%;
+  left: 0px;
+  top: 0px;
   margin: -20px 0 0 -20px;
   -webkit-animation-name: bounce;
   -moz-animation-name: bounce;
@@ -32,20 +51,21 @@
   content: "";
   width: 14px;
   height: 14px;
-  margin: 8px 0 0 8px;
+  margin: 10px 0px 10px -9px;
   background: #302558;
   position: absolute;
+  top: 0px;
+  bottom: 0px;
   border-radius: 50%;
 }
 .pulse {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
+  border-radius: 50px;
   height: 14px;
   width: 14px;
   position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: 11px 0px 0px -12px;
+  left: 0px;
+  top: 0px;
+  margin: 11px 0px 0px -18px;
   -webkit-transform: rotateX(55deg);
   -moz-transform: rotateX(55deg);
   -o-transform: rotateX(55deg);

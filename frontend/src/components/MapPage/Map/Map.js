@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Steps, Button, message, Calendar, Alert, DatePicker } from "antd";
+import { Steps, Button, message, Calendar, Alert } from "antd";
 import moment from "moment";
 
 import GoogleMap from "google-map-react";

@@ -12,17 +12,19 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get("/getAnalysis", async function (req, res, next) => {
+app.get("/getAnalysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
   let date = req.query.date
 
   let locationKey = lat + "|" + lng
+  console.log(locationKey)
 
-  let ecoData = dbQuery.findEcoData(locationKey)
-  let historicData = dbQuery.findHistoricData(locationKey)
-  let weatherData = weatherQuery.weather_data(lat, lng)
+  let ecoData = await dbQuery.findEcoData(locationKey)
+  let historicData = await dbQuery.findHistoricData(locationKey)
+  let weatherData = await weatherQuery.findWeatherData(lat, lng)
 
+   res.json([ecoData, historicData, weatherData])
 })
 
 module.exports = app

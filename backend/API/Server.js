@@ -6,5 +6,5 @@ const server = http.createServer(app);
 
 server.listen(port, () => {
     // print a message when the server run successfully
-    console.log("Server started successfully")
+    console.log("Server started successfully on port: " + port)
 });

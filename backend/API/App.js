@@ -15,16 +15,31 @@ app.use(bodyParser.json());
 app.get("/getAnalysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
-  let date = req.query.date
+  let date = req.query.date.toString()
+
+  console.log(date)
 
   let locationKey = lat + "|" + lng
-  console.log(locationKey)
 
   let ecoData = await dbQuery.findEcoData(locationKey)
   let historicData = await dbQuery.findHistoricData(locationKey)
   let weatherData = await weatherQuery.findWeatherData(lat, lng)
 
-   res.json([ecoData, historicData, weatherData])
+  if (date !== "undefined") {
+    weatherData = filterWeatherData(weatherData, date)
+  }
+
+  result = JSON.stringify([ecoData, historicData, weatherData])
+  console.log(result)
+  res.json(result)
 })
+
+function filterWeatherData(weatherData, date) {
+  let filteredData = weatherData.find(entry => entry.DATE == "2020-01-19")
+
+  return filteredData
+}
+
+
 
 module.exports = app

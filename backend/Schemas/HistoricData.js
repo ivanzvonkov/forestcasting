@@ -1,13 +1,13 @@
 class HistoricData {
     constructor (LATITUDE, LONGITUDE, LOCATIONKEY, TOTAL_SIZE_HA_OLD, AVERAGE_SIZE_HA_OLD,TOTAL_DURATION_OLD, AVERAGE_DURATION_OLD, LASTFIREDATE){
-        this.LATITUDE = LATITUDE
-        this.LONGITUDE = LONGITUDE
-        this.LOCATIONKEY = LOCATIONKEY
-        this.TOTAL_SIZE_HA_OLD = TOTAL_SIZE_HA_OLD
-        this.AVERAGE_SIZE_HA_OLD = AVERAGE_SIZE_HA_OLD
-        this.TOTAL_DURATION_OLD = TOTAL_DURATION_OLD
-        this.AVERAGE_DURATION_OLD = AVERAGE_DURATION_OLD
-        this.LASTFIREDATE = LASTFIREDATE
+        this.latitude = LATITUDE
+        this.longitude = LONGITUDE
+        this.locationKey = LOCATIONKEY
+        this.totalFireSize = TOTAL_SIZE_HA_OLD
+        this.averageFireSize = AVERAGE_SIZE_HA_OLD
+        this.totalFireDuration = TOTAL_DURATION_OLD
+        this.averageFireDuration = AVERAGE_DURATION_OLD
+        this.lastFireDate = LASTFIREDATE
       }
 
      size() {

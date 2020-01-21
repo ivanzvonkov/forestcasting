@@ -71,6 +71,7 @@ dbQuery.findHistoricData = function (locationKey) {
            element["AVERAGE_SIZE_HA_OLD"],
            element["TOTAL_DURATION_OLD"],
            element["AVERAGE_DURATION_OLD"],
+           "2017-11-01"
          )))
 
           resolve(results)

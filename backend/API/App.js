@@ -40,6 +40,7 @@ app.get("/getAnalysis", async (req, res, next) => {
   res.json(response)
 })
 
+
 function filterWeatherData(weatherData, date) {
   let filteredData = weatherData.find(entry => entry.DATE == date)
 

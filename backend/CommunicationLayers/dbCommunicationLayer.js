@@ -60,8 +60,12 @@ dbQuery.findHistoricData = function (locationKey) {
          // Results will be array of HistoricData
          let results = []
 
+         let latlng = locationKey.split("|")
+
          // Build array of HistoricData objects
          cursor.forEach(element => results.push(new HistoricData(
+           latlng[0],
+           latlng[1],
            element["locationKey"],
            element["TOTAL_SIZE_HA_OLD"],
            element["AVERAGE_SIZE_HA_OLD"],

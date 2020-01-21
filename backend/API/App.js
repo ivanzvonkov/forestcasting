@@ -4,8 +4,10 @@ const querystring = require("querystring");
 const EcoData = require("../Schemas/EcoData.js")
 const HistoricData = require("../Schemas/HistoricData.js")
 const WeatherData = require("../Schemas/WeatherData.js")
+const AnalysisResponse = require("../Schemas/AnalysisResponse.js")
 const dbQuery = require("../CommunicationLayers/dbCommunicationLayer.js")
 const weatherQuery = require("../CommunicationLayers/weatherCommunicationLayer.js")
+const analyze = require("../Analysis/analysis.js")
 
 const app = express();
 
@@ -17,8 +19,6 @@ app.get("/getAnalysis", async (req, res, next) => {
   let lng = req.query.lng
   let date = req.query.date.toString()
 
-  console.log(date)
-
   let locationKey = lat + "|" + lng
 
   let ecoData = await dbQuery.findEcoData(locationKey)
@@ -29,13 +29,19 @@ app.get("/getAnalysis", async (req, res, next) => {
     weatherData = filterWeatherData(weatherData, date)
   }
 
-  result = JSON.stringify([ecoData, historicData, weatherData])
-  console.log(result)
-  res.json(result)
+  //[riskScore, damageScore]
+  let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
+
+  console.log(analysisResults)
+  //result = JSON.stringify([ecoData, historicData, weatherData])
+  let analysis = new AnalysisResponse(ecoData, weatherData, historicData)
+  let response = analysis.buildResponse(analysisResults)
+  console.log(response)
+  res.json(response)
 })
 
 function filterWeatherData(weatherData, date) {
-  let filteredData = weatherData.find(entry => entry.DATE == "2020-01-19")
+  let filteredData = weatherData.find(entry => entry.DATE == date)
 
   return filteredData
 }

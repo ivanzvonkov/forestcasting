@@ -7,9 +7,9 @@ In the project directory:
 
 
 2. Run the following commands:
-- `npm install` to install all dependencies for the project.<br />
+    - `npm install` to install all dependencies for the project.<br />
 
-- `npm start` to run the app in the development mode.<br />
+    - `npm start` to run the app in the development mode.<br />
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.<br />
 

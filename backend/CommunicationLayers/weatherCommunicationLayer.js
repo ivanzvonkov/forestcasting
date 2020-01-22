@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 const api_key = process.env.API_KEY
 
-let weatherQuery = {}
+let weatherAPI = {}
 
 function get_weather(lat, lng){
     url = 'https://api.weatherbit.io/v2.0/forecast/daily?key=' + api_key + '&lat=' + lat + '&lon=' + lng
@@ -38,4 +38,4 @@ weatherQuery.findWeatherData = async function (lat, lng){
     return results
   }
 
-module.exports = weatherQuery;
+module.exports = weatherAPI;

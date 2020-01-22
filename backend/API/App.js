@@ -6,7 +6,7 @@ const HistoricData = require("../Schemas/HistoricData.js")
 const WeatherData = require("../Schemas/WeatherData.js")
 const AnalysisResponse = require("../Schemas/AnalysisResponse.js")
 const dbQuery = require("../CommunicationLayers/dbCommunicationLayer.js")
-const weatherQuery = require("../CommunicationLayers/weatherCommunicationLayer.js")
+const weatherAPI = require("../CommunicationLayers/weatherCommunicationLayer.js")
 const analyze = require("../Analysis/analysis.js")
 
 const app = express();
@@ -14,7 +14,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get("/getAnalysis", async (req, res, next) => {
+app.get("/api/analysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
   let date = req.query.date.toString()
@@ -23,12 +23,10 @@ app.get("/getAnalysis", async (req, res, next) => {
 
   let ecoData = await dbQuery.findEcoData(locationKey)
   let historicData = await dbQuery.findHistoricData(locationKey)
-  let weatherData = await weatherQuery.findWeatherData(lat, lng)
+  let weatherData = await weatherAPI.findWeatherData(lat, lng)
   await dbQuery.findEcoInfo(ecoData[0])
 
-  if (date !== "undefined") {
-    weatherData = filterWeatherData(weatherData, date)
-  }
+  weatherData = filterWeatherData(weatherData, date)
 
   //[riskScore, damageScore]
   let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)

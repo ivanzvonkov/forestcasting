@@ -1,0 +1,31 @@
+{
+  "location": {
+    "latitude": 49,
+    "longitude": -113.8,
+    "locationKey": "49.0|-113.8",
+    "lastFireDate": "2017-11-01",
+    "averageFireDuration": 50,
+    "averageFireSize": 77
+  },
+  "geography": {
+    "zone": 9,
+    "district": "",
+    "region": 156,
+    "description": "The Prairie Ecozone occupies a semi-circular area that has its base on the Canada-U.S. border and arcs from the western edge of Alberta to the eastern edge of Manitoba. Climatic characteristics include over 400 mm of precipitation annually. The mean daily January temperatures of -22.5ºC to -25ºC and mean daily July temperatures of 15ºC to 17.5ºC.",
+    "averageFireDurationForZone": 44,
+    "averageFireSizeForZone": 29
+  },
+  "weather": {
+    "max_temp": -4.6,
+    "min_temp": -8.9,
+    "mean_temp": -7,
+    "total_precip": 0.9375,
+    "total_snow": 0,
+    "snow_dpth": 286.9,
+    "wind_spd": 10.995,
+    "wind_gust_spd": 18.3,
+    "wind_dir": 229
+  },
+  "riskScore": "",
+  "damageScore": ""
+}

@@ -24,6 +24,7 @@ app.get("/getAnalysis", async (req, res, next) => {
   let ecoData = await dbQuery.findEcoData(locationKey)
   let historicData = await dbQuery.findHistoricData(locationKey)
   let weatherData = await weatherQuery.findWeatherData(lat, lng)
+  await dbQuery.findEcoInfo(ecoData[0])
 
   if (date !== "undefined") {
     weatherData = filterWeatherData(weatherData, date)
@@ -32,7 +33,6 @@ app.get("/getAnalysis", async (req, res, next) => {
   //[riskScore, damageScore]
   let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
 
-  console.log(analysisResults)
   //result = JSON.stringify([ecoData, historicData, weatherData])
   let analysis = new AnalysisResponse(ecoData, weatherData, historicData)
   let response = analysis.buildResponse(analysisResults)

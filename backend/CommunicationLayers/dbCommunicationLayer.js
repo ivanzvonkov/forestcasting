@@ -35,7 +35,6 @@ dbQuery.findEcoData = function(locationKey) {
            element["ECOREGION"],
            element["ECODSTRICT"]
          )))
-
           resolve(results)
         })
       })
@@ -75,6 +74,35 @@ dbQuery.findHistoricData = function (locationKey) {
          )))
 
           resolve(results)
+        })
+      })
+  });
+}
+
+dbQuery.findEcoInfo = async function(ecoData){
+  return new Promise(function(resolve, reject){
+    MongoClient.connect(uri, function(err, client) {
+       if(err) {
+            console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+       }
+       console.log('Connected...');
+       const collection = client.db("forestcasting").collection("stats_eco");
+       // perform actions on the collection object
+
+       collection.find({"ECOZONE": ecoData.zone})
+       .toArray()
+       .then(cursor => {
+         //close the connection
+         client.close();
+
+         // Build array of ecoData objects
+         cursor.forEach(element => {
+           ecoData.averageFireSizeForZone = element["AVERAGE_FIRE_SIZE_HA_OLD"]
+           ecoData.averageFireDurationForZone = element["AVERAGE_FIRE_DURATION_OLD"]
+           ecoData.description = element["DESCRIPTION"]
+           ecoData.zoneName = element["ZONE_NAME"]
+         })
+          resolve(ecoData)
         })
       })
   });

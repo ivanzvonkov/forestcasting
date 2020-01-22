@@ -3,14 +3,14 @@
 
 In the project directory:
 
-Create `.env` file with Google Maps and Places API Keys.
+1. Create `.env` file with Google Maps and Places API Keys.
 
 
-Run
+2. Run the following commands:
 
-1. ### `npm install` to install all dependencies for the project.<br />
+### `npm install` to install all dependencies for the project.<br />
 
-2. ### `npm start` to run the app in the development mode.<br />
+### `npm start` to run the app in the development mode.<br />
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.<br />
 

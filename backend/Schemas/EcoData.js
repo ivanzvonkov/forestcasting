@@ -1,12 +1,17 @@
 class EcoData {
     constructor (KEY, LAT, LON, ECOZONE, ECOREGION, ECODISTRICT) {
-      this.KEY = KEY
-      this.LATITUDE = LAT
-      this.LONGITUDE = LON
-      this.ECOZONE = ECOZONE
-      this.ECOREGION = ECOREGION
-      this.ECODISTRICT = ECODISTRICT
+      this.locationKey = KEY
+      this.latitude = LAT
+      this.longitude = LON
+      this.zone = ECOZONE
+      this.region = ECOREGION
+      this.district = ECODISTRICT
+      this.averageFireSizeForZone = 0 //if undefined default is 0
+      this.averageFireDurationForZone = 0 //if undefined default is 0
+      this.description = ""
+      this.zoneName = ""
     }
+
   }
 
 module.exports = EcoData

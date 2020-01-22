@@ -15,7 +15,7 @@ function get_weather(lat, lng){
   })
 }
 
-weatherQuery.findWeatherData = async function (lat, lng){
+weatherAPI.findWeatherData = async function (lat, lng){
     let weather = await get_weather(lat, lng)
     weather = weather["data"]
 

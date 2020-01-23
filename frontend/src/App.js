@@ -4,13 +4,13 @@ import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
-import { Card, message } from "antd";
+import { Button, Card, message } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from 'axios';
 
 const App = () => {
   const queryString = require('query-string');
-  const [currentPage, setCurrentPage] = useState("login");
+  const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
 
   const login = (username, password) => {
@@ -28,6 +28,8 @@ const App = () => {
 
   const selectLocationAndDate = (selectedLatitude, selectedLongitude, selectedDate) => {
     //rest api call start
+    const key = 'updatable';
+    message.loading({content: 'Generating Analysis...', key});
     const stringDate = selectedDate.format('YYYY-MM-DD');
     axios.get('/api/analysis?' + queryString.stringify({
       lat: selectedLatitude,
@@ -35,23 +37,25 @@ const App = () => {
       date: stringDate
     }))
     .then((response) => {
-      // rest api call done
+      message.success({content: 'Analysis Generated.', key})
       setAnalysisResult(response.data);
       setCurrentPage("results");
     }, (error) => {
       // rest api call done
+      message.error({content: 'Server error. Ensure server is up and running.', key}); 
       console.error(error);
     });
   };
 
-  const backToMap = () => {
-    setCurrentPage("map");
-  };
+  const goBackToMap = () => {
+    setCurrentPage('map');
+    setAnalysisResult({});
+  }
 
   const pageComponent = {
     login: <LoginPage login={login} />,
     map: <MapPage selectLocationAndDate={selectLocationAndDate} />,
-    results: <ResultsPage backToMap={backToMap} response={analysisResult} />
+    results: <ResultsPage response={analysisResult} />
   };
 
   const pageTitle = {
@@ -60,9 +64,19 @@ const App = () => {
     results: 'Forestcasting: Analysis'
   }
 
+  let cardTopButton = (
+    <>
+      {currentPage === 'results' && 
+        <Button onClick={goBackToMap} style={{marginRight: '1em'}}>Back to map</Button>}
+
+      {(currentPage === 'map' || currentPage === 'results') && 
+        <Button onClick={()=>setCurrentPage('login')}>Logout</Button>}
+    </>
+  );
+
   return (
     <MainDiv>
-      <Card title={pageTitle[currentPage]}>
+      <Card title={pageTitle[currentPage]} extra={cardTopButton}>
         {pageComponent[currentPage]}
       </Card>
     </MainDiv>

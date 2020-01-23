@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { GMap } from './GMap/GMap';
 import { AlertMessage } from './AlertMessage/AlertMessage';
-import { Steps, Button, message, Calendar } from "antd";
+import { Steps, Button, Calendar } from "antd";
 import moment from "moment";
 import axios from "axios";
 
@@ -14,12 +14,11 @@ export const MapPage = ({selectLocationAndDate}) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [defaultDate, setDefaultDate] = useState(moment());
-    const validDates = [moment(), moment().add(14, 'days')]
+    const validDates = [moment(), moment().add(16, 'days')]
 
     const [selectedLocation, setSelectedLocation] = useState("Click on the map to select a location.");
 
     const analyze = () => {
-        message.success("Sending information to analyze!");
         selectLocationAndDate(selectedLat, selectedLng, selectedDate);
     }
 

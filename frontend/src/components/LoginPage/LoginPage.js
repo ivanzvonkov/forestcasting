@@ -19,7 +19,7 @@ export const LoginPage = ({login}) => {
   }
 
   return (
-    <div className="login-warp" style={{width: '50vw'}}>
+    <div className="login-warp" style={{width: '50vw', maxWidth: '30rem'}}>
       <Login
         defaultActiveKey={'tab1'}
         onSubmit={onSubmit}>

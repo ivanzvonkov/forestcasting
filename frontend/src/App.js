@@ -2,30 +2,39 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
-import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
 import { Card } from "antd";
-import { TemporaryPageToggle } from "./components/TemporaryPageToggle/TemporaryPageToggle";
 import { MainDiv } from "./components/styled/MainDiv";
+import axios from 'axios';
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState("results");
+  const queryString = require('query-string');
+  const [currentPage, setCurrentPage] = useState("map");
+  const [analysisResult, setAnalysisResult] = useState({});
 
   const login = (username, password) => {
-    //rest api call start
-    setCurrentPage("loading");
 
     // rest api call done
     setCurrentPage("map");
   };
 
-  const selectLocation = (latitude, longitude) => {
+  const selectLocationAndDate = (selectedLatitude, selectedLongitude, selectedDate) => {
     //rest api call start
-    setCurrentPage("loading");
-
-    // rest api call done
-    setCurrentPage("results");
+    const stringDate = selectedDate.format('YYYY-MM-DD');
+    axios.get('/api/analysis?' + queryString.stringify({
+      lat: selectedLatitude,
+      lng: selectedLongitude,
+      date: stringDate
+    }))
+    .then((response) => {
+      // rest api call done
+      setAnalysisResult(response.data);
+      setCurrentPage("results");
+    }, (error) => {
+      // rest api call done
+      console.error(error);
+    });
   };
 
   const backToMap = () => {
@@ -34,22 +43,19 @@ const App = () => {
 
   const pageComponent = {
     login: <LoginPage login={login} />,
-    loading: <LoadingPage />,
-    map: <MapPage selectLocation={selectLocation} />,
-    results: <ResultsPage backToMap={backToMap} />
+    map: <MapPage selectLocationAndDate={selectLocationAndDate} />,
+    results: <ResultsPage backToMap={backToMap} response={analysisResult} />
   };
 
-  const pageToggle = (
-    <TemporaryPageToggle
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      pageComponent={pageComponent}
-    />
-  );
+  const pageTitle = {
+    login: 'Forestcasting: Login',
+    map: 'Forestcasting: Map',
+    results: 'Forestcasting: Analysis'
+  }
 
   return (
     <MainDiv>
-      <Card title={currentPage} extra={pageToggle}>
+      <Card title={pageTitle[currentPage]}>
         {pageComponent[currentPage]}
       </Card>
     </MainDiv>

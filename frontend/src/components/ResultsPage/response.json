@@ -15,17 +15,21 @@
     "averageFireDurationForZone": 44,
     "averageFireSizeForZone": 29
   },
-  "weather": {
-    "max_temp": -4.6,
-    "min_temp": -8.9,
-    "mean_temp": -7,
-    "total_precip": 0.9375,
-    "total_snow": 0,
-    "snow_dpth": 286.9,
-    "wind_spd": 10.995,
-    "wind_gust_spd": 18.3,
-    "wind_dir": 229
-  },
-  "riskScore": "",
-  "damageScore": ""
+  "specificDate": {
+    "2017-11-01": {
+      "weather": {
+        "max_temp": -4.6,
+        "min_temp": -8.9,
+        "mean_temp": -7,
+        "total_precip": 0.9375,
+        "total_snow": 0,
+        "snow_dpth": 286.9,
+        "wind_spd": 10.995,
+        "wind_gust_spd": 18.3,
+        "wind_dir": 229
+      },
+      "riskScore": "",
+      "damageScore": ""
+    }
+  }
 }

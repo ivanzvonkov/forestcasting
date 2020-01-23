@@ -19,30 +19,34 @@ app.get("/api/analysis", async (req, res, next) => {
   let lng = req.query.lng
   let date = req.query.date.toString()
 
-  let locationKey = lat + "|" + lng
+  let locationKey = getLocationKey(lat, lng);
 
   let ecoData = await dbQuery.findEcoData(locationKey)
   let historicData = await dbQuery.findHistoricData(locationKey)
-  let weatherData = await weatherAPI.findWeatherData(lat, lng)
-  await dbQuery.findEcoInfo(ecoData[0])
-
-  weatherData = filterWeatherData(weatherData, date)
+  let weatherData = await weatherAPI.findWeatherData(lat, lng, date)
+  await dbQuery.findEcoInfo(ecoData)
 
   //[riskScore, damageScore]
   let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
-
   //result = JSON.stringify([ecoData, historicData, weatherData])
-  let analysis = new AnalysisResponse(ecoData, weatherData, historicData)
-  let response = analysis.buildResponse(analysisResults)
-  console.log(response)
-  res.json(response)
+  //let analysis = new AnalysisResponse(ecoData, weatherData, historicData);
+  //let response = analysis.buildResponse(analysisResults)
+
+  res.json({
+    location: historicData,
+    geography: ecoData,
+    weather: weatherData,
+    riskScore: analysisResults[0],
+    damageScore: analysisResults[1]
+  })
 })
 
+const getLocationKey = (lat, lng) => {
+  return parseCoordinate(lat) + "|" + parseCoordinate(lng);
+}
 
-function filterWeatherData(weatherData, date) {
-  let filteredData = weatherData.find(entry => entry.DATE == date)
-
-  return filteredData
+const parseCoordinate = (coordinate) => {
+  return (Math.floor(coordinate*5)/5).toFixed(1);
 }
 
 

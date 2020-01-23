@@ -4,19 +4,26 @@ import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
-import { Card } from "antd";
+import { Card, message } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from 'axios';
 
 const App = () => {
   const queryString = require('query-string');
-  const [currentPage, setCurrentPage] = useState("map");
+  const [currentPage, setCurrentPage] = useState("login");
   const [analysisResult, setAnalysisResult] = useState({});
 
   const login = (username, password) => {
-
-    // rest api call done
-    setCurrentPage("map");
+    const key = 'updatable';
+    message.loading({content: 'Loggin in...', key});
+    setTimeout(() => {
+      if(username === 'admin' && password === 'admin'){
+        message.success({content: 'Logged in!', key})
+        setCurrentPage("map");
+      }else{
+        message.error({content: 'Incorrect login credentials', key});  
+      }
+    }, 500);
   };
 
   const selectLocationAndDate = (selectedLatitude, selectedLongitude, selectedDate) => {

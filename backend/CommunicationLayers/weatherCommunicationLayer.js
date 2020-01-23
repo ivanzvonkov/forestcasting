@@ -19,20 +19,19 @@ weatherAPI.findWeatherData = async function (lat, lng, date){
     let weather = await get_weather(lat, lng)
     let weatherForDay = weather["data"].find(entry => entry["valid_date"] == date);
     let results = {}
-
     if(weatherForDay){
-        results = {
-          date: weatherForDay["valid_date"], //yyyy-mm-dd
-          max_temp: weatherForDay["max_temp"],
-          min_temp: weatherForDay["min_temp"],
-          mean_temp: weatherForDay["temp"],
-          total_precip: weatherForDay["precip"], // in mm
-          total_snow: weatherForDay["snow"],
-          snow_dpth: weatherForDay["snow_depth"],
-          wind_spd: weatherForDay["wind_spd"],
-          wind_gust_spd: weatherForDay["wind_gust_spd"],
-          wind_dir: weatherForDay["wind_dir"]
-        }
+        results = new WeatherData(
+          weatherForDay["valid_date"], //yyyy-mm-dd
+          weatherForDay["max_temp"],
+          weatherForDay["min_temp"],
+          weatherForDay["temp"],
+          weatherForDay["precip"], // in mm
+          weatherForDay["snow"],
+          weatherForDay["snow_depth"],
+          weatherForDay["wind_spd"],
+          weatherForDay["wind_gust_spd"],
+          weatherForDay["wind_dir"]
+        )
     }
     return results
   }

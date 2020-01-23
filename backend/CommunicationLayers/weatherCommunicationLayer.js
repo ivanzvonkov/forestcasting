@@ -10,31 +10,30 @@ function get_weather(lat, lng){
     url = 'https://api.weatherbit.io/v2.0/forecast/daily?key=' + api_key + '&lat=' + lat + '&lon=' + lng
     return new Promise(function(resolve, reject) {
       requests(url, {json : true}, (err, res, body) => {
-      resolve(body)
+        resolve(body)
     })
   })
 }
 
-weatherAPI.findWeatherData = async function (lat, lng){
+weatherAPI.findWeatherData = async function (lat, lng, date){
     let weather = await get_weather(lat, lng)
-    weather = weather["data"]
+    let weatherForDay = weather["data"].find(entry => entry["valid_date"] == date);
+    let results = {}
 
-    let results = []
-    weather.forEach(element => {
-      results.push( new WeatherData(
-          element["valid_date"],
-          element["max_temp"],
-          element["min_temp"],
-          element["temp"],
-          element["precip"],
-          element["snow"],
-          element["snow_depth"],
-          element["wind_spd"],
-          element["wind_gust_spd"],
-          element["wind_dir"]
-        ))
-    })
-
+    if(weatherForDay){
+        results = {
+          date: weatherForDay["valid_date"], //yyyy-mm-dd
+          max_temp: weatherForDay["max_temp"],
+          min_temp: weatherForDay["min_temp"],
+          mean_temp: weatherForDay["temp"],
+          total_precip: weatherForDay["precip"], // in mm
+          total_snow: weatherForDay["snow"],
+          snow_dpth: weatherForDay["snow_depth"],
+          wind_spd: weatherForDay["wind_spd"],
+          wind_gust_spd: weatherForDay["wind_gust_spd"],
+          wind_dir: weatherForDay["wind_dir"]
+        }
+    }
     return results
   }
 

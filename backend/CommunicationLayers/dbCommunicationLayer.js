@@ -50,7 +50,7 @@ dbQuery.findHistoricData = function (locationKey) {
        console.log('Connected...');
        const collection = client.db("forestcasting").collection("location_historic");
        // perform actions on the collection object
-       collection.find({"locationKey": locationKey}).limit(1)
+       collection.find({"LOCATION_KEY": locationKey}).limit(1)
        .toArray()
        .then(cursor => {
          //close the connection
@@ -65,12 +65,12 @@ dbQuery.findHistoricData = function (locationKey) {
          cursor.forEach(element => results.push(new HistoricData(
            latlng[0],
            latlng[1],
-           element["locationKey"],
+           element["LOCATION_KEY"],
            element["TOTAL_SIZE_HA_OLD"],
            element["AVERAGE_SIZE_HA_OLD"],
            element["TOTAL_DURATION_OLD"],
            element["AVERAGE_DURATION_OLD"],
-           "2017-11-01"
+           element["MOST_RECENT_DATE"]
          )))
 
           resolve(results)

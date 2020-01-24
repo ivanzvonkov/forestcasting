@@ -14,7 +14,6 @@ class AnalysisResponse {
       "riskScore": analysisResults[0],
       "damageScore": analysisResults[1]
     }
-    response = JSON.stringify(response)
     return response
   }
 }

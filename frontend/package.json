@@ -6,11 +6,13 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "ant-design-pro": "^1.4.4",
     "antd": "^3.26.6",
-    "axios": "^0.19.1",
+    "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "d3": "^5.14.2",
     "google-map-react": "^1.1.5",
+    "query-string": "^6.10.1",
     "react": "^16.12.0",
     "react-chartjs-2": "^2.8.0",
     "react-dom": "^16.12.0",
@@ -41,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:3100"
 }

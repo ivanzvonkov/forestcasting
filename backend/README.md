@@ -1,8 +1,8 @@
 # BACKEND 
 
 ## Database Setup
-You must first add your IP address to the IP Address Whitelist on MongoDB Atlas
-*if you don't do this an error will be thrown.
+You must first add your IP address to the IP Address Whitelist on MongoDB Atlas  
+_if you don't do this an error will be thrown._
 
 ## Starting the Server
 Install all required packages  

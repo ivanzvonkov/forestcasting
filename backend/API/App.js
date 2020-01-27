@@ -18,12 +18,13 @@ app.get("/api/analysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
   let date = req.query.date.toString()
+  let range = req.query.range
 
   let locationKey = getLocationKey(lat, lng);
 
   let ecoData = await dbQuery.findEcoData(locationKey)
   let historicData = await dbQuery.findHistoricData(locationKey)
-  let weatherData = await weatherAPI.findWeatherData(lat, lng, date)
+  let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range)
   await dbQuery.findEcoInfo(ecoData)
 
   //[riskScore, damageScore]
@@ -35,9 +36,9 @@ app.get("/api/analysis", async (req, res, next) => {
   res.json({
     location: historicData,
     geography: ecoData,
-    weather: weatherData,
-    riskScore: analysisResults[0],
-    damageScore: analysisResults[1]
+    "specificDate": {
+      analysisResults
+    }
   })
 })
 

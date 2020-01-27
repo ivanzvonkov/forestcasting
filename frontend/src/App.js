@@ -6,51 +6,67 @@ import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
 import { Button, Card, message } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
-import axios from 'axios';
+import axios from "axios";
 
 const App = () => {
-  const queryString = require('query-string');
+  const queryString = require("query-string");
   const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
 
   const login = (username, password) => {
-    const key = 'updatable';
-    message.loading({content: 'Loggin in...', key});
+    const key = "updatable";
+    message.loading({ content: "Loggin in...", key });
     setTimeout(() => {
-      if(username === 'admin' && password === 'admin'){
-        message.success({content: 'Logged in!', key})
+      if (username === "admin" && password === "admin") {
+        message.success({ content: "Logged in!", key });
         setCurrentPage("map");
-      }else{
-        message.error({content: 'Incorrect login credentials', key});  
+      } else {
+        message.error({ content: "Incorrect login credentials", key });
       }
     }, 500);
   };
 
-  const selectLocationAndDate = (selectedLatitude, selectedLongitude, selectedDate) => {
+  const selectLocationAndDate = (
+    selectedLatitude,
+    selectedLongitude,
+    selectedDate,
+    selectedRange
+  ) => {
     //rest api call start
-    const key = 'updatable';
-    message.loading({content: 'Generating Analysis...', key});
-    const stringDate = selectedDate.format('YYYY-MM-DD');
-    axios.get('/api/analysis?' + queryString.stringify({
-      lat: selectedLatitude,
-      lng: selectedLongitude,
-      date: stringDate
-    }))
-    .then((response) => {
-      message.success({content: 'Analysis Generated.', key})
-      setAnalysisResult(response.data);
-      setCurrentPage("results");
-    }, (error) => {
-      // rest api call done
-      message.error({content: 'Server error. Ensure server is up and running.', key}); 
-      console.error(error);
-    });
+    const key = "updatable";
+    message.loading({ content: "Generating Analysis...", key });
+    const stringDate = selectedDate.format("YYYY-MM-DD");
+    axios
+      .get(
+        "/api/analysis?" +
+          queryString.stringify({
+            lat: selectedLatitude,
+            lng: selectedLongitude,
+            date: stringDate,
+            range: selectedRange
+          })
+      )
+      .then(
+        response => {
+          message.success({ content: "Analysis Generated.", key });
+          setAnalysisResult(response.data);
+          setCurrentPage("results");
+        },
+        error => {
+          // rest api call done
+          message.error({
+            content: "Server error. Ensure server is up and running.",
+            key
+          });
+          console.error(error);
+        }
+      );
   };
 
   const goBackToMap = () => {
-    setCurrentPage('map');
+    setCurrentPage("map");
     setAnalysisResult({});
-  }
+  };
 
   const pageComponent = {
     login: <LoginPage login={login} />,
@@ -59,24 +75,32 @@ const App = () => {
   };
 
   const pageTitle = {
-    login: 'Forestcasting: Login',
-    map: 'Forestcasting: Map',
-    results: 'Forestcasting: Analysis'
-  }
+    login: "Forestcasting: Login",
+    map: "Forestcasting: Map",
+    results: "Forestcasting: Analysis"
+  };
 
   let cardTopButton = (
     <>
-      {currentPage === 'results' && 
-        <Button onClick={goBackToMap} style={{marginRight: '1em'}}>Back to map</Button>}
+      {currentPage === "results" && (
+        <Button onClick={goBackToMap} style={{ marginRight: "1em" }}>
+          Back to map
+        </Button>
+      )}
 
-      {(currentPage === 'map' || currentPage === 'results') && 
-        <Button onClick={()=>setCurrentPage('login')}>Logout</Button>}
+      {(currentPage === "map" || currentPage === "results") && (
+        <Button onClick={() => setCurrentPage("login")}>Logout</Button>
+      )}
     </>
   );
 
   return (
     <MainDiv>
-      <Card title={pageTitle[currentPage]} extra={cardTopButton}>
+      <Card
+        title={pageTitle[currentPage]}
+        extra={cardTopButton}
+        style={{ width: "70vw" }}
+      >
         {pageComponent[currentPage]}
       </Card>
     </MainDiv>

@@ -3,7 +3,7 @@ import { Card, Row, Col, Table } from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 
-export const ResultsPage = ({response}) => {
+export const ResultsPage = ({ response }) => {
   const columns = [
     {
       title: "Weather Field",
@@ -38,7 +38,7 @@ export const ResultsPage = ({response}) => {
       }
     ]
   };
-  
+
   const fireSizeData = {
     labels: [
       "Total Average",
@@ -110,7 +110,7 @@ export const ResultsPage = ({response}) => {
   ];
 
   return (
-    <div style={{ height: "90vh", width: "70vw" }}>
+    <div style={{ height: "90vh" }}>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card title="Ecozone Information">
@@ -141,7 +141,8 @@ export const ResultsPage = ({response}) => {
         </Col>
         <Col span={12}>
           <Card title="Last Fire Date">
-            Last fire in this location occured on {response.location.lastFireDate}
+            Last fire in this location occured on{" "}
+            {response.location.lastFireDate}
           </Card>
           <br />
           <Card title="Risk Measure">
@@ -167,4 +168,4 @@ export const ResultsPage = ({response}) => {
       </Row>
     </div>
   );
-}
+};

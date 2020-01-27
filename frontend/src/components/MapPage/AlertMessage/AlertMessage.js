@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import { Alert } from "antd";
 
-export const AlertMessage = ({message}) => (
-    <div style={{ marginTop: "10px", fontSize: "18px" }}>
-        <Alert message={message}/>
-    </div>
+export const AlertMessage = ({ message, type }) => (
+  <div style={{ fontSize: "18px", textAlign: "center", width: "100%" }}>
+    <Alert message={message} type={type} />
+  </div>
 );

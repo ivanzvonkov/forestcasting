@@ -3,12 +3,12 @@ let analyze = {}
 
 analyze.getAnalysis = function(ecoData, weatherData, historicData){
   let results = []
-
+  let i = 0
   weatherData.forEach(entry => {
     let damageScore = Math.floor(Math.random() * 100)
     let riskScore = Math.floor(Math.random() * 100)
-    let date = entry.date
-    results.push({[date]: { "weather": entry, "riskScore": riskScore, "damageScore":damageScore}})
+    results.push({[i]:{"weather": entry, "riskScore": riskScore, "damageScore":damageScore}})
+    i++
   })
 
   //reulsts = [{date, {weatherDataOnDate}, riskScore, damageScore}]]

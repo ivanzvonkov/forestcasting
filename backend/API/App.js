@@ -36,9 +36,7 @@ app.get("/api/analysis", async (req, res, next) => {
   res.json({
     location: historicData,
     geography: ecoData,
-    "specificDate": {
-      analysisResults
-    }
+    "specificDate": analysisResults
   })
 })
 

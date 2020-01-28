@@ -1,19 +1,21 @@
-const WeatherData = require("../Schemas/WeatherData.js")
-let analyze = {}
+const WeatherData = require("../Schemas/WeatherData.js");
+let analyze = {};
 
-analyze.getAnalysis = function(ecoData, weatherData, historicData){
-  let results = []
-
+analyze.getAnalysis = function(ecoData, weatherData, historicData) {
+  let results = [];
   weatherData.forEach(entry => {
-    let damageScore = Math.floor(Math.random() * 100)
-    let riskScore = Math.floor(Math.random() * 100)
-    let date = entry.date
-    results.push({[date]: { "weather": entry, "riskScore": riskScore, "damageScore":damageScore}})
-  })
+    let damageScore = Math.random();
+    let riskScore = Math.random();
+    results.push({
+      weather: entry,
+      riskScore: riskScore,
+      damageScore: damageScore
+    });
+  });
 
   //reulsts = [{date, {weatherDataOnDate}, riskScore, damageScore}]]
-  console.log(results)
-  return results
-}
+  console.log(results);
+  return results;
+};
 
-module.exports = analyze
+module.exports = analyze;

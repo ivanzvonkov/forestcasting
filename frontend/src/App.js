@@ -7,7 +7,6 @@ import { ResultsPage } from "./components/ResultsPage/ResultsPage";
 import { Button, Card, message } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from "axios";
-import moment from "moment";
 
 const App = () => {
   const queryString = require("query-string");
@@ -27,69 +26,7 @@ const App = () => {
     }, 500);
   };
 
-  /******** DATE RANGE CODE  */
-
-  // let dateArray = [];
   const [validRange, setValidRange] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  // const addDays = (date, days) => {
-  //   const copy = new Date(Number(date));
-  //   copy.setDate(date.getDate() + days);
-  //   console.log(copy);
-
-  //   let year = copy.getUTCFullYear();
-  //   let month = copy.getUTCMonth() + 1;
-
-  //   if (month < 10) {
-  //     month = "0" + month.toString();
-  //   }
-
-  //   let day = copy.getUTCDate();
-  //   console.log(day);
-  //   if (day < 10) {
-  //     day = "0" + day.toString();
-  //   }
-
-  //   console.log(year + "-" + month + "-" + day);
-  //   return year + "-" + month + "-" + day;
-  // };
-
-  // const getValidDates = (date, range) => {
-  //   range = range - 1;
-
-  //   date = new Date(date);
-
-  //   for (let i = 0; i <= range; i++) {
-  //     console.log(date, i);
-
-  //     let newDate = addDays(date, i);
-  //     console.log(newDate);
-  //     dateArray.push(newDate);
-  //   }
-  //   setValidRange([
-  //     moment(dateArray[0], "YYYY-MM-DD"),
-  //     moment(dateArray[range - 1], "YYYY-MM-DD")
-  //   ]);
-  //   console.log(dateArray[0]);
-  // };
-
-  // const calendarMap = new Map();
-  // const enumerateDaysBetweenDates = (startDate, endDate) => {
-  //   var currDate = moment(startDate).startOf("day");
-  //   calendarMap.set(1, currDate);
-
-  //   var lastDate = moment(endDate).startOf("day");
-  //   calendarMap.set(response.specificDate.analysisResults.length, lastDate);
-
-  //   let i = 2;
-  //   while (currDate.add(1, "days").diff(lastDate) < 0) {
-  //     console.log(currDate.toDate());
-  //     calendarMap.set(i, currDate.clone().toDate());
-  //     i++;
-  //   }
-  //   console.log(calendarMap);
-  // };
-  /******** DATE RANGE CODE  */
 
   const selectLocationAndDate = (
     selectedLatitude,
@@ -116,7 +53,6 @@ const App = () => {
         response => {
           message.success({ content: "Analysis Generated.", key });
           setAnalysisResult(response.data);
-          setStartDate(selectedDate);
           setValidRange([selectedDate, endDate]);
           setCurrentPage("results");
         },

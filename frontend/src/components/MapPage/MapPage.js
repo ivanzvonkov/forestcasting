@@ -21,12 +21,15 @@ export const MapPage = ({ selectLocationAndDate }) => {
     "Click on the map to select a location."
   );
 
+  const [endDate, setEndDate] = useState(null);
+
   const analyze = () => {
     selectLocationAndDate(
       selectedLat,
       selectedLng,
       selectedDate,
-      selectedRange
+      selectedRange,
+      endDate
     );
   };
 
@@ -36,6 +39,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
 
     // set start date
     setSelectedDate(from);
+    setEndDate(to);
 
     // calculate range
     const rangeInDays =
@@ -101,7 +105,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
                 ? `You selected ${
                     selectedRange > 1
                       ? `a range of ${selectedRange} days: `
-                      : `1 day:`
+                      : `a date:`
                   }`
                 : "Select a date or a range of dates for prediction:"
             }

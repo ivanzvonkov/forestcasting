@@ -1,9 +1,12 @@
-import React from "react";
-import { Card, Row, Col, Table } from "antd";
+import React, { useState } from "react";
+import { Card, Row, Col, Table, Button, Radio, Calendar } from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
+import moment from "moment";
 
-export const ResultsPage = ({ response }) => {
+export const ResultsPage = ({ response, validRange }) => {
+  const [currentDate, setCurrentDate] = useState(validRange[0]);
+
   const columns = [
     {
       title: "Weather Field",
@@ -109,23 +112,98 @@ export const ResultsPage = ({ response }) => {
     }
   ];
 
+  // const createRadioButtons = () => {
+  //   let buttons = [];
+  //   for (let i = 0; i < dateRange; i++) {
+  //     buttons.push(
+  //       <Radio.Button value={dateArray[i]} key={i}>
+  //         {dateArray[i]}
+  //       </Radio.Button>
+  //     );
+  //   }
+  //   return buttons;
+  // };
+
+  const handleDateChange = event => {
+    console.log(event);
+    setCurrentDate(event);
+    console.log(currentDate.format("YYYY-MM-DD"));
+    const specificDate = currentDate.format("YYYY-MM-DD");
+    console.log(response.specificDate.analysisResults.indexOf(specificDate));
+    console.log(response.specificDate.analysisResults.specificDate);
+  };
+
   return (
     <div style={{ height: "90vh" }}>
+      <Row
+        gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 5]}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "10px"
+        }}
+      >
+        {/* <Radio.Group
+          value={dateArray[currentIndex]}
+          onChange={handleDateChange}
+        >
+          {createRadioButtons()}
+        </Radio.Group> */}
+      </Row>
+
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
+          <Card>
+            <Calendar
+              fullscreen={false}
+              validRange={validRange}
+              onChange={handleDateChange}
+              value={currentDate}
+            />
+          </Card>
+          <br />
+          <Card title="Last Fire Date">
+            Last fire in this location occured on{" "}
+            {response.location.lastFireDate}
+          </Card>
+          <br />
           <Card title="Ecozone Information">
             Zone {response.geography.zone}
             <br />
             {response.geography.description}
           </Card>
-          <br />
+          {/* <br />
+       
+          <br /> */}
+        </Col>
+        <Col span={12}>
+          <Card title="Risk Measure">
+            <GaugeChart
+              id="gauge-chart1"
+              nrOfLevels={20}
+              arcWidth={0.3}
+              percent={0.8}
+              textColor={"black"}
+            />
+          </Card>
+          {/* <br /> */}
+          {/* <Card title="Weather Information">
+            <Table
+              columns={columns}
+              dataSource={weatherData}
+              pagination={false}
+              showHeader={false}
+            />
+            {response.weather.weather}
+          </Card> */}
           <Card title="Average Fire Duration">
             <Bar
               data={fireDurationData}
               width={5}
               height={300}
               options={{ maintainAspectRatio: false }}
-              className="col1"
             />
           </Card>
           <br />
@@ -135,34 +213,7 @@ export const ResultsPage = ({ response }) => {
               width={5}
               height={300}
               options={{ maintainAspectRatio: false }}
-              className="col1"
             />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title="Last Fire Date">
-            Last fire in this location occured on{" "}
-            {response.location.lastFireDate}
-          </Card>
-          <br />
-          <Card title="Risk Measure">
-            <GaugeChart
-              id="gauge-chart1"
-              nrOfLevels={20}
-              arcWidth={0.3}
-              percent={0.89}
-              textColor={"black"}
-            />
-          </Card>
-          <br />
-          <Card title="Weather Information">
-            <Table
-              columns={columns}
-              dataSource={weatherData}
-              pagination={false}
-              showHeader={false}
-            />
-            {response.weather.weather}
           </Card>
         </Col>
       </Row>

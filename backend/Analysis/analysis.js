@@ -4,8 +4,8 @@ let analyze = {}
 analyze.getAnalysis = function(ecoData, weatherData, historicData){
   let results = []
   weatherData.forEach(entry => {
-    let damageScore = Math.floor(Math.random() * 60)
-    let riskScore = Math.floor(Math.random() * 60)
+    let damageScore = Math.floor(Math.random() * 60)/100.0
+    let riskScore = Math.floor(Math.random()* 60)/100.0
     results.push({
       "weather": entry,
       "riskScore": riskScore,

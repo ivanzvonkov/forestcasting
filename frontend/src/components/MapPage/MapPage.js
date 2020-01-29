@@ -7,11 +7,10 @@ import axios from "axios";
 
 export const MapPage = ({ selectLocationAndDate }) => {
   const { Step } = Steps;
-  const [current, setCurrent] = useState(0);
 
+  const [current, setCurrent] = useState(0);
   const [selectedLat, setSelectedLat] = useState(null);
   const [selectedLng, setSelectedLng] = useState(null);
-
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedRange, setSelectedRange] = useState(null);
 

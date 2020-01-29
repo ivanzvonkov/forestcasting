@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, Row, Col, Table, Calendar } from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
+import { GMap } from "../MapPage/GMap/GMap";
 
 export const ResultsPage = ({ response, validRange }) => {
   const [currentDate, setCurrentDate] = useState(validRange[0]);
@@ -23,8 +24,8 @@ export const ResultsPage = ({ response, validRange }) => {
 
   const fireDurationData = {
     labels: [
-      "Total Average",
-      "Ecoregion " + response.geography.zone + " Average"
+      "Location Average",
+      "Ecozone " + response.geography.zone + " Average"
     ],
     datasets: [
       {
@@ -45,8 +46,8 @@ export const ResultsPage = ({ response, validRange }) => {
 
   const fireSizeData = {
     labels: [
-      "Total Average",
-      "Ecoregion " + response.geography.zone + " Average"
+      "Location Average",
+      "Ecozone " + response.geography.zone + " Average"
     ],
     datasets: [
       {
@@ -70,56 +71,64 @@ export const ResultsPage = ({ response, validRange }) => {
       key: "1",
       weatherField: "Max Temperature",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.max_temp
+        response.specificDate.analysisResults[currentIndex].weather.max_temp +
+        " °C"
     },
     {
       key: "2",
       weatherField: "Min Temperature",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.min_temp
+        response.specificDate.analysisResults[currentIndex].weather.min_temp +
+        " °C"
     },
     {
       key: "3",
       weatherField: "Mean Temperature",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.mean_temp
+        response.specificDate.analysisResults[currentIndex].weather.mean_temp +
+        " °C"
     },
     {
       key: "4",
       weatherField: "Total Precipitation",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.total_precip
+        response.specificDate.analysisResults[currentIndex].weather
+          .total_precip + " mm"
     },
     {
       key: "5",
       weatherField: "Total Snow",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.total_snow
+        response.specificDate.analysisResults[currentIndex].weather.total_snow +
+        " mm"
     },
     {
       key: "6",
       weatherField: "Snow Depth",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.snow_dpth
+        response.specificDate.analysisResults[currentIndex].weather.snow_dpth +
+        " mm"
     },
     {
       key: "7",
       weatherField: "Wind Speed",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.wind_spd
+        response.specificDate.analysisResults[currentIndex].weather.wind_spd +
+        " m/s"
     },
     {
       key: "8",
       weatherField: "Wind Gust Speed",
       measure:
         response.specificDate.analysisResults[currentIndex].weather
-          .wind_gust_spd
+          .wind_gust_spd + " m/s"
     },
     {
       key: "9",
       weatherField: "Wind Direction",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather.wind_dir
+        response.specificDate.analysisResults[currentIndex].weather.wind_dir +
+        " degrees"
     }
   ];
 
@@ -137,9 +146,17 @@ export const ResultsPage = ({ response, validRange }) => {
   const handlePanelChange = event => {
     setSelectedDate(event);
   };
+  console.log(response);
 
   return (
     <div style={{ height: "90vh" }}>
+      {/* <GMap
+        isCalendarDisplayed={false}
+        selectedLat={response.location.}
+        selectedLng={selectedLng}
+        onClick={clickMap}
+        selectedLocation={selectedLocation}
+      /> */}
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card

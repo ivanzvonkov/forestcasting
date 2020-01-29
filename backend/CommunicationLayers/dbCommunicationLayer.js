@@ -15,7 +15,7 @@ dbQuery.findEcoData = function(locationKey) {
                 console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
             }
             const collection = client.db("forestcasting").collection("location_eco");
-            
+
             // perform actions on the collection object
             collection.findOne({"KEY": locationKey}).then(dbResult => {
                 //close the connection
@@ -45,8 +45,8 @@ dbQuery.findHistoricData = function (locationKey) {
                     //close the connection
                     client.close();
                     let result = {}
+                    let latlng = locationKey.split("|")
                     if(dbResult){
-                        let latlng = locationKey.split("|")
                         // Results will be array of HistoricData
                         result = new HistoricData(
                             latlng[0],
@@ -58,6 +58,16 @@ dbQuery.findHistoricData = function (locationKey) {
                             dbResult["AVERAGE_DURATION_OLD"],
                             dbResult["MOST_RECENT_DATE"]
                         )
+                    } else {
+                      result = new HistoricData(
+                        latlng[0],
+                        latlng[1],
+                        locationKey,
+                        0,
+                        0,
+                        0,
+                        0
+                      )
                     }
                 resolve(result)
             })

@@ -131,7 +131,7 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
   };
 
   return (
-    <div style={{ height: "195vh" }}>
+    <div id="divToPrint" style={{ "height": "180vh" }}>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card
@@ -165,7 +165,7 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
           </Card>
           <br />
           <Card title="Last Fire Date">
-            Last fire in this location occured on{" "}
+            Last fire in this location occurred on{" "}
             {response.location.lastFireDate}
           </Card>
         </Col>
@@ -199,16 +199,25 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 10]}>
+      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={32}>
-          <GMap
-            currentPage={"results"}
-            selectedLat={selectedLocation[0]}
-            selectedLng={selectedLocation[1]}
-            selectedLocation={selectedLocation[2]}
-          />
+          <div id="fullGoogleMap" style={{ "display": "block" }}>
+            <GMap
+              currentPage={"results"}
+              selectedLat={selectedLocation[0]}
+              selectedLng={selectedLocation[1]}
+              selectedLocation={selectedLocation[2]}
+            />
+          </div>
+          <div id="partialGoogleMap" style={{ "display": "none" }}>
+            <div style={{"fontSize": "18px", "textAlign": "center", "width": "100%"}}>
+              <div data-show="true" className="ant-alert ant-alert-success ant-alert-no-icon">
+                <span className="ant-alert-message">{selectedLocation[2]}</span>
+              </div>
+            </div>
+          </div>
         </Col>
       </Row>
-    </div>
+     </div>
   );
 };

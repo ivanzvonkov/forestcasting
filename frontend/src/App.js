@@ -7,6 +7,8 @@ import { ResultsPage } from "./components/ResultsPage/ResultsPage";
 import { Button, Card, message } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from "axios";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const App = () => {
   const queryString = require("query-string");
@@ -16,7 +18,7 @@ const App = () => {
 
   const login = (username, password) => {
     const key = "updatable";
-    message.loading({ content: "Loggin in...", key });
+    message.loading({ content: "Logging in...", key });
     setTimeout(() => {
       if (username === "admin" && password === "admin") {
         message.success({ content: "Logged in!", key });
@@ -74,6 +76,25 @@ const App = () => {
       );
   };
 
+  const handleDownloadPDF = () => {
+    window.scrollTo(0, 0);
+    document.getElementById('fullGoogleMap').style.display='none';
+    document.getElementById('partialGoogleMap').style.display='block';
+    html2canvas(document.querySelector("#divToPrint")).then(function(canvas) {
+      const imgData = canvas.toDataURL('image/png');
+
+      const imgWidth = 210;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      const doc = new jsPDF('p', 'mm');
+
+      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      doc.save('Results.pdf');
+    });
+    document.getElementById('fullGoogleMap').style.display='block';
+    document.getElementById('partialGoogleMap').style.display='none';
+  };
+
   const goBackToMap = () => {
     setCurrentPage("map");
     setAnalysisResult({});
@@ -100,8 +121,14 @@ const App = () => {
   let cardTopButton = (
     <>
       {currentPage === "results" && (
+        <Button onClick={handleDownloadPDF} style={{ marginRight: "1em" }}>
+          Generate PDF
+        </Button>
+      )}
+
+      {currentPage === "results" && (
         <Button onClick={goBackToMap} style={{ marginRight: "1em" }}>
-          Back to map
+          Back to Map
         </Button>
       )}
 
@@ -116,7 +143,7 @@ const App = () => {
       <Card
         title={pageTitle[currentPage]}
         extra={cardTopButton}
-        style={{ width: "70vw" }}
+        style={{ "width": "70vw", "minWidth": "1200px"}}
       >
         {pageComponent[currentPage]}
       </Card>

@@ -28,7 +28,8 @@ export const MapPage = ({ selectLocationAndDate }) => {
       selectedLng,
       selectedDate,
       selectedRange,
-      endDate
+      endDate,
+      selectedLocation
     );
   };
 
@@ -81,7 +82,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
       </Steps>
 
       <GMap
-        isCalendarDisplayed={isCalendarDisplayed}
+        currentPage={isCalendarDisplayed ? "mapDate" : "mapLocation"}
         selectedLat={selectedLat}
         selectedLng={selectedLng}
         onClick={clickMap}

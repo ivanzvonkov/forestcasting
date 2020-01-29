@@ -12,6 +12,7 @@ const App = () => {
   const queryString = require("query-string");
   const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const login = (username, password) => {
     const key = "updatable";
@@ -33,7 +34,8 @@ const App = () => {
     selectedLongitude,
     selectedDate,
     selectedRange,
-    endDate
+    endDate,
+    selectedAddress
   ) => {
     //rest api call start
     const key = "updatable";
@@ -54,6 +56,11 @@ const App = () => {
           message.success({ content: "Analysis Generated.", key });
           setAnalysisResult(response.data);
           setValidRange([selectedDate, endDate]);
+          setSelectedLocation([
+            selectedLatitude,
+            selectedLongitude,
+            selectedAddress
+          ]);
           setCurrentPage("results");
         },
         error => {
@@ -75,7 +82,13 @@ const App = () => {
   const pageComponent = {
     login: <LoginPage login={login} />,
     map: <MapPage selectLocationAndDate={selectLocationAndDate} />,
-    results: <ResultsPage response={analysisResult} validRange={validRange} />
+    results: (
+      <ResultsPage
+        response={analysisResult}
+        validRange={validRange}
+        selectedLocation={selectedLocation}
+      />
+    )
   };
 
   const pageTitle = {

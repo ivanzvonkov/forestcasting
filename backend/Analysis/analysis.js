@@ -4,8 +4,8 @@ let analyze = {};
 analyze.getAnalysis = function(ecoData, weatherData, historicData) {
   let results = [];
   weatherData.forEach(entry => {
-    let damageScore = Math.random();
-    let riskScore = Math.random();
+    let damageScore = Math.floor(Math.random() * 60) / 100.0;
+    let riskScore = Math.floor(Math.random() * 60) / 100.0;
     results.push({
       weather: entry,
       riskScore: riskScore,
@@ -14,7 +14,6 @@ analyze.getAnalysis = function(ecoData, weatherData, historicData) {
   });
 
   //reulsts = [{date, {weatherDataOnDate}, riskScore, damageScore}]]
-  console.log(results);
   return results;
 };
 

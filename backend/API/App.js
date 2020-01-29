@@ -18,7 +18,7 @@ app.get("/api/analysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
   let date = req.query.date.toString()
-  let range = req.query.range
+  let range = req.query.range ? req.query.range : 1
 
   let locationKey = getLocationKey(lat, lng);
 
@@ -36,9 +36,7 @@ app.get("/api/analysis", async (req, res, next) => {
   res.json({
     location: historicData,
     geography: ecoData,
-    "specificDate": {
-      analysisResults
-    }
+    "specificDate": analysisResults
   })
 })
 

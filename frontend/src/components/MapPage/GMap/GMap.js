@@ -4,14 +4,19 @@ import { Marker } from "../Marker/Marker";
 import { AlertMessage } from "../AlertMessage/AlertMessage";
 
 export const GMap = ({
-  isCalendarDisplayed,
+  currentPage,
   selectedLat,
   selectedLng,
   selectedLocation,
   onClick
 }) => {
   const defaultCenter = { lat: 56.41630331167829, lng: -114.81301656871508 };
-  const mapHeight = isCalendarDisplayed ? "30vh" : "70vh";
+  const mapHeight =
+    currentPage === "mapLocation"
+      ? "70vh"
+      : currentPage === "mapDate"
+      ? "40vh"
+      : "20vh";
   const selectedPoint = { lat: selectedLat, lng: selectedLng };
   return (
     <div>
@@ -26,8 +31,8 @@ export const GMap = ({
         <GoogleMap
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
           defaultCenter={defaultCenter}
-          center={isCalendarDisplayed ? selectedPoint : defaultCenter}
-          zoom={isCalendarDisplayed ? 3 : 5}
+          center={currentPage === "mapLocation" ? defaultCenter : selectedPoint}
+          zoom={currentPage === "mapLocation" ? 5 : 3}
           onClick={onClick}
         >
           {selectedLat && <Marker lat={selectedLat} lng={selectedLng} />}

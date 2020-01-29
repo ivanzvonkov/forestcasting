@@ -4,7 +4,7 @@ import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
 
-export const ResultsPage = ({ response, validRange }) => {
+export const ResultsPage = ({ response, validRange, selectedLocation }) => {
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [selectedDate, setSelectedDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -70,65 +70,48 @@ export const ResultsPage = ({ response, validRange }) => {
     {
       key: "1",
       weatherField: "Max Temperature",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.max_temp +
-        " °C"
+      measure: response.specificDate[currentIndex].weather.max_temp + " °C"
     },
     {
       key: "2",
       weatherField: "Min Temperature",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.min_temp +
-        " °C"
+      measure: response.specificDate[currentIndex].weather.min_temp + " °C"
     },
     {
       key: "3",
       weatherField: "Mean Temperature",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.mean_temp +
-        " °C"
+      measure: response.specificDate[currentIndex].weather.mean_temp + " °C"
     },
     {
       key: "4",
       weatherField: "Total Precipitation",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather
-          .total_precip + " mm"
+      measure: response.specificDate[currentIndex].weather.total_precip + " mm"
     },
     {
       key: "5",
       weatherField: "Total Snow",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.total_snow +
-        " mm"
+      measure: response.specificDate[currentIndex].weather.total_snow + " mm"
     },
     {
       key: "6",
       weatherField: "Snow Depth",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.snow_dpth +
-        " mm"
+      measure: response.specificDate[currentIndex].weather.snow_dpth + " mm"
     },
     {
       key: "7",
       weatherField: "Wind Speed",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.wind_spd +
-        " m/s"
+      measure: response.specificDate[currentIndex].weather.wind_spd + " m/s"
     },
     {
       key: "8",
       weatherField: "Wind Gust Speed",
       measure:
-        response.specificDate.analysisResults[currentIndex].weather
-          .wind_gust_spd + " m/s"
+        response.specificDate[currentIndex].weather.wind_gust_spd + " m/s"
     },
     {
       key: "9",
       weatherField: "Wind Direction",
-      measure:
-        response.specificDate.analysisResults[currentIndex].weather.wind_dir +
-        " degrees"
+      measure: response.specificDate[currentIndex].weather.wind_dir + " degrees"
     }
   ];
 
@@ -136,7 +119,7 @@ export const ResultsPage = ({ response, validRange }) => {
     setCurrentDate(event);
 
     // set current index -> if no results exist (ie past 16 days), set to default value =  start of date range
-    let index = response.specificDate.analysisResults.findIndex(
+    let index = response.specificDate.findIndex(
       i => i.weather.date === event.format("YYYY-MM-DD")
     );
     setCurrentIndex(index === -1 ? 0 : index);
@@ -146,17 +129,9 @@ export const ResultsPage = ({ response, validRange }) => {
   const handlePanelChange = event => {
     setSelectedDate(event);
   };
-  console.log(response);
 
   return (
-    <div style={{ height: "90vh" }}>
-      {/* <GMap
-        isCalendarDisplayed={false}
-        selectedLat={response.location.}
-        selectedLng={selectedLng}
-        onClick={clickMap}
-        selectedLocation={selectedLocation}
-      /> */}
+    <div style={{ height: "195vh" }}>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card
@@ -171,37 +146,6 @@ export const ResultsPage = ({ response, validRange }) => {
               onChange={handleDateChange}
               onPanelChange={handlePanelChange}
               value={selectedDate}
-            />
-          </Card>
-          <br />
-          <Card title="Risk Measure">
-            <GaugeChart
-              id="gauge-chart1"
-              nrOfLevels={20}
-              arcWidth={0.3}
-              percent={
-                response.specificDate.analysisResults[currentIndex].riskScore
-              }
-              textColor={"black"}
-            />
-          </Card>
-          <br />
-          <Card title="Weather Information">
-            <Table
-              columns={columns}
-              dataSource={weatherData}
-              pagination={false}
-              showHeader={false}
-            />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title="Average Fire Duration">
-            <Bar
-              data={fireDurationData}
-              width={5}
-              height={320}
-              options={{ maintainAspectRatio: false }}
             />
           </Card>
           <br />
@@ -224,6 +168,45 @@ export const ResultsPage = ({ response, validRange }) => {
             Last fire in this location occured on{" "}
             {response.location.lastFireDate}
           </Card>
+        </Col>
+        <Col span={12}>
+          <Card title="Risk Measure">
+            <GaugeChart
+              id="gauge-chart1"
+              nrOfLevels={20}
+              arcWidth={0.3}
+              percent={response.specificDate[currentIndex].riskScore}
+              textColor={"black"}
+            />
+          </Card>
+          <br />
+          <Card title="Average Fire Duration">
+            <Bar
+              data={fireDurationData}
+              width={5}
+              height={320}
+              options={{ maintainAspectRatio: false }}
+            />
+          </Card>
+          <br />
+          <Card title="Weather Information">
+            <Table
+              columns={columns}
+              dataSource={weatherData}
+              pagination={false}
+              showHeader={false}
+            />
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 10]}>
+        <Col span={32}>
+          <GMap
+            currentPage={"results"}
+            selectedLat={selectedLocation[0]}
+            selectedLng={selectedLocation[1]}
+            selectedLocation={selectedLocation[2]}
+          />
         </Col>
       </Row>
     </div>

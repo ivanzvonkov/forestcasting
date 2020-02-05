@@ -1,5 +1,5 @@
 class WeatherData {
-  constructor(DATE, MAX_TEMP, MIN_TEMP, MEAN_TEMP, TOTAL_PRECIP, TOTAL_SNOW, SNOW_DEPTH, WIND_SPD, WIND_GUST_SPD, WIND_DIR){
+  constructor(DATE, MAX_TEMP, MIN_TEMP, MEAN_TEMP, TOTAL_PRECIP, TOTAL_SNOW, SNOW_DEPTH, WIND_SPD, WIND_GUST_SPD, WIND_DIR, RH, DPT){
     this.date = DATE //yyyy-mm-dd
     this.max_temp = MAX_TEMP
     this.min_temp = MIN_TEMP
@@ -10,6 +10,8 @@ class WeatherData {
     this.wind_spd = WIND_SPD
     this.wind_gust_spd = WIND_GUST_SPD
     this.wind_dir = WIND_DIR
+    this.relative_humidity = RH
+    this.dew_point_temp = DPT
   }
 }
 

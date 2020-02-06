@@ -4,22 +4,22 @@ import { AlertMessage } from "./AlertMessage/AlertMessage";
 import { Steps, Button, DatePicker } from "antd";
 import moment from "moment";
 import axios from "axios";
+import { Input } from "antd";
 
 export const MapPage = ({ selectLocationAndDate }) => {
   const { Step } = Steps;
+  const { Search } = Input;
+  const { RangePicker } = DatePicker;
 
   const [current, setCurrent] = useState(0);
   const [selectedLat, setSelectedLat] = useState(null);
   const [selectedLng, setSelectedLng] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedRange, setSelectedRange] = useState(null);
-
-  const { RangePicker } = DatePicker;
-
+  const [rangePickerValue, setRangePickerValue] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(
     "Click on the map to select a location."
   );
-
   const [endDate, setEndDate] = useState(null);
 
   const analyze = () => {
@@ -33,24 +33,30 @@ export const MapPage = ({ selectLocationAndDate }) => {
     );
   };
 
-  const onPanelChange = value => {
-    const from = value[0];
-    const to = value[1];
+  const calculateRangeInDays = (fromDate, toDate) => {
+    return Math.abs(
+      moment(fromDate, "YYYY-MM-DD")
+        .startOf("day")
+        .diff(moment(toDate, "YYYY-MM-DD").startOf("day"), "days")
+    );
+  };
 
+  const onPanelChange = value => {
+    let from = value[0];
+    let to = value[1];
+
+    if (calculateRangeInDays(from, to) > 16) {
+      to = moment(from)
+        .startOf("day")
+        .add(16, "days");
+    }
     // set start date
     setSelectedDate(from);
     setEndDate(to);
 
-    // calculate range
-    const rangeInDays =
-      Math.abs(
-        moment(from, "YYYY-MM-DD")
-          .startOf("day")
-          .diff(moment(to, "YYYY-MM-DD").startOf("day"), "days")
-      ) + 1;
-
     // set range
-    setSelectedRange(rangeInDays);
+    setSelectedRange(calculateRangeInDays(from, to));
+    setRangePickerValue([from, to]);
   };
 
   const clickMap = event => {
@@ -68,11 +74,26 @@ export const MapPage = ({ selectLocationAndDate }) => {
   };
 
   const disabledDate = current => {
-    // can not select days before today
-    return current && current < moment().startOf("day");
+    const start = moment().startOf("day");
+    const end = new moment().add(365, "days");
+    return !(start.isSameOrBefore(current) && end.isAfter(current));
   };
 
   const isCalendarDisplayed = current === 1;
+
+  const search = location => {
+    axios
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${process.env.REACT_APP_GEOCODING_API_KEY}`
+      )
+      .then(res => {
+        setSelectedLat(res.data.results[0].geometry.location.lat);
+        setSelectedLng(res.data.results[0].geometry.location.lng);
+        setSelectedLocation(
+          "You selected: " + res.data.results[0].formatted_address
+        );
+      });
+  };
 
   return (
     <>
@@ -80,7 +101,13 @@ export const MapPage = ({ selectLocationAndDate }) => {
         <Step title="Select Location" />
         <Step title="Select Forecast Date" />
       </Steps>
-
+      <div style={{ margin: "10px" }}>
+        <Search
+          placeholder="Search for a location"
+          onSearch={search}
+          enterButton
+        />
+      </div>
       <GMap
         currentPage={isCalendarDisplayed ? "mapDate" : "mapLocation"}
         selectedLat={selectedLat}
@@ -115,6 +142,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
           <RangePicker
             style={{ width: "100%" }}
             size="large"
+            value={rangePickerValue}
             onChange={onPanelChange}
             disabledDate={disabledDate}
           />

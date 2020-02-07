@@ -6,7 +6,7 @@ data/*
 .DS_Store
 
 # Pycharm
-.idea/*
+.idea/
 
 # Node Modules
 node_modules/

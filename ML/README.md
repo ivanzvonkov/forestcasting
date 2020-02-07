@@ -5,6 +5,8 @@ Used for accessing the current most accurate forest fire prediction model. Code 
 ### Usage
 API is available through Swagger UI
 
+[Example input](api/test.json)
+
 ### Steps to setup locally
 1. Create virtual environment (specifically need Python 3.6)
 ```bash

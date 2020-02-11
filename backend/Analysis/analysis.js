@@ -8,24 +8,20 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
     weatherData.forEach(weatherEntry => (
         modelInputs.push(createModelInput(weatherEntry, historicData, ecoData))
     ))
-    console.log(modelInputs)
 
-    let predictions = await predict(modelInputs);
-    console.log(predictions)
+    let {predictions} = await predict(modelInputs);
 
-    let results = []
-    weatherData.forEach(entry => {
-        let damageScore = Math.floor(Math.random() * 60)/100.0
-        let riskScore = Math.floor(Math.random()* 60)/100.0
-        results.push({
-            "weather": entry,
-            "riskScore": riskScore,
-            "damageScore":damageScore
-        })
-    })
-
-  //reulsts = [{date, {weatherDataOnDate}, riskScore, damageScore}]]
-  return results;
+    let results = {}
+    for(let i = 0; i < weatherData.length; i++){
+      let damageScore = Math.floor(Math.random() * 60)/100.0
+      results[weatherData[i].date] = {
+        "weather": weatherData[i],
+        "riskScore": predictions[i],
+        "damageScore":damageScore  
+      }
+    }
+    console.log(results);
+    return results;
 };
 
 function predict(modelInputs){

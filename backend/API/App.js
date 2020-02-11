@@ -34,16 +34,14 @@ app.get("/api/analysis", async (req, res, next) => {
     await dbQuery.findEcoInfo(ecoData)
 
     //[riskScore, damageScore]
-    let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
-    //result = JSON.stringify([ecoData, historicData, weatherData])
-    //let analysis = new AnalysisResponse(ecoData, weatherData, historicData);
-    //let response = analysis.buildResponse(analysisResults)
-
-    res.json({
-      location: historicData,
-      geography: ecoData,
-      "specificDate": analysisResults
-    })
+    analyze.getAnalysis(ecoData, weatherData, historicData)
+      .then(analysisResults =>
+        res.json({
+          location: historicData,
+          geography: ecoData,
+          specificDate: analysisResults
+        })
+      )
   }catch(err){
     res.status(400).json({err: err.toString()})
   }

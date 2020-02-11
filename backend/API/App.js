@@ -11,33 +11,42 @@ const analyze = require("../Analysis/analysis.js")
 
 const app = express();
 
+
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/api/analysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
   let date = req.query.date.toString()
   let range = req.query.range ? req.query.range : 1
+  try{
+    let locationKey = getLocationKey(lat, lng);
 
-  let locationKey = getLocationKey(lat, lng);
+    let ecoData = await dbQuery.findEcoData(locationKey)
+    let historicData = await dbQuery.findHistoricData(locationKey)
+    let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range)
+    await dbQuery.findEcoInfo(ecoData)
 
-  let ecoData = await dbQuery.findEcoData(locationKey)
-  let historicData = await dbQuery.findHistoricData(locationKey)
-  let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range)
-  await dbQuery.findEcoInfo(ecoData)
+    //[riskScore, damageScore]
+    let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
+    //result = JSON.stringify([ecoData, historicData, weatherData])
+    //let analysis = new AnalysisResponse(ecoData, weatherData, historicData);
+    //let response = analysis.buildResponse(analysisResults)
 
-  //[riskScore, damageScore]
-  let analysisResults = analyze.getAnalysis(ecoData, weatherData, historicData)
-  //result = JSON.stringify([ecoData, historicData, weatherData])
-  //let analysis = new AnalysisResponse(ecoData, weatherData, historicData);
-  //let response = analysis.buildResponse(analysisResults)
-
-  res.json({
-    location: historicData,
-    geography: ecoData,
-    "specificDate": analysisResults
-  })
+    res.json({
+      location: historicData,
+      geography: ecoData,
+      "specificDate": analysisResults
+    })
+  }catch(err){
+    res.status(400).json({err: err.toString()})
+  }
 })
 
 const getLocationKey = (lat, lng) => {

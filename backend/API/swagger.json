@@ -1,0 +1,95 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Swagger Petstore",
+      "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
+      "termsOfService": "http://swagger.io/terms/",
+      "contact": {
+        "name": "Swagger API Team"
+      },
+      "license": {
+        "name": "MIT"
+      }
+    },
+    "host": "localhost:3100",
+    "basePath": "/api",
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/analysis": {
+        "get": {
+          "description": "Returns analysis for specified location and day range",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "lat",
+              "in": "query",
+              "description": "Latitude",
+              "type": "number",
+              "required": true,
+              "default": 54.751932   
+            },
+            {
+              "name": "lng",
+              "in": "query",
+              "description": "Longitude",
+              "type": "number",
+              "required": true, 
+              "default": -116.353276 
+            },
+            {
+              "name": "date",
+              "in": "query",
+              "description": "Start date",
+              "type": "string",
+              "required": true,
+              "default": "2020-02-20"   
+            }, 
+            {
+              "name": "range",
+              "in": "query",
+              "description": "Range of days",
+              "type": "number",
+              "required": false  
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "Analysis for each day"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Pet": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

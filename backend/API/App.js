@@ -27,23 +27,22 @@ app.get("/api/analysis", async (req, res, next) => {
   let range = req.query.range ? req.query.range : 1
   try{
     let locationKey = getLocationKey(lat, lng);
-
     let ecoData = await dbQuery.findEcoData(locationKey)
     let historicData = await dbQuery.findHistoricData(locationKey)
     let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range)
     await dbQuery.findEcoInfo(ecoData)
 
     //[riskScore, damageScore]
-    analyze.getAnalysis(ecoData, weatherData, historicData)
-      .then(analysisResults =>
-        res.json({
-          location: historicData,
-          geography: ecoData,
-          specificDate: analysisResults
-        })
-      )
+    let analysisResults = await analyze.getAnalysis(ecoData, weatherData, historicData)
+      
+    res.json({
+      location: historicData,
+      geography: ecoData,
+      specificDate: analysisResults
+    })
+
   }catch(err){
-    res.status(400).json({err: err.toString()})
+    res.status(400).json({message: err.toString()})
   }
 })
 

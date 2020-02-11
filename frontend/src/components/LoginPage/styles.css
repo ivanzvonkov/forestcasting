@@ -1,16 +1,5 @@
-.landing-page {
-  position: relative;
-  background-image: url("/images/background.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  display: block;
-  height: 100vh;
-  width: auto;
-  overflow-x: hidden;
-  overflow-y: hidden;
+.login-wrap {
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 700px;
+  align-items: center;
 }

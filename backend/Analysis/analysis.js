@@ -25,8 +25,8 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
     })
 
   //reulsts = [{date, {weatherDataOnDate}, riskScore, damageScore}]]
-  return results
-}
+  return results;
+};
 
 function predict(modelInputs){
     url = 'https://1nabtyi1g1.execute-api.us-east-1.amazonaws.com/dev/predict/'

@@ -64,7 +64,9 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
         entry["snow_depth"],
         entry["wind_spd"],
         entry["wind_gust_spd"],
-        entry["wind_dir"]
+        entry["wind_dir"],
+        entry["rh"],
+        entry["dewpt"]
       ))
     })
     return results

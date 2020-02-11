@@ -6,10 +6,16 @@ data/*
 .DS_Store
 
 # Pycharm
-.idea/*
+.idea/
 
 # Node Modules
 node_modules/
 
 #.env files
 .env
+
+# Python env
+ML/MLenv/
+
+# Flask deployment
+ML/ml-dev-*

@@ -25,7 +25,6 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
         "damageScore":damageScore  
       }
     }
-    console.log(results);
     return results;
 };
 

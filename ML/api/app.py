@@ -110,6 +110,7 @@ def load_model(key):
     if not os.path.exists(local_file):
         print('Downloading model from S3...')
         S3.download_file(BUCKET_NAME, key, local_file)
+        print('Model downloaded at:' + local_file)
     model = joblib.load(local_file)
     return model
 

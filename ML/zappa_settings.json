@@ -6,6 +6,6 @@
         "project_name": "ml",
         "runtime": "python3.6",
         "s3_bucket": "zappa-qxrkdas51",
-        "use_precompiled_packages": true
+        "slim_handler": true
     }
 }

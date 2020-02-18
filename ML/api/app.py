@@ -117,7 +117,7 @@ def load_model(key):
 def predict(data):
     model = load_model(MODEL_FILE_NAME)
     print('Predicting...')
-    return model.predict_proba(data)
+    return model.predict_proba(data,thread_count=1,verbose=True)
 
 def parse_one_hots(req_data_points):
     print('Parsing one hots...')

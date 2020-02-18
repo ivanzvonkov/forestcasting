@@ -1,13 +1,14 @@
 const requests = require("request")
 const WeatherData  = require('../Schemas/WeatherData.js')
 const dotenv = require('dotenv')
+const epoch = require('epoch-time-machine')
 dotenv.config()
 const api_key = process.env.API_KEY
 
 let weatherAPI = {}
 
 function get_weather(lat, lng){
-    url = 'https://api.weatherbit.io/v2.0/forecast/daily?key=' + api_key + '&lat=' + lat + '&lon=' + lng
+    url = 'https://api.darksky.net/forecast/'+ api_key + '/' + lat + ',' + lng +"?exclude=minutely,flags,alerts,currently"
     return new Promise(function(resolve, reject) {
       requests(url, {json : true}, (err, res, body) => {
         resolve(body)
@@ -48,25 +49,32 @@ function getValidDates(date, range) {
   return dates
 }
 
+function epochToDate(epochTime) {
+  //yyy-mm-dd
+  let date = new Date(epochTime * 1000)
+
+  customFormat = date.customFormat("Y-m-d")
+  return customFormat
+}
+
 weatherAPI.findWeatherData = async function (lat, lng, date, range){
     let weather = await get_weather(lat, lng)
     let dates = getValidDates(date, range)
-    let weatherDays = weather["data"].filter(entry => dates.includes(entry["valid_date"]));
+    let weatherDays = weather["daily"]["data"].filter(entry => dates.includes(epochToDate(entry["time"])));
     let results = []
     weatherDays.forEach(entry => {
       results.push(new WeatherData(
-        entry["valid_date"], //yyyy-mm-dd
-        entry["max_temp"],
-        entry["min_temp"],
-        entry["temp"],
-        entry["precip"], // in mm
-        entry["snow"],
+        epochToDate(entry["time"]), //yyyy-mm-dd
+        entry["temperatureMax"],
+        entry["temperatureMin"],
+        entry["precipAccumulation"], // in cm
+        entry["precipType"],
         entry["snow_depth"],
-        entry["wind_spd"],
-        entry["wind_gust_spd"],
-        entry["wind_dir"],
-        entry["rh"],
-        entry["dewpt"]
+        entry["windSpeed"],
+        entry["windGust"],
+        entry["windBearing"],
+        entry["humidity"],
+        entry["dewPoint"]
       ))
     })
     return results

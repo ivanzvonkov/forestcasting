@@ -7,6 +7,6 @@
         "runtime": "python3.6",
         "s3_bucket": "zappa-qxrkdas51",
         "slim_handler": true,
-        "include": ["catboost"]
+        "include": ["catboost/_catboost.so"]
     }
 }

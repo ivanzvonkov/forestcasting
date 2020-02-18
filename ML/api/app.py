@@ -1,10 +1,11 @@
-from flask import Flask, request
-from flask_restplus import Api, Resource, fields, abort
+import os
+from math import exp
+
 import boto3
 import joblib
 import numpy as np
-from math import exp
-import os
+from flask import Flask, request
+from flask_restplus import Api, Resource, fields, abort
 
 BUCKET_NAME = 'forestcasting-bucket'
 MODEL_FILE_NAME = 'model.joblib.z'

@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Card, Row, Col, Table, Divider, Pagination, Tabs } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Table,
+  Divider,
+  Pagination,
+  Tabs,
+  Progress
+} from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
@@ -127,33 +136,13 @@ export const ResultsPage = ({
     }
   ];
 
-  // const handleDateChange = event => {
-  //   setCurrentDate(event);
-  //   // set current index -> if no results exist (ie past 16 days), set to default value =  start of date range
-  //   let index = response.specificDate.findIndex(
-  //     i => i.weather.date === event.format("YYYY-MM-DD")
-  //   );
-  //   setCurrentIndex(index === -1 ? 0 : index);
-  // };
-
   const handlePageChange = event => {
-    if (event > currentIndex + 1) {
-      // add one day
-      setCurrentDate(
-        currentDate
-          .startOf("day")
-          .add(1, "day")
-          .startOf("day")
-      );
-    } else {
-      // subtract one day
-      setCurrentDate(
-        currentDate
-          .endOf("day")
-          .subtract(1, "day")
-          .endOf("day")
-      );
-    }
+    setCurrentDate(
+      currentDate
+        .startOf("day")
+        .add(event - (currentIndex + 1), "day")
+        .startOf("day")
+    );
     setCurrentIndex(event - 1);
   };
 
@@ -262,6 +251,61 @@ export const ResultsPage = ({
               percent={response.specificDate[currentIndex].riskScore}
               textColor={"black"}
             />
+            {/* <Progress
+              type="line"
+              strokeColor={{
+                "0%": "#87d068",
+                "100%": "#e92210"
+              }}
+              percent={Math.round(
+                response.specificDate[currentIndex].damageScore * 100
+              )}
+              status="active"
+            />
+            <h2>Vacinity</h2>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={40}
+                width={80}
+                strokeColor={"#3066c2"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                POPULATION: 1 million
+                <br /> DISTANCE TO NEARBY CITY: 4 miles
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div> 
+
+            <h2>Habitat</h2>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={80}
+                width={80}
+                strokeColor={"#30c263"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                POPULATION: 55 million
+                <br /> STATUS: Critically Endangered
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div>
+            <h2>Tree Coverage</h2>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={30}
+                width={80}
+                strokeColor={"#c26a30"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                TREE TYPE: Some Valuable Tree
+                <br /> STATUS: Critically Endangered
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div>*/}
+
             <br />
             <Divider orientation="left">Weather Information</Divider>
             <Table

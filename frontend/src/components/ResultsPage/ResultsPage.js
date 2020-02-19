@@ -1,13 +1,25 @@
 import React, { useState } from "react";
-import { Card, Row, Col, Table, Calendar } from "antd";
+import { Card, Row, Col, Table, Divider, Pagination, Tabs } from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
+import "./styles.css";
 
-export const ResultsPage = ({ response, validRange, selectedLocation }) => {
+export const ResultsPage = ({
+  response,
+  validRange,
+  selectedLocation,
+  rangeInDays
+}) => {
+  response = {
+    location: response.location,
+    geography: response.geography,
+    specificDate: Object.values(response.specificDate)
+  };
+
   const [currentDate, setCurrentDate] = useState(validRange[0]);
-  const [selectedDate, setSelectedDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { TabPane } = Tabs;
 
   const columns = [
     {
@@ -115,62 +127,134 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
     }
   ];
 
-  const handleDateChange = event => {
-    setCurrentDate(event);
+  // const handleDateChange = event => {
+  //   setCurrentDate(event);
+  //   // set current index -> if no results exist (ie past 16 days), set to default value =  start of date range
+  //   let index = response.specificDate.findIndex(
+  //     i => i.weather.date === event.format("YYYY-MM-DD")
+  //   );
+  //   setCurrentIndex(index === -1 ? 0 : index);
+  // };
 
-    // set current index -> if no results exist (ie past 16 days), set to default value =  start of date range
-    let index = response.specificDate.findIndex(
-      i => i.weather.date === event.format("YYYY-MM-DD")
-    );
-    setCurrentIndex(index === -1 ? 0 : index);
-    setSelectedDate(event);
-  };
-
-  const handlePanelChange = event => {
-    setSelectedDate(event);
+  const handlePageChange = event => {
+    if (event > currentIndex + 1) {
+      // add one day
+      setCurrentDate(
+        currentDate
+          .startOf("day")
+          .add(1, "day")
+          .startOf("day")
+      );
+    } else {
+      // subtract one day
+      setCurrentDate(
+        currentDate
+          .endOf("day")
+          .subtract(1, "day")
+          .endOf("day")
+      );
+    }
+    setCurrentIndex(event - 1);
   };
 
   return (
-    <div id="divToPrint" style={{ "height": "180vh" }}>
+    <div id="divToPrint" style={{ height: "180vh" }}>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
-          <Card
-            title={`Displaying Results For: ${currentDate
-              .format("MMMM Do, YYYY")
-              .toString()}`}
-          >
-            <Calendar
-              fullscreen={false}
-              validRange={validRange}
-              onSelect={handleDateChange}
-              onChange={handleDateChange}
-              onPanelChange={handlePanelChange}
-              value={selectedDate}
-            />
-          </Card>
-          <br />
-          <Card title="Average Fire Size">
-            <Bar
-              data={fireSizeData}
-              width={5}
-              height={320}
-              options={{ maintainAspectRatio: false }}
-            />
-          </Card>
-          <br />
-          <Card title="Ecozone Information">
-            Zone {response.geography.zone}
-            <br />
+          <Card>
+            <h2>Ecozone {response.geography.zone} Information</h2>
             {response.geography.description}
-          </Card>
-          <br />
-          <Card title="Last Fire Date">
+            <br />
+            <Tabs
+              defaultActiveKey="1"
+              tabBarStyle={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center"
+              }}
+            >
+              <TabPane tab="Average Fire Duration" key="1">
+                <Bar
+                  data={fireDurationData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+              <TabPane tab="Average Fire Size" key="2">
+                <Bar
+                  data={fireSizeData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+            </Tabs>
+            <br />
+            <Divider orientation="left">Previous Fire Date</Divider>
             Last fire in this location occurred on{" "}
             {response.location.lastFireDate}
+            <br />
+            <div
+              id="fullGoogleMap"
+              style={{ display: "block", marginTop: "20px" }}
+            >
+              <GMap
+                currentPage={"results"}
+                selectedLat={selectedLocation[0]}
+                selectedLng={selectedLocation[1]}
+                selectedLocation={selectedLocation[2]}
+              />
+            </div>
+            <div id="partialGoogleMap" style={{ display: "none" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  textAlign: "center",
+                  width: "100%"
+                }}
+              >
+                <div
+                  data-show="true"
+                  className="ant-alert ant-alert-success ant-alert-no-icon"
+                >
+                  <span className="ant-alert-message">
+                    {selectedLocation[2]}
+                  </span>
+                </div>
+              </div>
+            </div>
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="Risk Measure">
+          <Card>
+            <h2>{currentDate.format("MMMM Do, YYYY").toString()} Prediction</h2>
+            <div className="centered">
+              <div className="centered" style={{ margin: "2px" }}>
+                <div style={{ color: "@ Black 45%" }}> Predictions Range: </div>
+                <Pagination
+                  current={currentIndex + 1}
+                  simple={true}
+                  disabled={false}
+                  showLessItems={true}
+                  total={rangeInDays}
+                  defaultPageSize={1}
+                  defaultCurrent={currentIndex + 1}
+                  onChange={handlePageChange}
+                />
+              </div>
+            </div>
+            <Divider orientation="left">Risk Measure</Divider>
             <GaugeChart
               id="gauge-chart1"
               nrOfLevels={20}
@@ -178,18 +262,8 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
               percent={response.specificDate[currentIndex].riskScore}
               textColor={"black"}
             />
-          </Card>
-          <br />
-          <Card title="Average Fire Duration">
-            <Bar
-              data={fireDurationData}
-              width={5}
-              height={320}
-              options={{ maintainAspectRatio: false }}
-            />
-          </Card>
-          <br />
-          <Card title="Weather Information">
+            <br />
+            <Divider orientation="left">Weather Information</Divider>
             <Table
               columns={columns}
               dataSource={weatherData}
@@ -199,25 +273,6 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-        <Col span={32}>
-          <div id="fullGoogleMap" style={{ "display": "block" }}>
-            <GMap
-              currentPage={"results"}
-              selectedLat={selectedLocation[0]}
-              selectedLng={selectedLocation[1]}
-              selectedLocation={selectedLocation[2]}
-            />
-          </div>
-          <div id="partialGoogleMap" style={{ "display": "none" }}>
-            <div style={{"fontSize": "18px", "textAlign": "center", "width": "100%"}}>
-              <div data-show="true" className="ant-alert ant-alert-success ant-alert-no-icon">
-                <span className="ant-alert-message">{selectedLocation[2]}</span>
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
-     </div>
+    </div>
   );
 };

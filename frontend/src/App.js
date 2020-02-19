@@ -15,7 +15,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
-
+  const [rangeInDays, setRangeInDays] = useState(0);
   const login = (username, password) => {
     const key = "updatable";
     message.loading({ content: "Logging in...", key });
@@ -63,6 +63,7 @@ const App = () => {
             selectedLongitude,
             selectedAddress
           ]);
+          setRangeInDays(selectedRange);
           setCurrentPage("results");
         },
         error => {
@@ -78,21 +79,21 @@ const App = () => {
 
   const handleDownloadPDF = () => {
     window.scrollTo(0, 0);
-    document.getElementById('fullGoogleMap').style.display='none';
-    document.getElementById('partialGoogleMap').style.display='block';
+    document.getElementById("fullGoogleMap").style.display = "none";
+    document.getElementById("partialGoogleMap").style.display = "block";
     html2canvas(document.querySelector("#divToPrint")).then(function(canvas) {
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL("image/png");
 
       const imgWidth = 210;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      const doc = new jsPDF('p', 'mm');
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const doc = new jsPDF("p", "mm");
 
-      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
-      doc.save('Results.pdf');
+      doc.save("Results.pdf");
     });
-    document.getElementById('fullGoogleMap').style.display='block';
-    document.getElementById('partialGoogleMap').style.display='none';
+    document.getElementById("fullGoogleMap").style.display = "block";
+    document.getElementById("partialGoogleMap").style.display = "none";
   };
 
   const goBackToMap = () => {
@@ -108,6 +109,7 @@ const App = () => {
         response={analysisResult}
         validRange={validRange}
         selectedLocation={selectedLocation}
+        rangeInDays={rangeInDays}
       />
     )
   };
@@ -143,7 +145,7 @@ const App = () => {
       <Card
         title={pageTitle[currentPage]}
         extra={cardTopButton}
-        style={{ "width": "70vw", "minWidth": "1200px"}}
+        style={{ width: "70vw", minWidth: "1200px" }}
       >
         {pageComponent[currentPage]}
       </Card>

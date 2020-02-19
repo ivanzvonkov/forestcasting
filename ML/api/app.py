@@ -8,7 +8,7 @@ from flask import Flask, request
 from flask_restplus import Api, Resource, fields, abort
 
 BUCKET_NAME = 'forestcasting-bucket'
-MODEL_FILE_NAME = 'model.joblib.z'
+MODEL_FILE_NAME = 'RandomForest.joblib.z'
 app = Flask(__name__)
 api = Api(app)
 S3 = boto3.client('s3', region_name='eu-central-1')
@@ -107,7 +107,7 @@ class Predict(Resource):
 
 @memoize
 def load_model(key):
-    local_file = '/tmp/model.joblib.z'
+    local_file = '/tmp/' + MODEL_FILE_NAME
     if not os.path.exists(local_file):
         print('Downloading model from S3...')
         S3.download_file(BUCKET_NAME, key, local_file)
@@ -118,7 +118,7 @@ def load_model(key):
 def predict(data):
     model = load_model(MODEL_FILE_NAME)
     print('Predicting...')
-    return model.predict_proba(data,thread_count=1,verbose=True)
+    return model.predict_proba(data)
 
 def parse_one_hots(req_data_points):
     print('Parsing one hots...')

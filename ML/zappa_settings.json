@@ -5,8 +5,6 @@
         "profile_name": "default",
         "project_name": "ml",
         "runtime": "python3.6",
-        "s3_bucket": "zappa-qxrkdas51",
-        "slim_handler": true,
-        "include": ["catboost/_catboost.so"]
+        "s3_bucket": "zappa-qxrkdas51"
     }
 }

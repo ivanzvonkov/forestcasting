@@ -30,7 +30,7 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
 };
 
 function predict(modelInputs){
-    url = 'https://1nabtyi1g1.execute-api.us-east-1.amazonaws.com/dev/predict/'
+    url = 'https://e69rkvljm0.execute-api.us-east-1.amazonaws.com/dev'
     return new Promise(function(resolve, reject) {
       request.post({url, json: modelInputs}, (err, res, body) => {
         resolve(body)

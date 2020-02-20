@@ -34,38 +34,9 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.ant-page-header {
+  padding: 0px !important;
 }
-
-path {
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.districts {
-  fill: #bbb;
-}
-
-.districts :hover {
-  fill: green;
-}
-
-.district-boundaries {
-  pointer-events: none;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 0.5px;
-}
-
-.state-boundaries {
-  pointer-events: none;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.5px;
+.ant-page-header-content {
+  padding: 0px !important;
 }

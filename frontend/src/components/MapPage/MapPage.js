@@ -171,7 +171,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
             type="primary"
             onClick={analyze}
           >
-            Done
+            Analyze
           </Button>
         )}
       </div>

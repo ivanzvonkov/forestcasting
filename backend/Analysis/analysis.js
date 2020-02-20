@@ -13,7 +13,6 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
     if(predictResponse == undefined){
       throw new Error(`Predict API did not return any response.`)
     }else if(!('predictions' in predictResponse) && 'errors' in predictResponse){
-      console.log(predictResponse)
       throw new Error(`Predict API returned: ${JSON.stringify(predictResponse.errors)}`)
     }
 
@@ -30,7 +29,7 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
 };
 
 function predict(modelInputs){
-    url = 'https://e69rkvljm0.execute-api.us-east-1.amazonaws.com/dev/predict'
+    url = 'https://e69rkvljm0.execute-api.us-east-1.amazonaws.com/dev/predict/'
     return new Promise(function(resolve, reject) {
       request.post({url, json: modelInputs}, (err, res, body) => {
         resolve(body)
@@ -40,7 +39,7 @@ function predict(modelInputs){
 
 function createModelInput(weatherData, location, geography){
     return {
-         AVERAGE_DURATION : location.averageFireDuration,
+         AVERAGE_DURATION: location.averageFireDuration,
          AVERAGE_SIZE_HA: location.averageFireSize,
          DEW_TEMP_12_4: 10,
          DIR_OF_MAX_GUST: weatherData.wind_dir,

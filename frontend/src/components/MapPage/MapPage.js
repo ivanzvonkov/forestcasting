@@ -96,6 +96,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
       <Steps current={current}>
         <Step title="Select Location" />
         <Step title="Select Forecast Date" />
+        <Step title="View Analysis" />
       </Steps>
       <div
         style={{
@@ -107,11 +108,10 @@ export const MapPage = ({ selectLocationAndDate }) => {
         }}
       >
         <Search
-          placeholder="Search for a location"
+          placeholder={selectedLat ? "Search for a location" : selectedLocation}
           onSearch={search}
           enterButton
           style={{ width: "50%" }}
-          value={selectedLocation}
         />
       </div>
       <GMap

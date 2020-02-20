@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  Card,
-  Row,
-  Col,
-  Table,
-  Divider,
-  Pagination,
-  Tabs,
-  Progress
-} from "antd";
+import { Card, Row, Col, Table, Divider, Pagination, Tabs, Steps } from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
@@ -29,6 +20,7 @@ export const ResultsPage = ({
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { TabPane } = Tabs;
+  const { Step } = Steps;
 
   const columns = [
     {
@@ -87,6 +79,7 @@ export const ResultsPage = ({
     ]
   };
 
+  console.log(response);
   const weatherData = [
     {
       key: "1",
@@ -147,7 +140,12 @@ export const ResultsPage = ({
   };
 
   return (
-    <div id="divToPrint" style={{ height: "180vh" }}>
+    <div id="divToPrint" style={{ height: "auto" }}>
+      <Steps current={3} style={{ marginBottom: "20px" }}>
+        <Step title="Select Location" />
+        <Step title="Select Forecast Date" />
+        <Step title="View Analysis" />
+      </Steps>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card>

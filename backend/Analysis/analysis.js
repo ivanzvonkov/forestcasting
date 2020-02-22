@@ -55,11 +55,13 @@ function createModelInput(weatherData, location, geography){
          SNOW_ON_GRND: 0, // TEMP - dark api doesn't provide
          SPD_OF_MAX_GUST: weatherData.wind_gust_spd,
          TEMP_12_4: weatherData.temp_12_4,
-         TOTAL_DURATION_OLD: location.totalFireDuration,
+         TOTAL_DURATION: location.totalFireDuration,
          TOTAL_PRECIP: weatherData.total_precip,
          TOTAL_RAIN: weatherData.total_rain,
-         TOTAL_SIZE_HA_OLD: location.totalFireSize,
-         TOTAL_SNOW: weatherData.total_snow
+         TOTAL_SIZE_HA: location.totalFireSize,
+         TOTAL_SNOW: weatherData.total_snow,
+         MONTH: new Date(weatherData.date).getMonth(),
+         DAY: new Date(weatherData.date).getDate()
     }
 }
 

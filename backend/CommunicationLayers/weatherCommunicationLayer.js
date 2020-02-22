@@ -69,7 +69,6 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
         entry["temperatureMin"],
         entry["precipAccumulation"], // in cm
         entry["precipType"],
-        entry["snow_depth"],
         entry["windSpeed"],
         entry["windGust"],
         entry["windBearing"],

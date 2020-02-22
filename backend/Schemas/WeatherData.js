@@ -8,9 +8,12 @@ class WeatherData {
     this.mean_temp = meanTemp
     this.total_precip = TOTAL_PRECIP // in mm
     this.total_snow = 0.0
+    this.total_rain = 0.0
 
     if (PRECIP_TYPE == "snow") {
       this.total_snow = TOTAL_PRECIP
+    } else if (PREIC_TYPE == "rain") {
+      this.total_rain = TOTAL_PRECIP
     }
 
     this.wind_spd = WIND_SPD
@@ -18,6 +21,28 @@ class WeatherData {
     this.wind_dir = WIND_DIR
     this.relative_humidity = RH
     this.dew_point_temp = DPT
+  }
+
+  addHourlyData(hourly) {
+    let TEMP_12_4 = 0
+    let DEW_POINT_TEMP_12_4 = 0
+    let REL_HUM_12_4 = 0
+    let count = 0
+
+    hourly.forEach(entry => {
+      TEMP_12_4 += entry["temperature"]
+      DEW_POINT_TEMP_12_4 += entry["dewPoint"]
+      REL_HUM_12_4 += entry["humidity"]
+      count += 1
+    })
+
+    TEMP_12_4 = TEMP_12_4/count
+    DEW_POINT_TEMP_12_4 = DEW_POINT_TEMP_12_4/count
+    REL_HUM_12_4 = REL_HUM_12_4/count
+
+    this.temp_12_4 = TEMP_12_4
+    this.dew_point_temp_12_4 = DEW_POINT_TEMP_12_4
+    this.rel_hum_12_4 = REL_HUM_12_4
   }
 }
 

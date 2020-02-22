@@ -42,7 +42,7 @@ function createModelInput(weatherData, location, geography){
     return {
          AVERAGE_DURATION_OLD : location.averageFireDuration,
          AVERAGE_SIZE_HA_OLD: location.averageFireSize,
-         DEW_POINT_TEMP_12_4: 10,
+         DEW_POINT_TEMP_12_4: weatherData.dew_point_temp_12_4,
          DIR_OF_MAX_GUST: weatherData.wind_dir,
          ECODISTRICT: geography.district ? geography.district : 184, // TEMP
          ECOREGION: geography.region,
@@ -52,13 +52,13 @@ function createModelInput(weatherData, location, geography){
          MAX_TEMP: weatherData.max_temp,
          MEAN_TEMP: weatherData.mean_temp,
          MIN_TEMP: weatherData.min_temp,
-         REL_HUM_12_4: 50, // TEMP
-         SNOW_ON_GRND: 0, // TEMP - dark api doesn't provice
+         REL_HUM_12_4: weatherData.rel_hum_12_4,
+         SNOW_ON_GRND: 0, // TEMP - dark api doesn't provide
          SPD_OF_MAX_GUST: weatherData.wind_gust_spd,
-         TEMP_12_4: weatherData.max_temp, // TEMP
+         TEMP_12_4: weatherData.temp_12_4,
          TOTAL_DURATION_OLD: location.totalFireDuration,
          TOTAL_PRECIP: weatherData.total_precip,
-         TOTAL_RAIN: 0, // temp
+         TOTAL_RAIN: weatherData.total_rain,
          TOTAL_SIZE_HA_OLD: location.totalFireSize,
          TOTAL_SNOW: weatherData.total_snow
     }

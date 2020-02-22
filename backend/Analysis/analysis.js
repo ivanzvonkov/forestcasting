@@ -12,8 +12,8 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
     let predictResponse = await predict(modelInputs);
     if(predictResponse == undefined){
       throw new Error(`Predict API did not return any response.`)
-    }else if(!('predictions' in predictResponse) && 'message' in predictResponse){
-      throw new Error(`Predict API returned: ${predictResponse.message}`)
+    }else if(!('predictions' in predictResponse) && 'errors' in predictResponse){
+      throw new Error(`Predict API returned: ${JSON.stringify(predictResponse.errors)}`)
     }
 
     let results = {}
@@ -39,9 +39,9 @@ function predict(modelInputs){
 
 function createModelInput(weatherData, location, geography){
     return {
-         AVERAGE_DURATION_OLD : location.averageFireDuration,
-         AVERAGE_SIZE_HA_OLD: location.averageFireSize,
-         DEW_POINT_TEMP_12_4: weatherData.dew_point_temp_12_4,
+         AVERAGE_DURATION: location.averageFireDuration,
+         AVERAGE_SIZE_HA: location.averageFireSize,
+         DEW_TEMP_12_4: weatherData.dew_point_temp_12_4,
          DIR_OF_MAX_GUST: weatherData.wind_dir,
          ECODISTRICT: geography.district ? geography.district : 184, // TEMP
          ECOREGION: geography.region,

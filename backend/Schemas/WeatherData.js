@@ -6,7 +6,12 @@ class WeatherData {
 
     let  meanTemp = (MAX_TEMP + MIN_TEMP)/2
     this.mean_temp = meanTemp
-    this.total_precip = TOTAL_PRECIP // in mm
+    this.total_precip = 0 // cm
+
+    if(TOTAL_PRECIP != null){
+      this.total_precip = TOTAL_PRECIP
+    }
+
     this.total_snow = 0.0
     this.total_rain = 0.0
 

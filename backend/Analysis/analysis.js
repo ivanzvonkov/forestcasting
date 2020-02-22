@@ -19,7 +19,7 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
     let results = {}
     for(let i = 0; i < weatherData.length; i++){
       let damageScore = Math.floor(Math.random() * 60)/100.0
-      results[weatherData[i].date] = {
+      results[i] = {
         "weather": weatherData[i],
         "riskScore": predictResponse.predictions[i],
         "damageScore":damageScore

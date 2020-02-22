@@ -14,31 +14,31 @@ const uri =
 let dbQuery = {};
 
 dbQuery.findEcoData = function(locationKey) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject){
     MongoClient.connect(uri, function(err, client) {
-      if (err) {
-        console.log(
-          "Error occurred while connecting to MongoDB Atlas...\n",
-          err
-        );
+      if(err) {
+        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
       }
-      const collection = client.db("forestcasting").collection("location_eco");
-
-      // perform actions on the collection object
-      collection.findOne({ KEY: locationKey }).then(dbResult => {
-        //close the connection
-        client.close();
-        const result = new EcoData(
-          dbResult["KEY"],
-          dbResult["ECOZONE"],
-          dbResult["ECOREGION"],
-          dbResult["ECODSTRICT"]
-        );
-        resolve(result);
-      });
-    });
+      client.db("forestcasting")
+        .collection("location_eco")
+        .findOne({"KEY": locationKey})
+        .then(dbResult => {
+          //close the connection
+          client.close();
+          if(dbResult){
+              resolve(new EcoData(
+                  dbResult["KEY"],
+                  dbResult["ECOZONE"],
+                  dbResult["ECOREGION"],
+                  dbResult["ECODSTRICT"]
+              ))
+          }else{
+              reject(new Error(`EcoData not found using: ${locationKey}`))
+          }
+        })
+    })
   });
-};
+}
 
 dbQuery.findHistoricData = function(locationKey) {
   return new Promise(function(resolve, reject) {

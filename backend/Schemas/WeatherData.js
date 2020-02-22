@@ -12,7 +12,7 @@ class WeatherData {
 
     if (PRECIP_TYPE == "snow") {
       this.total_snow = TOTAL_PRECIP
-    } else if (PREIC_TYPE == "rain") {
+    } else if (PRECIP_TYPE == "rain") {
       this.total_rain = TOTAL_PRECIP
     }
 

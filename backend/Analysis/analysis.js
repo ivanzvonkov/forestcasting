@@ -9,20 +9,19 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData){
         modelInputs.push(createModelInput(weatherEntry, historicData, ecoData))
     ))
 
-    /*let predictResponse = await predict(modelInputs);
+    let predictResponse = await predict(modelInputs);
     if(predictResponse == undefined){
       throw new Error(`Predict API did not return any response.`)
     }else if(!('predictions' in predictResponse) && 'message' in predictResponse){
       throw new Error(`Predict API returned: ${predictResponse.message}`)
-    }*/
+    }
 
     let results = {}
     for(let i = 0; i < weatherData.length; i++){
       let damageScore = Math.floor(Math.random() * 60)/100.0
-      let riskScore = Math.floor(Math.random() * 60)/100.0
       results[weatherData[i].date] = {
         "weather": weatherData[i],
-        "riskScore": riskScore,// predictResponse.predictions[i],
+        "riskScore": predictResponse.predictions[i],
         "damageScore":damageScore
       }
     }

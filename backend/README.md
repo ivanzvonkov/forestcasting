@@ -1,8 +1,7 @@
 # BACKEND
 
 ## Database Setup
-You must first add your IP address to the IP Address Whitelist on MongoDB Atlas  
-_if you don't do this an error will be thrown._
+Previously you had to white-list your IP address but that is no-longer the case. 
 
 ## Starting the Server
 Install all required packages  
@@ -12,4 +11,6 @@ Start the Server
 `npm start`
 
 ## Example API call
-http://localhost:3100/api/analysis?lat=50.8&lng=-114.6&date=2020-01-29&range=3
+http://localhost:3100/api/analysis?lat=50.8&lng=-114.6&date=2020-02-29&range=3
+
+_currently can only predict 7 days into the future_

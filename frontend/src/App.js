@@ -171,6 +171,7 @@ const App = () => {
                 display: "inline",
                 marginLeft: "20px"
               }}
+              alt=""
             />
             <div
               style={{

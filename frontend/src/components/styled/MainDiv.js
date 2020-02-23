@@ -1,5 +1,5 @@
-import backgroundImage from '../../assets/background.jpeg';
-import styled from 'styled-components';
+import backgroundImage from "../../assets/background.jpeg";
+import styled from "styled-components";
 
 export const MainDiv = styled.div`
   background-image: url(${backgroundImage});

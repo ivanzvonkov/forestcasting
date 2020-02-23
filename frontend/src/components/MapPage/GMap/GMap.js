@@ -13,7 +13,7 @@ export const GMap = ({
   const defaultCenter = { lat: 56.41630331167829, lng: -114.81301656871508 };
   const mapHeight =
     currentPage === "mapLocation"
-      ? "70vh"
+      ? "65vh"
       : currentPage === "mapDate"
       ? "40vh"
       : "20vh";
@@ -22,6 +22,7 @@ export const GMap = ({
     <div>
       <div
         style={{
+          width: "100%",
           height: mapHeight,
           paddingTop: "5px",
           transition: "height 0.3s ease-out",

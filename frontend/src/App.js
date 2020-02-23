@@ -4,7 +4,7 @@ import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
-import { Button, Card, message } from "antd";
+import { Button, Card, message, PageHeader, Affix } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -15,7 +15,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
-
+  const [rangeInDays, setRangeInDays] = useState(0);
   const login = (username, password) => {
     const key = "updatable";
     message.loading({ content: "Logging in...", key });
@@ -63,6 +63,7 @@ const App = () => {
             selectedLongitude,
             selectedAddress
           ]);
+          setRangeInDays(selectedRange);
           setCurrentPage("results");
         },
         error => {
@@ -78,21 +79,21 @@ const App = () => {
 
   const handleDownloadPDF = () => {
     window.scrollTo(0, 0);
-    document.getElementById('fullGoogleMap').style.display='none';
-    document.getElementById('partialGoogleMap').style.display='block';
+    document.getElementById("fullGoogleMap").style.display = "none";
+    document.getElementById("partialGoogleMap").style.display = "block";
     html2canvas(document.querySelector("#divToPrint")).then(function(canvas) {
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL("image/png");
 
       const imgWidth = 210;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      const doc = new jsPDF('p', 'mm');
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const doc = new jsPDF("p", "mm");
 
-      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
-      doc.save('Results.pdf');
+      doc.save("Results.pdf");
     });
-    document.getElementById('fullGoogleMap').style.display='block';
-    document.getElementById('partialGoogleMap').style.display='none';
+    document.getElementById("fullGoogleMap").style.display = "block";
+    document.getElementById("partialGoogleMap").style.display = "none";
   };
 
   const goBackToMap = () => {
@@ -108,14 +109,9 @@ const App = () => {
         response={analysisResult}
         validRange={validRange}
         selectedLocation={selectedLocation}
+        rangeInDays={rangeInDays}
       />
     )
-  };
-
-  const pageTitle = {
-    login: "Forestcasting: Login",
-    map: "Forestcasting: Map",
-    results: "Forestcasting: Analysis"
   };
 
   let cardTopButton = (
@@ -139,12 +135,55 @@ const App = () => {
   );
 
   return (
-    <MainDiv>
-      <Card
-        title={pageTitle[currentPage]}
-        extra={cardTopButton}
-        style={{ "width": "70vw", "minWidth": "1200px"}}
+    <MainDiv
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "center"
+      }}
+    >
+      <Affix
+        style={{
+          width: "100%"
+        }}
       >
+        <PageHeader
+          style={{
+            borderBottom: "1px solid rgb(202, 204, 207)",
+            width: "100%",
+            height: "85px",
+            backgroundColor: "white"
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
+            <img
+              src="forestcasting_logo_final.png"
+              style={{
+                height: "80px",
+                display: "inline",
+                marginLeft: "20px"
+              }}
+            />
+            <div
+              style={{
+                marginRight: "20px"
+              }}
+            >
+              {cardTopButton}
+            </div>
+          </div>
+        </PageHeader>
+      </Affix>
+
+      <Card style={{ width: "70vw", minWidth: "1200px" }}>
         {pageComponent[currentPage]}
       </Card>
     </MainDiv>

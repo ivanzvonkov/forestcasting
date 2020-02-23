@@ -95,7 +95,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
     <div>
       <Steps current={current}>
         <Step title="Select Location" />
-        <Step title="Select Forecast Date" />
+        <Step title="Select Prediction Date" />
         <Step title="View Analysis" />
       </Steps>
       <div

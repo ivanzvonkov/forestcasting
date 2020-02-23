@@ -1,9 +1,21 @@
 import React, { useState } from "react";
-import { Card, Row, Col, Table, Divider, Pagination, Tabs, Steps } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Table,
+  Divider,
+  Pagination,
+  Tabs,
+  Steps,
+  Progress
+} from "antd";
 import GaugeChart from "react-gauge-chart";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
 import "./styles.css";
+import ReactSpeedometer from "react-d3-speedometer";
+import Chart from "react-apexcharts";
 
 export const ResultsPage = ({
   response,
@@ -143,7 +155,7 @@ export const ResultsPage = ({
     <div id="divToPrint" style={{ height: "auto" }}>
       <Steps current={3} style={{ marginBottom: "20px" }}>
         <Step title="Select Location" />
-        <Step title="Select Forecast Date" />
+        <Step title="Select Prediction Date" />
         <Step title="View Analysis" />
       </Steps>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
@@ -241,69 +253,85 @@ export const ResultsPage = ({
                 />
               </div>
             </div>
+            <br />
             <Divider orientation="left">Risk Measure</Divider>
-            <GaugeChart
+            {/* <GaugeChart
               id="gauge-chart1"
               nrOfLevels={20}
               arcWidth={0.3}
               percent={response.specificDate[currentIndex].riskScore}
               textColor={"black"}
-            />
-            {/* <Progress
-              type="line"
-              strokeColor={{
-                "0%": "#87d068",
-                "100%": "#e92210"
+            /> */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center"
               }}
-              percent={Math.round(
-                response.specificDate[currentIndex].damageScore * 100
-              )}
-              status="active"
-            />
-            <h2>Vacinity</h2>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={40}
-                width={80}
-                strokeColor={"#3066c2"}
-              />
-              <h4 style={{ marginLeft: "10px" }}>
-                POPULATION: 1 million
-                <br /> DISTANCE TO NEARBY CITY: 4 miles
-                <br /> ANOTHER FIELD: another field
-              </h4>
-            </div> 
+            >
+              {/* <ReactSpeedometer
+                maxValue={100}
+                value={response.specificDate[currentIndex].riskScore * 100}
+                needleColor="black"
+                startColor="green"
+                segments={10}
+                endColor="red"
+                needleTransition="easeElastic"
+              /> */}
+              <Chart
+                options={{
+                  chart: {
+                    width: "100%",
+                    type: "radialBar",
+                    offsetY: -10
+                  },
+                  plotOptions: {
+                    radialBar: {
+                      startAngle: -180,
+                      endAngle: 180,
 
-            <h2>Habitat</h2>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={80}
-                width={80}
-                strokeColor={"#30c263"}
+                      dataLabels: {
+                        // name: {
+                        //   fontSize: "22px",
+                        //   color: undefined,
+                        //   offsetY: 10
+                        // },
+                        value: {
+                          offsetY: 0,
+                          fontSize: "22px",
+                          color: undefined,
+                          formatter: function(val) {
+                            return val + "%";
+                          }
+                        }
+                      }
+                    }
+                  },
+                  fill: {
+                    type: "gradient",
+                    gradient: {
+                      shade: "dark",
+                      shadeIntensity: 0.15,
+                      inverseColors: false,
+                      opacityFrom: 1,
+                      opacityTo: 1,
+                      stops: [0, 50, 65, 91]
+                    }
+                  },
+                  stroke: {
+                    dashArray: 4
+                  },
+                  labels: [""]
+                }}
+                series={[
+                  Math.round(
+                    response.specificDate[currentIndex].riskScore * 100
+                  )
+                ]}
+                type="radialBar"
+                width={"100%"}
               />
-              <h4 style={{ marginLeft: "10px" }}>
-                POPULATION: 55 million
-                <br /> STATUS: Critically Endangered
-                <br /> ANOTHER FIELD: another field
-              </h4>
             </div>
-            <h2>Tree Coverage</h2>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={30}
-                width={80}
-                strokeColor={"#c26a30"}
-              />
-              <h4 style={{ marginLeft: "10px" }}>
-                TREE TYPE: Some Valuable Tree
-                <br /> STATUS: Critically Endangered
-                <br /> ANOTHER FIELD: another field
-              </h4>
-            </div>*/}
-
             <br />
             <Divider orientation="left">Weather Information</Divider>
             <Table
@@ -312,6 +340,77 @@ export const ResultsPage = ({
               pagination={false}
               showHeader={false}
             />
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
+        <Col span={32}>
+          <Card>
+            <Col span={12}>
+              <h2>Possible Damages</h2>
+              {/* <br />
+              <Divider orientation="left">Damage Measure</Divider> */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "90px"
+                }}
+              >
+                <Progress
+                  type="circle"
+                  percent={49}
+                  width={250}
+                  strokeColor={"red"}
+                />
+              </div>
+            </Col>
+            <Col span={12}>
+              <Divider orientation="left">Vacinity</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={40}
+                  width={80}
+                  strokeColor={"#3066c2"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  POPULATION: 1 million
+                  <br /> DISTANCE TO NEARBY CITY: 4 miles
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+              <Divider orientation="left">Habitat</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={80}
+                  width={80}
+                  strokeColor={"#30c263"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  POPULATION: 55 million
+                  <br /> STATUS: Critically Endangered
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+              <Divider orientation="left">Tree Coverage</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={30}
+                  width={80}
+                  strokeColor={"#c26a30"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  TREE TYPE: Some Valuable Tree
+                  <br /> STATUS: Critically Endangered
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+            </Col>
           </Card>
         </Col>
       </Row>

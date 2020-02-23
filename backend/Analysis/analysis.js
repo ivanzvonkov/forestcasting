@@ -15,22 +15,21 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData) {
   // }else if(!('predictions' in predictResponse) && 'errors' in predictResponse){
   //   throw new Error(`Predict API returned: ${JSON.stringify(predictResponse.errors)}`)
   // }
-
   let results = {};
   for (let i = 0; i < weatherData.length; i++) {
     let damageScore = Math.floor(Math.random() * 60) / 100.0;
     results[i] = {
       weather: weatherData[i],
-      // riskScore: predictResponse.predictions[i],
-      riskScore: Math.floor(Math.random() * 60) / 100.0,
-      damageScore: damageScore
+      // "riskScore": predictResponse.predictions[i],
+      riskScore: Math.floor(Math.random() * 60) / 100.0
+      // "damageScore":damageScore
     };
   }
   return results;
 };
 
 function predict(modelInputs) {
-  url = "https://1nabtyi1g1.execute-api.us-east-1.amazonaws.com/dev/predict/";
+  url = "https://e69rkvljm0.execute-api.us-east-1.amazonaws.com/dev/predict/";
   return new Promise(function(resolve, reject) {
     request.post({ url, json: modelInputs }, (err, res, body) => {
       resolve(body);
@@ -40,9 +39,9 @@ function predict(modelInputs) {
 
 function createModelInput(weatherData, location, geography) {
   return {
-    AVERAGE_DURATION_OLD: location.averageFireDuration,
-    AVERAGE_SIZE_HA_OLD: location.averageFireSize,
-    DEW_POINT_TEMP_12_4: 10,
+    AVERAGE_DURATION: location.averageFireDuration,
+    AVERAGE_SIZE_HA: location.averageFireSize,
+    DEW_TEMP_12_4: 10,
     DIR_OF_MAX_GUST: weatherData.wind_dir,
     ECODISTRICT: geography.district ? geography.district : 184, // TEMP
     ECOREGION: geography.region,
@@ -56,12 +55,13 @@ function createModelInput(weatherData, location, geography) {
     SNOW_ON_GRND: weatherData.snow_dpth, // check that units are valid
     SPD_OF_MAX_GUST: weatherData.wind_gust_spd,
     TEMP_12_4: weatherData.max_temp, // TEMP
-    TOTAL_DURATION_OLD: location.totalFireDuration,
+    TOTAL_DURATION: location.totalFireDuration,
     TOTAL_PRECIP: weatherData.total_precip,
     TOTAL_RAIN: 0, // temp
-    TOTAL_SIZE_HA_OLD: location.totalFireSize,
-    TOTAL_SNOW: weatherData.total_snow
+    TOTAL_SIZE_HA: location.totalFireSize,
+    TOTAL_SNOW: weatherData.total_snow,
+    MONTH: new Date(weatherData.date).getMonth(),
+    DAY: new Date(weatherData.date).getDate()
   };
 }
-
 module.exports = analyze;

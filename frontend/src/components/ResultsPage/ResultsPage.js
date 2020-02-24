@@ -1,13 +1,36 @@
 import React, { useState } from "react";
-import { Card, Row, Col, Table, Calendar } from "antd";
-import GaugeChart from "react-gauge-chart";
+import {
+  Card,
+  Row,
+  Col,
+  Table,
+  Divider,
+  Pagination,
+  Tabs,
+  Steps,
+  Progress
+} from "antd";
 import { Bar } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
+import ReactSpeedometer from "react-d3-speedometer";
+import "./styles.css";
 
-export const ResultsPage = ({ response, validRange, selectedLocation }) => {
+export const ResultsPage = ({
+  response,
+  validRange,
+  selectedLocation,
+  rangeInDays
+}) => {
+  response = {
+    location: response.location,
+    geography: response.geography,
+    specificDate: Object.values(response.specificDate)
+  };
+
   const [currentDate, setCurrentDate] = useState(validRange[0]);
-  const [selectedDate, setSelectedDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { TabPane } = Tabs;
+  const { Step } = Steps;
 
   const columns = [
     {
@@ -115,81 +138,139 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
     }
   ];
 
-  const handleDateChange = event => {
-    setCurrentDate(event);
-
-    // set current index -> if no results exist (ie past 16 days), set to default value =  start of date range
-    let index = response.specificDate.findIndex(
-      i => i.weather.date === event.format("YYYY-MM-DD")
+  const handlePageChange = event => {
+    setCurrentDate(
+      currentDate
+        .startOf("day")
+        .add(event - (currentIndex + 1), "day")
+        .startOf("day")
     );
-    setCurrentIndex(index === -1 ? 0 : index);
-    setSelectedDate(event);
-  };
-
-  const handlePanelChange = event => {
-    setSelectedDate(event);
+    setCurrentIndex(event - 1);
   };
 
   return (
-    <div id="divToPrint" style={{ "height": "180vh" }}>
+    <div id="divToPrint" style={{ height: "auto" }}>
+      <Steps current={3} style={{ marginBottom: "20px" }}>
+        <Step title="Select Location" />
+        <Step title="Select Prediction Date" />
+        <Step title="View Analysis" />
+      </Steps>
+
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
-          <Card
-            title={`Displaying Results For: ${currentDate
-              .format("MMMM Do, YYYY")
-              .toString()}`}
-          >
-            <Calendar
-              fullscreen={false}
-              validRange={validRange}
-              onSelect={handleDateChange}
-              onChange={handleDateChange}
-              onPanelChange={handlePanelChange}
-              value={selectedDate}
-            />
-          </Card>
-          <br />
-          <Card title="Average Fire Size">
-            <Bar
-              data={fireSizeData}
-              width={5}
-              height={320}
-              options={{ maintainAspectRatio: false }}
-            />
-          </Card>
-          <br />
-          <Card title="Ecozone Information">
-            Zone {response.geography.zone}
-            <br />
+          <Card>
+            <h2>Ecozone {response.geography.zone} Information</h2>
             {response.geography.description}
-          </Card>
-          <br />
-          <Card title="Last Fire Date">
+            <Tabs
+              defaultActiveKey="1"
+              tabBarStyle={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center"
+              }}
+            >
+              <TabPane tab="Average Fire Duration" key="1">
+                <Bar
+                  data={fireDurationData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+              <TabPane tab="Average Fire Size" key="2">
+                <Bar
+                  data={fireSizeData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+            </Tabs>
+            <Divider orientation="left">Previous Fire Date</Divider>
             Last fire in this location occurred on{" "}
             {response.location.lastFireDate}
+            <br />
+            <div
+              id="fullGoogleMap"
+              style={{ display: "block", marginTop: "20px" }}
+            >
+              <GMap
+                currentPage={"results"}
+                selectedLat={selectedLocation[0]}
+                selectedLng={selectedLocation[1]}
+                selectedLocation={selectedLocation[2]}
+              />
+            </div>
+            <div id="partialGoogleMap" style={{ display: "none" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  textAlign: "center",
+                  width: "100%"
+                }}
+              >
+                <div
+                  data-show="true"
+                  className="ant-alert ant-alert-success ant-alert-no-icon"
+                >
+                  <span className="ant-alert-message">
+                    {selectedLocation[2]}
+                  </span>
+                </div>
+              </div>
+            </div>
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="Risk Measure">
-            <GaugeChart
-              id="gauge-chart1"
-              nrOfLevels={20}
-              arcWidth={0.3}
-              percent={response.specificDate[currentIndex].riskScore}
-              textColor={"black"}
-            />
-          </Card>
-          <br />
-          <Card title="Average Fire Duration">
-            <Bar
-              data={fireDurationData}
-              width={5}
-              height={320}
-              options={{ maintainAspectRatio: false }}
-            />
-          </Card>
-          <br />
-          <Card title="Weather Information">
+          <Card>
+            <h2>{currentDate.format("MMMM Do, YYYY").toString()} Prediction</h2>
+            <div className="centered">
+              <div className="centered" style={{ margin: "2px" }}>
+                <div style={{ color: "@ Black 45%" }}> Predictions Range: </div>
+                <Pagination
+                  current={currentIndex + 1}
+                  simple={true}
+                  disabled={false}
+                  showLessItems={true}
+                  total={rangeInDays}
+                  defaultPageSize={1}
+                  defaultCurrent={currentIndex + 1}
+                  onChange={handlePageChange}
+                />
+              </div>
+            </div>
+            <br />
+            <Divider orientation="left">Risk Measure</Divider>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                marginTop: "40px"
+              }}
+            >
+              <ReactSpeedometer
+                maxValue={100}
+                value={response.specificDate[currentIndex].riskScore * 100}
+                needleColor="black"
+                startColor="green"
+                segments={10}
+                endColor="red"
+                needleTransition="easeElastic"
+              />
+            </div>
+            <br />
+            <Divider orientation="left">Weather Information</Divider>
             <Table
               columns={columns}
               dataSource={weatherData}
@@ -201,23 +282,77 @@ export const ResultsPage = ({ response, validRange, selectedLocation }) => {
       </Row>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={32}>
-          <div id="fullGoogleMap" style={{ "display": "block" }}>
-            <GMap
-              currentPage={"results"}
-              selectedLat={selectedLocation[0]}
-              selectedLng={selectedLocation[1]}
-              selectedLocation={selectedLocation[2]}
-            />
-          </div>
-          <div id="partialGoogleMap" style={{ "display": "none" }}>
-            <div style={{"fontSize": "18px", "textAlign": "center", "width": "100%"}}>
-              <div data-show="true" className="ant-alert ant-alert-success ant-alert-no-icon">
-                <span className="ant-alert-message">{selectedLocation[2]}</span>
+          <Card>
+            <Col span={12}>
+              <h2>Possible Damages</h2>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "80px"
+                }}
+              >
+                <Progress
+                  type="circle"
+                  percent={79}
+                  width={280}
+                  strokeColor={{
+                    "0%": "green",
+                    "100%": "red"
+                  }}
+                />
               </div>
-            </div>
-          </div>
+            </Col>
+            <Col span={12}>
+              <Divider orientation="left">Vacinity</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={40}
+                  width={80}
+                  strokeColor={"#3066c2"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  POPULATION: 1 million
+                  <br /> DISTANCE TO NEARBY CITY: 4 miles
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+              <Divider orientation="left">Habitat</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={80}
+                  width={80}
+                  strokeColor={"#30c263"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  POPULATION: 55 million
+                  <br /> STATUS: Critically Endangered
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+              <Divider orientation="left">Tree Coverage</Divider>
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={30}
+                  width={80}
+                  strokeColor={"#c26a30"}
+                />
+                <h4 style={{ marginLeft: "10px" }}>
+                  TREE TYPE: Some Valuable Tree
+                  <br /> STATUS: Critically Endangered
+                  <br /> ANOTHER FIELD: another field
+                </h4>
+              </div>
+            </Col>
+          </Card>
         </Col>
       </Row>
-     </div>
+    </div>
   );
 };

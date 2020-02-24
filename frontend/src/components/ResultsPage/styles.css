@@ -1,0 +1,16 @@
+.centered {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.damage-component {
+  display: flex;
+  flex-direction: row;
+}
+
+.speedometer {
+  width: 300px !important;
+  height: 180px !important;
+}

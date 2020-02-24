@@ -18,7 +18,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
   const [selectedRange, setSelectedRange] = useState(null);
   const [rangePickerValue, setRangePickerValue] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(
-    "Click on the map to select a location."
+    "Select a point on the map or search for a location."
   );
   const [endDate, setEndDate] = useState(null);
 
@@ -67,9 +67,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.lat},${event.lng}&key=${process.env.REACT_APP_GEOCODING_API_KEY}`
       )
       .then(res => {
-        setSelectedLocation(
-          "You selected: " + res.data.results[0].formatted_address
-        );
+        setSelectedLocation(res.data.results[0].formatted_address);
       });
   };
 
@@ -89,23 +87,31 @@ export const MapPage = ({ selectLocationAndDate }) => {
       .then(res => {
         setSelectedLat(res.data.results[0].geometry.location.lat);
         setSelectedLng(res.data.results[0].geometry.location.lng);
-        setSelectedLocation(
-          "You selected: " + res.data.results[0].formatted_address
-        );
+        setSelectedLocation(res.data.results[0].formatted_address);
       });
   };
 
   return (
-    <>
+    <div>
       <Steps current={current}>
         <Step title="Select Location" />
-        <Step title="Select Forecast Date" />
+        <Step title="Select Prediction Date" />
+        <Step title="View Analysis" />
       </Steps>
-      <div style={{ margin: "10px" }}>
+      <div
+        style={{
+          margin: "10px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
         <Search
-          placeholder="Search for a location"
+          placeholder={selectedLat ? "Search for a location" : selectedLocation}
           onSearch={search}
           enterButton
+          style={{ width: "50%" }}
         />
       </div>
       <GMap
@@ -113,7 +119,9 @@ export const MapPage = ({ selectLocationAndDate }) => {
         selectedLat={selectedLat}
         selectedLng={selectedLng}
         onClick={clickMap}
-        selectedLocation={selectedLocation}
+        selectedLocation={
+          selectedLat ? "You selected: " + selectedLocation : selectedLocation
+        }
       />
 
       {isCalendarDisplayed && (
@@ -171,10 +179,10 @@ export const MapPage = ({ selectLocationAndDate }) => {
             type="primary"
             onClick={analyze}
           >
-            Done
+            Analyze
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 };

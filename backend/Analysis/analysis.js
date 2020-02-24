@@ -9,20 +9,25 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData) {
     modelInputs.push(createModelInput(weatherEntry, historicData, ecoData))
   );
 
-  // let predictResponse = await predict(modelInputs);
-  // if(predictResponse == undefined){
-  //   throw new Error(`Predict API did not return any response.`)
-  // }else if(!('predictions' in predictResponse) && 'errors' in predictResponse){
-  //   throw new Error(`Predict API returned: ${JSON.stringify(predictResponse.errors)}`)
-  // }
+  let predictResponse = await predict(modelInputs);
+  if (predictResponse == undefined) {
+    throw new Error(`Predict API did not return any response.`);
+  } else if (
+    !("predictions" in predictResponse) &&
+    "errors" in predictResponse
+  ) {
+    throw new Error(
+      `Predict API returned: ${JSON.stringify(predictResponse.errors)}`
+    );
+  }
   let results = {};
   for (let i = 0; i < weatherData.length; i++) {
     let damageScore = Math.floor(Math.random() * 60) / 100.0;
     results[i] = {
       weather: weatherData[i],
-      // "riskScore": predictResponse.predictions[i],
-      riskScore: Math.floor(Math.random() * 60) / 100.0
-      // "damageScore":damageScore
+      riskScore: predictResponse.predictions[i],
+      riskScore: Math.floor(Math.random() * 60) / 100.0,
+      damageScore: damageScore
     };
   }
   return results;

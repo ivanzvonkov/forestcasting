@@ -12,10 +12,10 @@
         "name": "MIT"
       }
     },
-    "host": "localhost:3100",
+    "host": "oad807epu2.execute-api.us-east-1.amazonaws.com/latest",
     "basePath": "/api",
     "schemes": [
-      "http"
+      "https"
     ],
     "consumes": [
       "application/json"
@@ -53,7 +53,7 @@
               "description": "Start date",
               "type": "string",
               "required": true,
-              "default": "2020-02-20"   
+              "default": "2020-02-28"   
             }, 
             {
               "name": "range",

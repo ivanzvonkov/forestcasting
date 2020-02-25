@@ -20,6 +20,9 @@ app.use(bodyParser.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// For testing purposes
+app.get('/', (req, res) => res.send('Hello world!'))
+
 app.get("/api/analysis", async (req, res, next) => {
   let lat = req.query.lat
   let lng = req.query.lng
@@ -34,7 +37,6 @@ app.get("/api/analysis", async (req, res, next) => {
 
     //[riskScore, damageScore]
     let analysisResults = await analyze.getAnalysis(ecoData, weatherData, historicData)
-      
     res.json({
       location: historicData,
       geography: ecoData,

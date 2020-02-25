@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node API/server.js",
-    "dev": "nodemon API/server.js"
+    "dev": "nodemon API/server.js",
+    "update": "claudia update"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "epoch-time-machine": "^1.0.4",
@@ -21,6 +23,7 @@
     "swagger-ui-express": "^4.1.3"
   },
   "devDependencies": {
+    "claudia": "^5.12.0",
     "nodemon": "^2.0.2"
   }
 }

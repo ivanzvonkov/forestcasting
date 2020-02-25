@@ -20,11 +20,11 @@ npm run dev
 ```
 
 ## API
-Local swagger: http://localhost:3100/api-docs
 Example local call: http://localhost:3100/api/analysis?lat=50.8&lng=-114.6&date=2020-02-29&range=3
 
-Lambda swagger: https://oad807epu2.execute-api.us-east-1.amazonaws.com/latest/api-docs
-Example lambda call: https://oad807epu2.execute-api.us-east-1.amazonaws.com/latest/api/analysis?lat=54.751932&lng=-116.353276&date=2020-02-29&range=2
+Lambda swagger docs: https://oad807epu2.execute-api.us-east-1.amazonaws.com/latest/api-docs
+
+Example Lambda call: https://oad807epu2.execute-api.us-east-1.amazonaws.com/latest/api/analysis?lat=54.751932&lng=-116.353276&date=2020-02-29&range=2
 
 _currently can only predict 7 days into the future_
 

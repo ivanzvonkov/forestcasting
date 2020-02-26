@@ -15,11 +15,13 @@ class WeatherData {
     this.total_snow = 0.0
     this.total_rain = 0.0
 
-    if (PRECIP_TYPE == "snow") {
-      this.total_snow = TOTAL_PRECIP
-    } else if (PRECIP_TYPE == "rain") {
-      this.total_rain = TOTAL_PRECIP
-    }
+    if(TOTAL_PRECIP != undefined){
+      if (PRECIP_TYPE == "snow") {
+        this.total_snow = TOTAL_PRECIP
+      } else if (PRECIP_TYPE == "rain") {
+        this.total_rain = TOTAL_PRECIP
+      }
+  }
 
     this.wind_spd = WIND_SPD
     this.wind_gust_spd = WIND_GUST_SPD

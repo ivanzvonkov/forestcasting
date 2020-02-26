@@ -159,80 +159,6 @@ export const ResultsPage = ({
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card>
-            <h2>Ecozone {response.geography.zone} Information</h2>
-            {response.geography.description}
-            <Tabs
-              defaultActiveKey="1"
-              tabBarStyle={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center"
-              }}
-            >
-              <TabPane tab="Average Fire Duration" key="1">
-                <Bar
-                  data={fireDurationData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-              <TabPane tab="Average Fire Size" key="2">
-                <Bar
-                  data={fireSizeData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-            </Tabs>
-            <Divider orientation="left">Previous Fire Date</Divider>
-            Last fire in this location occurred on{" "}
-            {response.location.lastFireDate}
-            <br />
-            <div
-              id="fullGoogleMap"
-              style={{ display: "block", marginTop: "20px" }}
-            >
-              <GMap
-                currentPage={"results"}
-                selectedLat={selectedLocation[0]}
-                selectedLng={selectedLocation[1]}
-                selectedLocation={selectedLocation[2]}
-              />
-            </div>
-            <div id="partialGoogleMap" style={{ display: "none" }}>
-              <div
-                style={{
-                  fontSize: "18px",
-                  textAlign: "center",
-                  width: "100%"
-                }}
-              >
-                <div
-                  data-show="true"
-                  className="ant-alert ant-alert-success ant-alert-no-icon"
-                >
-                  <span className="ant-alert-message">
-                    {selectedLocation[2]}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card>
             <h2>{currentDate.format("MMMM Do, YYYY").toString()} Prediction</h2>
             <div className="centered">
               <div className="centered" style={{ margin: "2px" }}>
@@ -279,79 +205,157 @@ export const ResultsPage = ({
             />
           </Card>
         </Col>
-      </Row>
-      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-        <Col span={32}>
+        <Col span={12}>
           <Card>
-            <Col span={12}>
-              <h2>Possible Damages</h2>
+            <h2>Possible Damages</h2>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: "80px"
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "80px"
+              }}
+            >
+              <Progress
+                type="circle"
+                percent={79}
+                width={280}
+                strokeColor={{
+                  "0%": "green",
+                  "100%": "red"
                 }}
-              >
-                <Progress
-                  type="circle"
-                  percent={79}
-                  width={280}
-                  strokeColor={{
-                    "0%": "green",
-                    "100%": "red"
-                  }}
-                />
-              </div>
-            </Col>
-            <Col span={12}>
-              <Divider orientation="left">Vacinity</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={40}
-                  width={80}
-                  strokeColor={"#3066c2"}
-                />
-                <h4 style={{ marginLeft: "10px" }}>
-                  POPULATION: 1 million
-                  <br /> DISTANCE TO NEARBY CITY: 4 miles
-                  <br /> ANOTHER FIELD: another field
-                </h4>
-              </div>
-              <Divider orientation="left">Habitat</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={80}
-                  width={80}
-                  strokeColor={"#30c263"}
-                />
-                <h4 style={{ marginLeft: "10px" }}>
-                  POPULATION: 55 million
-                  <br /> STATUS: Critically Endangered
-                  <br /> ANOTHER FIELD: another field
-                </h4>
-              </div>
-              <Divider orientation="left">Tree Coverage</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={30}
-                  width={80}
-                  strokeColor={"#c26a30"}
-                />
-                <h4 style={{ marginLeft: "10px" }}>
-                  TREE TYPE: Some Valuable Tree
-                  <br /> STATUS: Critically Endangered
-                  <br /> ANOTHER FIELD: another field
-                </h4>
-              </div>
-            </Col>
+              />
+            </div>
+            <Divider orientation="left">Vacinity</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={40}
+                width={80}
+                strokeColor={"#3066c2"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                POPULATION: 1 million
+                <br /> DISTANCE TO NEARBY CITY: 4 miles
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div>
+            <Divider orientation="left">Habitat</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={80}
+                width={80}
+                strokeColor={"#30c263"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                POPULATION: 55 million
+                <br /> STATUS: Critically Endangered
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div>
+            <Divider orientation="left">Tree Coverage</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={30}
+                width={80}
+                strokeColor={"#c26a30"}
+              />
+              <h4 style={{ marginLeft: "10px" }}>
+                TREE TYPE: Some Valuable Tree
+                <br /> STATUS: Critically Endangered
+                <br /> ANOTHER FIELD: another field
+              </h4>
+            </div>
           </Card>
         </Col>
+      </Row>
+      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
+        <Card>
+          <Col span={32}>
+            <h2>Ecozone {response.geography.zone} Information</h2>
+            {response.geography.description}
+          </Col>
+          <Col span={12}>
+            <Tabs
+              defaultActiveKey="1"
+              tabBarStyle={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center"
+              }}
+            >
+              <TabPane tab="Average Fire Duration" key="1">
+                <Bar
+                  data={fireDurationData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+              <TabPane tab="Average Fire Size" key="2">
+                <Bar
+                  data={fireSizeData}
+                  width={5}
+                  height={320}
+                  options={{
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: false
+                    }
+                  }}
+                />
+              </TabPane>
+            </Tabs>
+            <Divider orientation="left">Previous Fire Date</Divider>
+            Last fire in this location occurred on{" "}
+            {response.location.lastFireDate}
+          </Col>
+          <br />
+          <Col span={12}>
+            <div
+              id="fullGoogleMap"
+              style={{ display: "block", marginTop: "20px" }}
+            >
+              <Divider orientation="left">Current Location</Divider>
+              {/* Last fire in this location occurred on{" "}
+                {response.location.lastFireDate} */}
+              <GMap
+                currentPage={"results"}
+                selectedLat={selectedLocation[0]}
+                selectedLng={selectedLocation[1]}
+                selectedLocation={selectedLocation[2]}
+              />
+            </div>
+            <div id="partialGoogleMap" style={{ display: "none" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  textAlign: "center",
+                  width: "100%"
+                }}
+              >
+                <div
+                  data-show="true"
+                  className="ant-alert ant-alert-success ant-alert-no-icon"
+                >
+                  <span className="ant-alert-message">
+                    {selectedLocation[2]}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Col>{" "}
+          {/* </Col> */}
+        </Card>
       </Row>
     </div>
   );

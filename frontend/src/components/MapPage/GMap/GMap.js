@@ -16,7 +16,7 @@ export const GMap = ({
       ? "65vh"
       : currentPage === "mapDate"
       ? "40vh"
-      : "20vh";
+      : "40vh";
   const selectedPoint = { lat: selectedLat, lng: selectedLng };
   return (
     <div>
@@ -33,7 +33,13 @@ export const GMap = ({
           bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
           defaultCenter={defaultCenter}
           center={currentPage === "mapLocation" ? defaultCenter : selectedPoint}
-          zoom={currentPage === "mapLocation" ? 5 : 3}
+          zoom={
+            currentPage === "mapLocation"
+              ? 5
+              : currentPage === "mapDate"
+              ? 3
+              : 4
+          }
           onClick={onClick}
         >
           {selectedLat && <Marker lat={selectedLat} lng={selectedLng} />}

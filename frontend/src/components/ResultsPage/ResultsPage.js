@@ -187,12 +187,17 @@ export const ResultsPage = ({
             >
               <ReactSpeedometer
                 maxValue={100}
-                value={response.specificDate[currentIndex].riskScore * 100}
-                needleColor="black"
-                startColor="green"
+                value={Math.round(
+                  response.specificDate[currentIndex].riskScore * 100
+                )}
+                currentValueText={`${Math.round(
+                  response.specificDate[currentIndex].riskScore * 100
+                )}%`}
+                needleColor={"black"}
+                startColor={"green"}
                 segments={10}
-                endColor="red"
-                needleTransition="easeElastic"
+                endColor={"red"}
+                needleTransition={"easeElastic"}
               />
             </div>
             <br />
@@ -214,8 +219,7 @@ export const ResultsPage = ({
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",
-                alignItems: "center",
-                marginTop: "80px"
+                alignItems: "center"
               }}
             >
               <Progress
@@ -274,88 +278,88 @@ export const ResultsPage = ({
         </Col>
       </Row>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-        <Card>
-          <Col span={32}>
-            <h2>Ecozone {response.geography.zone} Information</h2>
-            {response.geography.description}
-          </Col>
-          <Col span={12}>
-            <Tabs
-              defaultActiveKey="1"
-              tabBarStyle={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center"
-              }}
-            >
-              <TabPane tab="Average Fire Duration" key="1">
-                <Bar
-                  data={fireDurationData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-              <TabPane tab="Average Fire Size" key="2">
-                <Bar
-                  data={fireSizeData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-            </Tabs>
-            <Divider orientation="left">Previous Fire Date</Divider>
-            Last fire in this location occurred on{" "}
-            {response.location.lastFireDate}
-          </Col>
-          <br />
-          <Col span={12}>
-            <div
-              id="fullGoogleMap"
-              style={{ display: "block", marginTop: "20px" }}
-            >
-              <Divider orientation="left">Current Location</Divider>
-              {/* Last fire in this location occurred on{" "}
-                {response.location.lastFireDate} */}
-              <GMap
-                currentPage={"results"}
-                selectedLat={selectedLocation[0]}
-                selectedLng={selectedLocation[1]}
-                selectedLocation={selectedLocation[2]}
-              />
-            </div>
-            <div id="partialGoogleMap" style={{ display: "none" }}>
-              <div
-                style={{
-                  fontSize: "18px",
-                  textAlign: "center",
-                  width: "100%"
+        <Col span={32}>
+          <Card>
+            <Col span={24}>
+              <h2>Ecozone {response.geography.zone} Information</h2>
+              {response.geography.description}
+            </Col>
+            <Col span={12}>
+              <Tabs
+                defaultActiveKey="1"
+                tabBarStyle={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center"
                 }}
               >
+                <TabPane tab="Average Fire Duration" key="1">
+                  <Bar
+                    data={fireDurationData}
+                    width={5}
+                    height={320}
+                    options={{
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: false
+                      }
+                    }}
+                  />
+                </TabPane>
+                <TabPane tab="Average Fire Size" key="2">
+                  <Bar
+                    data={fireSizeData}
+                    width={5}
+                    height={320}
+                    options={{
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: false
+                      }
+                    }}
+                  />
+                </TabPane>
+              </Tabs>
+              <Divider orientation="left">Previous Fire Date</Divider>
+              Last fire in this location occurred on{" "}
+              {response.location.lastFireDate}
+            </Col>
+            <br />
+            <Col span={12}>
+              <div
+                id="fullGoogleMap"
+                style={{ display: "block", marginTop: "20px" }}
+              >
+                <Divider orientation="left">Current Location</Divider>
+
+                <GMap
+                  currentPage={"results"}
+                  selectedLat={selectedLocation[0]}
+                  selectedLng={selectedLocation[1]}
+                  selectedLocation={selectedLocation[2]}
+                />
+              </div>
+              <div id="partialGoogleMap" style={{ display: "none" }}>
                 <div
-                  data-show="true"
-                  className="ant-alert ant-alert-success ant-alert-no-icon"
+                  style={{
+                    fontSize: "18px",
+                    textAlign: "center",
+                    width: "100%"
+                  }}
                 >
-                  <span className="ant-alert-message">
-                    {selectedLocation[2]}
-                  </span>
+                  <div
+                    data-show="true"
+                    className="ant-alert ant-alert-success ant-alert-no-icon"
+                  >
+                    <span className="ant-alert-message">
+                      {selectedLocation[2]}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Col>{" "}
-          {/* </Col> */}
-        </Card>
+            </Col>
+          </Card>
+        </Col>
       </Row>
     </div>
   );

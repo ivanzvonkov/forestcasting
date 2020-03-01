@@ -16,6 +16,46 @@ function get_weather(lat, lng){
   })
 }
 
+function get_average_weather(lat, lng, date){
+  let month_day = date.split("-", 1)[1]
+  let locationKey = lat + "|" + lng
+
+  return new Promise(function(resolve, reject){
+    MongoClient.connect(uri, function(err, client) {
+      if(err) {
+        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+      }
+      client.db("forestcasting")
+        .collection("average_daily_weather")
+        .findOne({"KEY": locationKey, "MONTH_DAY": month_day})
+        .then(dbResult => {
+          //close the connection
+          client.close();
+          if(dbResult){
+              resolve(new WeatherData().set_with_averages(
+                date,
+                dbResult["MAX_TEMP"],
+                dbResult["MIN_TEMP"],
+                dbResult["MEAN_TEMP"],
+                dbResult["TOTAL_RAIN"],
+                dbResult["TOTAL_SNOW"],
+                dbResult["TOTAL_PRECIP"],
+                dbResult["TOTAL_RAIN"],
+                dbResult["SNOW_ON_GRND"],
+                dbResult["DIR_OF_MAX_GUST"],
+                dbResult["SPD_OF_MAX_GUST"],
+                dbResult["TEMP_12_4"],
+                dbResult["DEW_TEMP_12_4"],
+                dbResult["REL_HUM_12_4"],
+              ))
+          }else{
+              reject(new Error(`EcoData not found using: ${locationKey} and ${month_day}`))
+          }
+        })
+    })
+  });
+}
+
 function addDays(date, days){
   const copy = new Date(Number(date))
   copy.setDate(date.getDate() + days)
@@ -70,9 +110,9 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
     let dates = getValidDates(date, range)
     let weatherDays = weather["daily"]["data"].filter(entry => dates.includes(epochToDate(entry["time"])));
     let results = []
-    
+
     weatherDays.forEach(entry => {
-      weatherDay = new WeatherData(
+      weatherDay = new WeatherData().set_with_forecast(
         epochToDate(entry["time"]), //yyyy-mm-dd
         entry["temperatureMax"],
         entry["temperatureMin"],

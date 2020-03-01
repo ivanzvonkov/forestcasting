@@ -1,7 +1,5 @@
 class WeatherData {
-  constructor(){}
-
-  set_with_forecast(DATE, MAX_TEMP, MIN_TEMP, TOTAL_PRECIP, PRECIP_TYPE, WIND_GUST_SPD, WIND_DIR){
+  constructor(DATE, MAX_TEMP, MIN_TEMP, TOTAL_PRECIP, PRECIP_TYPE, WIND_SPD, WIND_GUST_SPD, WIND_DIR, RH, DPT){
     this.date = DATE //yyyy-mm-dd
     this.max_temp = MAX_TEMP
     this.min_temp = MIN_TEMP
@@ -24,24 +22,12 @@ class WeatherData {
         this.total_rain = TOTAL_PRECIP
       }
   }
+
+    this.wind_spd = WIND_SPD
     this.wind_gust_spd = WIND_GUST_SPD
     this.wind_dir = WIND_DIR
-  }
-
-  set_with_averages(DATE,MAX_TEMP,MIN_TEMP,MEAN_TEMP,TOTAL_RAIN,TOTAL_SNOW,TOTAL_PRECIP,SNOW_ON_GRND,DIR_OF_MAX_GUST,SPD_OF_MAX_GUST,TEMP_12_4,DEW_TEMP_12_4,REL_HUM_12_4){
-      this.date = DATE
-      this.max_temp = MAX_TEMP
-      this.min_temp = MIN_TEMP
-      this.mean_temp = MEAN_TEMP
-      this.total_rain = TOTAL_RAIN
-      this.total_snow = TOTAL_SNOW
-      this.total_precip = TOTAL_PRECIP
-      this.snow_on_ground = SNOW_ON_GRND
-      this.wind_dir = DIR_OF_MAX_GUST
-      this.wind_sod = SPD_OF_MAX_GUST
-      this.temp_12_4 = TEMP_12_4
-      this.dew_point_temp_12_4 = DEW_POINT_TEMP_12_4
-      this.rel_hum_12_4 = REL_HUM_12_4
+    this.relative_humidity = RH
+    this.dew_point_temp = DPT
   }
 
   addHourlyData(hourly) {

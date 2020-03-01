@@ -1,16 +1,9 @@
 const requests = require("request")
 const WeatherData  = require('../Schemas/WeatherData.js')
-const MongoClient = require("mongodb").MongoClient;
 const dotenv = require('dotenv')
 const epoch = require('epoch-time-machine')
 dotenv.config()
 const api_key = process.env.API_KEY
-const uri =
-  "mongodb+srv://" +
-  process.env.DB_USERNAME +
-  ":" +
-  process.env.DB_PASSWORD +
-  "@forestcasting-umgnk.mongodb.net/";
 
 let weatherAPI = {}
 
@@ -21,44 +14,6 @@ function get_weather(lat, lng){
         resolve(body)
     })
   })
-}
-
-function get_average_weather(lat, lng, date){
-  let month_day = date.split("-", 1)[1]
-
-  return new Promise(function(resolve, reject){
-    MongoClient.connect(uri, function(err, client) {
-      if(err) {
-        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-      }
-      client.db("forestcasting")
-        .collection("daily_average_weather")
-        .findOne({"KEY": locationKey, "MONTH_DAY": month_day})
-        .then(dbResult => {
-          //close the connection
-          client.close();
-          if(dbResult){
-              resolve(new WeatherData().set_with_averages(
-                  date,
-                  dbResult["MAX_TEMP"],
-                  dbResult["MIN_TEMP"],
-                  dbResult["MEAN_TEMP"],
-                  dbResult["TOTAL_RAIN"]
-                  dbResult["TOTAL_SNOW"],
-                  dbResult["TOTAL_PRECIP"],
-                  dbResult["SNOW_ON_GRND"],
-                  dbResult["DIR_OF_MAX_GUST"],
-                  dbResult["SPD_OF_MAX_GUST"],
-                  dbResult["TEMP_12_4"],
-                  dbResult["DEW_POINT_TEMP_12_4"],
-                  dbResult["REL_HUM_12_4"]
-              ))
-          }else{
-              reject(new Error(`WeatherData not found using: ${locationKey} and ${month_day}`))
-          }
-        })
-    })
-  });
 }
 
 function addDays(date, days){
@@ -115,16 +70,19 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
     let dates = getValidDates(date, range)
     let weatherDays = weather["daily"]["data"].filter(entry => dates.includes(epochToDate(entry["time"])));
     let results = []
-
+    
     weatherDays.forEach(entry => {
-      weatherDay = new WeatherData().set_with_forecast(
+      weatherDay = new WeatherData(
         epochToDate(entry["time"]), //yyyy-mm-dd
         entry["temperatureMax"],
         entry["temperatureMin"],
         entry["precipAccumulation"], // in cm
         entry["precipType"],
+        entry["windSpeed"],
         entry["windGust"],
-        entry["windBearing"]
+        entry["windBearing"],
+        entry["humidity"],
+        entry["dewPoint"]
       )
 
       let weatherHours = weather["hourly"]["data"].filter(e => epochToDate(e["time"]) == weatherDay.date && epochToHour(e["time"]) >= 12 && epochToHour(e["time"]) <= 16 )
@@ -133,12 +91,6 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
 
       results.push(weatherDay)
     })
-
-    //if the length of results doesn't match the given range, some dates were out of range
-    if(results.length != range){
-      reseults.concat()
-    }
-
     return results
   }
 

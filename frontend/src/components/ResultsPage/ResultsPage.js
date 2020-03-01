@@ -285,6 +285,9 @@ export const ResultsPage = ({
               {response.geography.description}
             </Col>
             <Col span={12}>
+              <Divider orientation="left">Previous Fire Date</Divider>
+              Last fire in this location occurred on{" "}
+              {response.location.lastFireDate}
               <Tabs
                 defaultActiveKey="1"
                 tabBarStyle={{
@@ -320,9 +323,9 @@ export const ResultsPage = ({
                   />
                 </TabPane>
               </Tabs>
-              <Divider orientation="left">Previous Fire Date</Divider>
+              {/* <Divider orientation="left">Previous Fire Date</Divider>
               Last fire in this location occurred on{" "}
-              {response.location.lastFireDate}
+              {response.location.lastFireDate} */}
             </Col>
             <br />
             <Col span={12}>

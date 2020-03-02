@@ -44,7 +44,7 @@ class WeatherData {
     this.wind_dir = DIR_OF_MAX_GUST
 
     this.temp_12_4 = TEMP_12_4
-    this.dew_point_temp_12_4 = DEW_POINT_TEMP_12_4
+    this.dew_point_temp_12_4 = DEW_TEMP_12_4
     this.rel_hum_12_4 = REL_HUM_12_4
   }
 

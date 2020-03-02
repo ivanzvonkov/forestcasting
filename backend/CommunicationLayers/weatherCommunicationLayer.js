@@ -1,9 +1,17 @@
 const requests = require("request")
 const WeatherData  = require('../Schemas/WeatherData.js')
+const MongoClient = require("mongodb").MongoClient;
 const dotenv = require('dotenv')
 const epoch = require('epoch-time-machine')
 dotenv.config()
 const api_key = process.env.API_KEY
+
+const uri =
+  "mongodb+srv://" +
+  process.env.DB_USERNAME +
+  ":" +
+  process.env.DB_PASSWORD +
+  "@forestcasting-umgnk.mongodb.net/";
 
 let weatherAPI = {}
 
@@ -17,7 +25,8 @@ function get_weather(lat, lng){
 }
 
 function get_average_weather(lat, lng, date){
-  let month_day = date.split("-", 1)[1]
+  let month_day = date.split("-")
+  month_day = month_day[1] + "-" + month_day[2]
   let locationKey = lat + "|" + lng
 
   return new Promise(function(resolve, reject){
@@ -26,13 +35,14 @@ function get_average_weather(lat, lng, date){
         console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
       }
       client.db("forestcasting")
-        .collection("average_daily_weather")
-        .findOne({"KEY": locationKey, "MONTH_DAY": month_day})
+        .collection("daily_average_weather")
+        .findOne({"LOCATION_KEY": locationKey, "MONTH_DAY": month_day})
         .then(dbResult => {
           //close the connection
           client.close();
           if(dbResult){
-              resolve(new WeatherData().set_with_averages(
+              let weather = new WeatherData()
+              weather.set_with_averages(
                 date,
                 dbResult["MAX_TEMP"],
                 dbResult["MIN_TEMP"],
@@ -46,19 +56,20 @@ function get_average_weather(lat, lng, date){
                 dbResult["SPD_OF_MAX_GUST"],
                 dbResult["TEMP_12_4"],
                 dbResult["DEW_TEMP_12_4"],
-                dbResult["REL_HUM_12_4"],
-              ))
+                dbResult["REL_HUM_12_4"]
+              )
+              resolve(weather)
           }else{
-              reject(new Error(`EcoData not found using: ${locationKey} and ${month_day}`))
+              reject(new Error(`Weather not found using: ${locationKey} and ${month_day}`))
           }
         })
-    })
+      })
   });
 }
 
 function addDays(date, days){
   const copy = new Date(Number(date))
-  copy.setDate(date.getDate() + days)
+    copy.setDate(date.getDate() + days)
 
   let year = copy.getUTCFullYear()
   let month = copy.getUTCMonth() + 1
@@ -112,7 +123,8 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
     let results = []
 
     weatherDays.forEach(entry => {
-      weatherDay = new WeatherData().set_with_forecast(
+      weatherDay = new WeatherData()
+      weatherDay.set_with_forecast(
         epochToDate(entry["time"]), //yyyy-mm-dd
         entry["temperatureMax"],
         entry["temperatureMin"],
@@ -131,6 +143,21 @@ weatherAPI.findWeatherData = async function (lat, lng, date, range){
 
       results.push(weatherDay)
     })
+
+    // for any dates not covered by the above, get the data from the db
+    if(results.length != range) {
+        let remaining = range - results.length
+        // sort dates to ensure they are in ascending order
+        dates.sort((a, b) => (a > b) ? 1 : -1)
+
+        let remaining_dates = dates.slice(remaining * -1)
+
+        remaining_dates.forEach(async day => {
+          let daily_avg = await get_average_weather(lat, lng, day)
+          results.push(daily_avg)
+        })
+    }
+
     return results
   }
 

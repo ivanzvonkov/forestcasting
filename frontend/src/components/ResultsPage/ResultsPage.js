@@ -24,6 +24,7 @@ export const ResultsPage = ({
   response = {
     location: response.location,
     geography: response.geography,
+    damage: response.damage,
     specificDate: Object.values(response.specificDate)
   };
 
@@ -137,6 +138,14 @@ export const ResultsPage = ({
       measure: response.specificDate[currentIndex].weather.wind_dir + " degrees"
     }
   ];
+
+  let damageWeights = [
+    {
+      pa_w: 0.33,
+      tc_w:  0.33,
+      v_w: 0.33
+    }
+  ]
 
   const handlePageChange = event => {
     setCurrentDate(
@@ -297,7 +306,7 @@ export const ResultsPage = ({
               >
                 <Progress
                   type="circle"
-                  percent={79}
+                  percent={70}
                   width={280}
                   strokeColor={{
                     "0%": "green",
@@ -311,7 +320,7 @@ export const ResultsPage = ({
               <div className="damage-component">
                 <Progress
                   type="circle"
-                  percent={40}
+                  percent={response.damage.vicinity.toFixed(2)}
                   width={80}
                   strokeColor={"#3066c2"}
                 />
@@ -325,7 +334,7 @@ export const ResultsPage = ({
               <div className="damage-component">
                 <Progress
                   type="circle"
-                  percent={80}
+                  percent={response.damage.protected_area.toFixed(2)}
                   width={80}
                   strokeColor={"#30c263"}
                 />
@@ -339,7 +348,7 @@ export const ResultsPage = ({
               <div className="damage-component">
                 <Progress
                   type="circle"
-                  percent={30}
+                  percent={response.damage.tree_coverage.toFixed(2)}
                   width={80}
                   strokeColor={"#c26a30"}
                 />

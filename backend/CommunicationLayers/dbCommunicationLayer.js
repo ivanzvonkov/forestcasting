@@ -125,8 +125,8 @@ dbQuery.findDamageStats = async function(location_key){
       collection.findOne({LOCATION_KEY: location_key}).then(dbResult => {
         client.close()
         result = new DamageData(
-          dbResult["PROTECTED_AREA"],
-          dbResult["TREE_COVER_PERCENT"]/100.0
+          dbResult["PROTECTED_AREA"] * 100,
+          dbResult["TREE_COVER_PERCENT"]
         )
         resolve(result)
       })

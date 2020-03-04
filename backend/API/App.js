@@ -34,7 +34,9 @@ app.get("/api/analysis", async (req, res, next) => {
     let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range)
     let damageData = await dbQuery.findDamageStats(locationKey)
     await dbQuery.findEcoInfo(ecoData)
-    // await damageData.setVicinity(getVicinity)
+
+    // hard coded for now
+    await damageData.setVicinity(0.5 * 100)
 
     //[riskScore, damageScore]
     let analysisResults = await analyze.getAnalysis(ecoData, weatherData, historicData, damageData)

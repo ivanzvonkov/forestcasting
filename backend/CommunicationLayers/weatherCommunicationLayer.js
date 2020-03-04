@@ -1,97 +1,111 @@
-const requests = require("request")
-const WeatherData  = require('../Schemas/WeatherData.js')
-const dotenv = require('dotenv')
-const epoch = require('epoch-time-machine')
-dotenv.config()
-const api_key = process.env.API_KEY
+const requests = require("request");
+const WeatherData = require("../Schemas/WeatherData.js");
+const dotenv = require("dotenv");
+const epoch = require("epoch-time-machine");
+dotenv.config();
+const api_key = process.env.API_KEY;
 
-let weatherAPI = {}
+let weatherAPI = {};
 
-function get_weather(lat, lng){
-    url = 'https://api.darksky.net/forecast/'+ api_key + '/' + lat + ',' + lng +"?exclude=minutely,flags,alerts,currently&extend=hourly"
-    return new Promise(function(resolve, reject) {
-      requests(url, {json : true}, (err, res, body) => {
-        resolve(body)
-    })
-  })
+function get_weather(lat, lng) {
+  url =
+    "https://api.darksky.net/forecast/" +
+    api_key +
+    "/" +
+    lat +
+    "," +
+    lng +
+    "?exclude=minutely,flags,alerts,currently&extend=hourly";
+  return new Promise(function(resolve, reject) {
+    requests(url, { json: true }, (err, res, body) => {
+      resolve(body);
+    });
+  });
 }
 
-function addDays(date, days){
-  const copy = new Date(Number(date))
-  copy.setDate(date.getDate() + days)
+function addDays(date, days) {
+  const copy = new Date(Number(date));
+  copy.setDate(date.getDate() + days);
 
-  let year = copy.getUTCFullYear()
-  let month = copy.getUTCMonth() + 1
+  let year = copy.getUTCFullYear();
+  let month = copy.getUTCMonth() + 1;
 
-  if(month < 10){
-    month = "0" + month.toString()
+  if (month < 10) {
+    month = "0" + month.toString();
   }
 
-  let day = copy.getUTCDate()
+  let day = copy.getUTCDate();
 
-  if(day < 10){
-    day = "0" + day.toString()
+  if (day < 10) {
+    day = "0" + day.toString();
   }
 
-  return year + "-" + month + "-" + day
+  return year + "-" + month + "-" + day;
 }
 
 function getValidDates(date, range) {
-  range = range - 1
-  let dates = []
-  date = new Date(date)
+  range = range - 1;
+  let dates = [];
+  date = new Date(date);
 
-  for(i = 0; i <= range; i++) {
-    let newDate = addDays(date, i)
-    dates.push(newDate)
+  for (i = 0; i <= range; i++) {
+    let newDate = addDays(date, i);
+    dates.push(newDate);
   }
 
-  return dates
+  return dates;
 }
 
 function epochToDate(epochTime) {
   //yyy-mm-dd
-  let date = new Date(epochTime * 1000)
+  let date = new Date(epochTime * 1000);
 
-  customFormat = date.customFormat("Y-m-d")
-  return customFormat
+  customFormat = date.customFormat("Y-m-d");
+  return customFormat;
 }
 
 function epochToHour(epochTime) {
-  let date = new Date(epochTime * 1000)
+  let date = new Date(epochTime * 1000);
 
-  hour = date.customFormat("H")
+  hour = date.customFormat("H");
 
-  return hour
+  return hour;
 }
 
-weatherAPI.findWeatherData = async function (lat, lng, date, range){
-    let weather = await get_weather(lat, lng)
-    let dates = getValidDates(date, range)
-    let weatherDays = weather["daily"]["data"].filter(entry => dates.includes(epochToDate(entry["time"])));
-    let results = []
-    
-    weatherDays.forEach(entry => {
-      weatherDay = new WeatherData(
-        epochToDate(entry["time"]), //yyyy-mm-dd
-        entry["temperatureMax"],
-        entry["temperatureMin"],
-        entry["precipAccumulation"], // in cm
-        entry["precipType"],
-        entry["windSpeed"],
-        entry["windGust"],
-        entry["windBearing"],
-        entry["humidity"],
-        entry["dewPoint"]
-      )
+weatherAPI.findWeatherData = async function(lat, lng, date, range) {
+  let weather = await get_weather(lat, lng);
+  let dates = getValidDates(date, range);
+  let weatherDays = weather["daily"]["data"].filter(entry =>
+    dates.includes(epochToDate(entry["time"]))
+  );
+  let results = [];
 
-      let weatherHours = weather["hourly"]["data"].filter(e => epochToDate(e["time"]) == weatherDay.date && epochToHour(e["time"]) >= 12 && epochToHour(e["time"]) <= 16 )
+  weatherDays.forEach(entry => {
+    weatherDay = new WeatherData(
+      epochToDate(entry["time"]), //yyyy-mm-dd
+      entry["temperatureMax"],
+      entry["temperatureMin"],
+      entry["precipAccumulation"], // in cm
+      entry["precipType"],
+      entry["windSpeed"],
+      entry["windGust"],
+      entry["windBearing"],
+      entry["humidity"],
+      entry["dewPoint"]
+    );
 
-      weatherDay.addHourlyData(weatherHours)
+    let weatherHours = weather["hourly"]["data"].filter(
+      e =>
+        epochToDate(e["time"]) == weatherDay.date &&
+        epochToHour(e["time"]) >= 12 &&
+        epochToHour(e["time"]) <= 16
+    );
 
-      results.push(weatherDay)
-    })
-    return results
-  }
+    weatherDay.addHourlyData(weatherHours);
+
+    results.push(weatherDay);
+  });
+  return results;
+};
 
 module.exports = weatherAPI;

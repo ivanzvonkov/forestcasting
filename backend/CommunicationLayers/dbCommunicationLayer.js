@@ -1,5 +1,6 @@
 const EcoData = require("../Schemas/EcoData.js");
 const HistoricData = require("../Schemas/HistoricData.js");
+const DamageData = require("../Schemas/DamageData.js");
 const MongoClient = require("mongodb").MongoClient;
 const dotenv = require("dotenv");
 dotenv.config();
@@ -110,5 +111,27 @@ dbQuery.findEcoInfo = async function(ecoData) {
     });
   });
 };
+
+dbQuery.findDamageStats = async function(location_key){
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(uri, function(err, client) {
+      if(err){
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
+      }
+      const collection = client.db("forestcasting").collection("damage_stats")
+      collection.findOne({LOCATION_KEY: location_key}).then(dbResult => {
+        client.close()
+        result = new DamageData(
+          dbResult["PROTECTED_AREA"],
+          dbResult["TREE_COVER_PERCENT"]/100.0
+        )
+        resolve(result)
+      })
+    })
+  })
+}
 
 module.exports = dbQuery;

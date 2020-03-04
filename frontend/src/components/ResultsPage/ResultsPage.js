@@ -25,7 +25,7 @@ export const ResultsPage = ({
     location: response.location,
     geography: response.geography,
     damage: response.damage,
-    specificDate: Object.values(response.specificDate)
+    specificDate: Object.value(response.specificDate)
   };
 
   const [currentDate, setCurrentDate] = useState(validRange[0]);
@@ -138,14 +138,6 @@ export const ResultsPage = ({
       measure: response.specificDate[currentIndex].weather.wind_dir + " degrees"
     }
   ];
-
-  let damageWeights = [
-    {
-      pa_w: 0.33,
-      tc_w:  0.33,
-      v_w: 0.33
-    }
-  ]
 
   const handlePageChange = event => {
     setCurrentDate(
@@ -306,7 +298,7 @@ export const ResultsPage = ({
               >
                 <Progress
                   type="circle"
-                  percent={70}
+                  percent={}
                   width={280}
                   strokeColor={{
                     "0%": "green",

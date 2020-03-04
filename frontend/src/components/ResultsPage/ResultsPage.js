@@ -298,7 +298,7 @@ export const ResultsPage = ({
               >
                 <Progress
                   type="circle"
-                  percent={}
+                  percent={79}
                   width={280}
                   strokeColor={{
                     "0%": "green",

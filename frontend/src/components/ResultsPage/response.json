@@ -15,6 +15,11 @@
     "averageFireDurationForZone": 44,
     "averageFireSizeForZone": 29
   },
+  "damage": {
+    "protected_area": "",
+    "tree_coverage": "",
+    "vicinity": ""
+  },
   "specificDate": {
     "2017-11-01": {
       "weather": {
@@ -28,8 +33,7 @@
         "wind_gust_spd": 18.3,
         "wind_dir": 229
       },
-      "riskScore": "",
-      "damageScore": ""
+      "riskScore": ""
     }
   }
 }

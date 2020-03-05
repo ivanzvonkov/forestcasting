@@ -18,11 +18,7 @@ const MAX_DISTANCE = 50;
 
 vicinityAPI.findVicinityData = async function(lat, lng) {
   var dms = convertDMS(lat, lng);
-  let results = {
-    nearestCity: [],
-    nearbyServices: [],
-    nearbyFeatures: []
-  };
+  let results = {};
 
   return waApi
     .getFull({
@@ -38,29 +34,21 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
               .match(/\d+/g)
               .map(Number);
             var cityName = element.subpods[i].plaintext.split("(");
-            results.nearestCity.push({
+            results.push({
               city: cityName[0],
               distance: nearestCityNumbers[0],
               population: nearestCityNumbers[1]
+              // normalized: {
+              //   distance:
+              //     nearestCityNumbers[0] < MAX_DISTANCE
+              //       ? nearestCityNumbers[0]
+              //       : MAX_DISTANCE,
+              //   population:
+              //     nearestCityNumbers[0] < MAX_DISTANCE
+              //       ? nearestCityNumbers[1]
+              //       : 0
+              // }
             });
-          }
-        }
-
-        if (
-          element.title == "Nearby services" ||
-          element.title == "Nearby features"
-        ) {
-          for (var i = 0; i < element.numsubpods; i++) {
-            console.log(element.subpods[i]);
-            //   var service = element.subpods[i].plaintext.split("|");
-            //   var nearbyServiceDistance = element.subpods[i].plaintext
-            //     .match(/\d+/g)
-            //     .map(Number);
-            //   console.log(service, nearbyServiceDistance);
-            //   results.nearbyServices.push({
-            //     service: service[0],
-            //     distance: nearbyServiceDistance
-            //   });
           }
         }
       });

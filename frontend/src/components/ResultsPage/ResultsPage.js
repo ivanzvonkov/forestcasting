@@ -21,12 +21,6 @@ export const ResultsPage = ({
   selectedLocation,
   rangeInDays
 }) => {
-  response = {
-    location: response.location,
-    geography: response.geography,
-    specificDate: Object.values(response.specificDate)
-  };
-
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { TabPane } = Tabs;
@@ -249,9 +243,9 @@ export const ResultsPage = ({
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={40}
+                percent={response.damage.protected_area.toFixed(2)}
                 width={80}
-                strokeColor={"#3066c2"}
+                strokeColor={"#30c263"}
               />
               <h4 style={{ marginLeft: "10px" }}>
                 POPULATION: 1 million
@@ -277,7 +271,7 @@ export const ResultsPage = ({
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={30}
+                percent={response.damage.tree_coverage.toFixed(2)}
                 width={80}
                 strokeColor={"#c26a30"}
               />

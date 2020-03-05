@@ -1,5 +1,6 @@
 const EcoData = require("../Schemas/EcoData.js");
 const HistoricData = require("../Schemas/HistoricData.js");
+const DamageData = require("../Schemas/DamageData.js");
 const MongoClient = require("mongodb").MongoClient;
 const dotenv = require("dotenv");
 dotenv.config();
@@ -14,31 +15,37 @@ const uri =
 let dbQuery = {};
 
 dbQuery.findEcoData = function(locationKey) {
-  return new Promise(function(resolve, reject){
+  return new Promise(function(resolve, reject) {
     MongoClient.connect(uri, function(err, client) {
-      if(err) {
-        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+      if (err) {
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
       }
-      client.db("forestcasting")
+      client
+        .db("forestcasting")
         .collection("location_eco")
-        .findOne({"KEY": locationKey})
+        .findOne({ KEY: locationKey })
         .then(dbResult => {
           //close the connection
           client.close();
-          if(dbResult){
-              resolve(new EcoData(
-                  dbResult["KEY"],
-                  dbResult["ECOZONE"],
-                  dbResult["ECOREGION"],
-                  dbResult["ECODSTRICT"]
-              ))
-          }else{
-              reject(new Error(`EcoData not found using: ${locationKey}`))
+          if (dbResult) {
+            resolve(
+              new EcoData(
+                dbResult["KEY"],
+                dbResult["ECOZONE"],
+                dbResult["ECOREGION"],
+                dbResult["ECODSTRICT"]
+              )
+            );
+          } else {
+            reject(new Error(`EcoData not found using: ${locationKey}`));
           }
-        })
-    })
+        });
+    });
   });
-}
+};
 
 dbQuery.findHistoricData = function(locationKey) {
   return new Promise(function(resolve, reject) {
@@ -106,6 +113,28 @@ dbQuery.findEcoInfo = async function(ecoData) {
         ecoData.description = dbResult["DESCRIPTION"];
         ecoData.zoneName = dbResult["ZONE_NAME"];
         resolve(ecoData);
+      });
+    });
+  });
+};
+
+dbQuery.findDamageStats = async function(location_key) {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(uri, function(err, client) {
+      if (err) {
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
+      }
+      const collection = client.db("forestcasting").collection("damage_stats");
+      collection.findOne({ LOCATION_KEY: location_key }).then(dbResult => {
+        client.close();
+        result = new DamageData(
+          dbResult["PROTECTED_AREA"] * 100,
+          dbResult["TREE_COVER_PERCENT"]
+        );
+        resolve(result);
       });
     });
   });

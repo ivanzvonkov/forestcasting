@@ -4,11 +4,10 @@ const querystring = require("querystring");
 const EcoData = require("../Schemas/EcoData.js");
 const HistoricData = require("../Schemas/HistoricData.js");
 const WeatherData = require("../Schemas/WeatherData.js");
-const AnalysisResponse = require("../Schemas/AnalysisResponse.js");
 const dbQuery = require("../CommunicationLayers/dbCommunicationLayer.js");
 const weatherAPI = require("../CommunicationLayers/weatherCommunicationLayer.js");
-const vicinityAPI = require("../CommunicationLayers/vicinityCommunicationLayer.js");
 const analyze = require("../Analysis/analysis.js");
+const vicinityAPI = require("../CommunicationLayers/vicinityCommunicationLayer.js");
 
 const app = express();
 
@@ -33,18 +32,25 @@ app.get("/api/analysis", async (req, res, next) => {
     let ecoData = await dbQuery.findEcoData(locationKey);
     let historicData = await dbQuery.findHistoricData(locationKey);
     let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range);
+    let damageData = await dbQuery.findDamageStats(locationKey);
     let vicinityData = await vicinityAPI.findVicinityData(lat, lng);
     console.log(vicinityData);
     await dbQuery.findEcoInfo(ecoData);
 
+    // hard coded for now
+    await damageData.setVicinity(0.5 * 100);
+
+    //[riskScore, damageScore]
     let analysisResults = await analyze.getAnalysis(
       ecoData,
       weatherData,
-      historicData
+      historicData,
+      damageData
     );
     res.json({
       location: historicData,
       geography: ecoData,
+      damage: damageData,
       specificDate: analysisResults
     });
   } catch (err) {

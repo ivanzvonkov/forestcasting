@@ -1,7 +1,7 @@
 const request = require("request");
 let analyze = {};
 
-analyze.getAnalysis = async function(ecoData, weatherData, historicData) {
+analyze.getAnalysis = async function(ecoData, weatherData, historicData, damageData) {
   // create input array for predict using ecoData, weatherData, historicData
   // loop through weather data
   let modelInputs = [];
@@ -23,11 +23,9 @@ analyze.getAnalysis = async function(ecoData, weatherData, historicData) {
 
   let results = {};
   for (let i = 0; i < weatherData.length; i++) {
-    let damageScore = Math.floor(Math.random() * 60) / 100.0;
     results[i] = {
       weather: weatherData[i],
-      riskScore: predictResponse.predictions[i],
-      damageScore: damageScore
+      riskScore: predictResponse.predictions[i]
     };
   }
   return results;

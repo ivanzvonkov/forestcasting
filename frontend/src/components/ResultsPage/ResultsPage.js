@@ -243,7 +243,7 @@ export const ResultsPage = ({
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={response.damage.protected_area.toFixed(2)}
+                percent={Math.round(parseInt(response.damage.protected_area))}
                 width={80}
                 strokeColor={"#30c263"}
               />
@@ -271,7 +271,7 @@ export const ResultsPage = ({
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={response.damage.tree_coverage.toFixed(2)}
+                percent={Math.round(parseInt(response.damage.tree_coverage))}
                 width={80}
                 strokeColor={"#c26a30"}
               />

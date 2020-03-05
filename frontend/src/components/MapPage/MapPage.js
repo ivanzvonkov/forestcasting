@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GMap } from "./GMap/GMap";
 import { AlertMessage } from "./AlertMessage/AlertMessage";
-import { Steps, Button, DatePicker } from "antd";
+import { Steps, Button, DatePicker, Modal } from "antd";
 import moment from "moment";
 import axios from "axios";
 import { Input } from "antd";
@@ -12,6 +12,8 @@ export const MapPage = ({ selectLocationAndDate }) => {
   const { RangePicker } = DatePicker;
 
   const [current, setCurrent] = useState(0);
+  // const [showModal, setShowModal] = useState(false);
+  // const [hideModal, setHideModal] = useState(true);
   const [selectedLat, setSelectedLat] = useState(null);
   const [selectedLng, setSelectedLng] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -68,6 +70,20 @@ export const MapPage = ({ selectLocationAndDate }) => {
       )
       .then(res => {
         setSelectedLocation(res.data.results[0].formatted_address);
+        // Check if selected location is Canada
+        console.log(res);
+        if (
+          !res.data.results[0].formatted_address.includes("Canada") ||
+          res.data.results[0].formatted_address.includes("NT, Canada") ||
+          res.data.results[0].formatted_address.includes("NT XOE, Canada") ||
+          res.data.results[0].formatted_address.includes("NU, Canada") ||
+          res.data.results[0].formatted_address.includes("Yukon") ||
+          res.data.results[0].formatted_address.includes("YT YOB") ||
+          res.data.results[0].formatted_address.includes("Nunavut X0A, Canada")
+        ) {
+          // set bool to true
+          // setShowModal(true);
+        }
       });
   };
 
@@ -182,6 +198,9 @@ export const MapPage = ({ selectLocationAndDate }) => {
             Analyze
           </Button>
         )}
+        {/* <Modal title="Modal" visible={showModal} onOk={hideModal} okText="Okay">
+          <p>Please elect a location in Canada!</p>
+        </Modal> */}
       </div>
     </div>
   );

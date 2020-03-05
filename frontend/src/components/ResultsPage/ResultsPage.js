@@ -93,43 +93,56 @@ export const ResultsPage = ({
     {
       key: "1",
       weatherField: "Max Temperature",
-      measure: response.specificDate[currentIndex].weather.max_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.max_temp) + " °C"
     },
     {
       key: "2",
       weatherField: "Min Temperature",
-      measure: response.specificDate[currentIndex].weather.min_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.min_temp) + " °C"
     },
     {
       key: "3",
       weatherField: "Mean Temperature",
-      measure: response.specificDate[currentIndex].weather.mean_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.mean_temp) +
+        " °C"
     },
     {
       key: "4",
       weatherField: "Total Precipitation",
-      measure: response.specificDate[currentIndex].weather.total_precip + " mm"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.total_precip) +
+        " mm"
     },
     {
       key: "5",
       weatherField: "Total Snow",
-      measure: response.specificDate[currentIndex].weather.total_snow + " mm"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.total_snow) +
+        " mm"
     },
     {
       key: "6",
       weatherField: "Snow Depth",
-      measure: response.specificDate[currentIndex].weather.snow_dpth + " mm"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.snow_dpth) +
+        " mm"
     },
     {
       key: "7",
       weatherField: "Wind Speed",
-      measure: response.specificDate[currentIndex].weather.wind_spd + " m/s"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.wind_spd) +
+        " m/s"
     },
     {
       key: "8",
       weatherField: "Wind Gust Speed",
       measure:
-        response.specificDate[currentIndex].weather.wind_gust_spd + " m/s"
+        Math.round(response.specificDate[currentIndex].weather.wind_gust_spd) +
+        " m/s"
     },
     {
       key: "9",
@@ -232,7 +245,7 @@ export const ResultsPage = ({
                 }}
               />
             </div>
-            <Divider orientation="left">Vacinity</Divider>
+            <Divider orientation="left">Vicinity</Divider>
             <div className="damage-component">
               <Progress
                 type="circle"

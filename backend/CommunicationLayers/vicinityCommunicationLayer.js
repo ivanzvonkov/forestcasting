@@ -1,24 +1,19 @@
 const WolframAlphaAPI = require("wolfram-alpha-api");
 const dotenv = require("dotenv");
+
 dotenv.config();
+
 const waApi = WolframAlphaAPI(`${process.env.WA_APP_ID}`);
+const MAX_POPULATION = 5429524; // Toronto's population from 2016 Census
+const MIN_POPULATION = 0;
+const MAX_DISTANCE = 50;
+const MIN_DISTANCE = 0;
 
 let vicinityAPI = {};
 
-const MAX_POPULATION = 5429524; // Toronto's population from 2016 Census
-// MIN_POPULATION  = cityDistance < MAX_DISTANCE ?  cityPopulation : 0
-
-const MAX_DISTANCE = 50;
-// MIN_DISTANCE = cityDistance < MAX_DISTANCE ?  cityDistance : MAX_DISTANCE
-
-/*
-  send nromalized scores to frotnend 
-  also send the actual info 
-*/
-
 vicinityAPI.findVicinityData = async function(lat, lng) {
   var dms = convertDMS(lat, lng);
-  let results = {};
+  let results = [];
 
   return waApi
     .getFull({
@@ -37,17 +32,19 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
             results.push({
               city: cityName[0],
               distance: nearestCityNumbers[0],
-              population: nearestCityNumbers[1]
-              // normalized: {
-              //   distance:
-              //     nearestCityNumbers[0] < MAX_DISTANCE
-              //       ? nearestCityNumbers[0]
-              //       : MAX_DISTANCE,
-              //   population:
-              //     nearestCityNumbers[0] < MAX_DISTANCE
-              //       ? nearestCityNumbers[1]
-              //       : 0
-              // }
+              population: nearestCityNumbers[1],
+              normalized: {
+                distance: normalize(
+                  nearestCityNumbers[0],
+                  MAX_DISTANCE,
+                  MIN_DISTANCE
+                ),
+                population: normalize(
+                  nearestCityNumbers[1],
+                  MAX_POPULATION,
+                  MIN_POPULATION
+                )
+              }
             });
           }
         }
@@ -55,9 +52,13 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
       return results;
     })
     .catch(error => {
-      throw new Error(`Wolfram Alpha API returned: ${JSON.stringify(error)}`);
+      throw new Error(`Wolfram Alpha API returned: ${error}`);
     });
 };
+
+function normalize(val, max, min) {
+  return (val - min) / (max - min);
+}
 
 function convertDMS(lat, lng) {
   var latitude = toDegreesMinutesAndSeconds(lat);

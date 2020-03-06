@@ -190,6 +190,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
             onClick={() => {
               setCurrent(current - 1);
               setSelectedRange(null);
+              setRangePickerValue(null);
             }}
           >
             Previous

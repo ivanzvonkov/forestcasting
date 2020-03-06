@@ -17,3 +17,7 @@
 #fullGoogleMap {
   margin: 0px !important;
 }
+.in-line {
+  display: flex;
+  flex-direction: row;
+}

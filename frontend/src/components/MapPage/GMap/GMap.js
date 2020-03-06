@@ -35,7 +35,7 @@ export const GMap = ({
           center={currentPage === "mapLocation" ? defaultCenter : selectedPoint}
           zoom={
             currentPage === "mapLocation"
-              ? 5
+              ? 4
               : currentPage === "mapDate"
               ? 3
               : 4

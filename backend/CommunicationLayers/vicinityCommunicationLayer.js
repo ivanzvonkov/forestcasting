@@ -4,16 +4,16 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const waApi = WolframAlphaAPI(`${process.env.WA_APP_ID}`);
-const MAX_POPULATION = 5429524; // Toronto's population from 2016 Census
+const MAX_POPULATION = 1000000; // Toronto's population from 2016 Census
 const MIN_POPULATION = 0;
-const MAX_DISTANCE = 50;
+const MAX_DISTANCE = 100;
 const MIN_DISTANCE = 0;
 
 let vicinityAPI = {};
 
 vicinityAPI.findVicinityData = async function(lat, lng) {
   var dms = convertDMS(lat, lng);
-  let results = [];
+  let results;
 
   return waApi
     .getFull({
@@ -29,26 +29,27 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
               .match(/\d+/g)
               .map(Number);
             var cityName = element.subpods[i].plaintext.split("(");
-            results.push({
+            results = {
               city: cityName[0],
               distance: nearestCityNumbers[0],
               population: nearestCityNumbers[1],
-              normalized: {
-                distance: normalize(
-                  nearestCityNumbers[0],
-                  MAX_DISTANCE,
-                  MIN_DISTANCE
-                ),
-                population: normalize(
-                  nearestCityNumbers[1],
-                  MAX_POPULATION,
-                  MIN_POPULATION
-                )
-              }
-            });
+              normalizedDistance: normalizeDistance(
+                nearestCityNumbers[0],
+                MAX_DISTANCE,
+                MIN_DISTANCE
+              ),
+              normalizedPopulation: normalizePopulation(
+                nearestCityNumbers[1],
+                nearestCityNumbers[1] > MAX_POPULATION
+                  ? nearestCityNumbers[1]
+                  : MAX_POPULATION,
+                MIN_POPULATION
+              )
+            };
           }
         }
       });
+      console.log(results);
       return results;
     })
     .catch(error => {
@@ -56,7 +57,12 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
     });
 };
 
-function normalize(val, max, min) {
+function normalizeDistance(val, max, min) {
+  var normalizedVal = 1 - (val - min) / (max - min);
+  return normalizedVal < 0 ? 0 : normalizedVal;
+}
+
+function normalizePopulation(val, max, min) {
   return (val - min) / (max - min);
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GMap } from "./GMap/GMap";
 import { AlertMessage } from "./AlertMessage/AlertMessage";
-import { Steps, Button, DatePicker, Modal } from "antd";
+import { Steps, Button, DatePicker, message } from "antd";
 import moment from "moment";
 import axios from "axios";
 import { Input } from "antd";
@@ -12,8 +12,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
   const { RangePicker } = DatePicker;
 
   const [current, setCurrent] = useState(0);
-  // const [showModal, setShowModal] = useState(false);
-  // const [hideModal, setHideModal] = useState(true);
+  const [validLocationSelected, setValidLocationSelected] = useState(true);
   const [selectedLat, setSelectedLat] = useState(null);
   const [selectedLng, setSelectedLng] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -48,6 +47,9 @@ export const MapPage = ({ selectLocationAndDate }) => {
     let to = value[1];
 
     if (calculateRangeInDays(from, to) > 16) {
+      message.info(
+        "We recommend selecting a range of 16 days. Your selection has been adjusted accordingly."
+      );
       to = moment(from)
         .startOf("day")
         .add(16, "days");
@@ -71,7 +73,6 @@ export const MapPage = ({ selectLocationAndDate }) => {
       .then(res => {
         setSelectedLocation(res.data.results[0].formatted_address);
         // Check if selected location is Canada
-        console.log(res);
         if (
           !res.data.results[0].formatted_address.includes("Canada") ||
           res.data.results[0].formatted_address.includes("NT, Canada") ||
@@ -81,14 +82,19 @@ export const MapPage = ({ selectLocationAndDate }) => {
           res.data.results[0].formatted_address.includes("YT YOB") ||
           res.data.results[0].formatted_address.includes("Nunavut X0A, Canada")
         ) {
-          // set bool to true
-          // setShowModal(true);
+          message.error(
+            "Please select a valid location. Check our map of valid location here: "
+          );
+          setValidLocationSelected(false);
+        } else {
+          message.success("Valid location selected.");
+          setValidLocationSelected(true);
         }
       });
   };
 
   const disabledDate = current => {
-    const start = moment().startOf("day");
+    const start = moment().endOf("day");
     const end = new moment().add(365, "days");
     return !(start.isSameOrBefore(current) && end.isAfter(current));
   };
@@ -194,13 +200,11 @@ export const MapPage = ({ selectLocationAndDate }) => {
             style={{ marginLeft: "1em" }}
             type="primary"
             onClick={analyze}
+            disabled={!validLocationSelected}
           >
             Analyze
           </Button>
         )}
-        {/* <Modal title="Modal" visible={showModal} onOk={hideModal} okText="Okay">
-          <p>Please elect a location in Canada!</p>
-        </Modal> */}
       </div>
     </div>
   );

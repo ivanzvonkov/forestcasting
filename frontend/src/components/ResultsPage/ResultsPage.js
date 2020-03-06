@@ -119,27 +119,13 @@ export const ResultsPage = ({
     },
     {
       key: "6",
-      weatherField: "Snow Depth",
-      measure:
-        Math.round(response.specificDate[currentIndex].weather.snow_dpth) +
-        " mm"
-    },
-    {
-      key: "7",
-      weatherField: "Wind Speed",
-      measure:
-        Math.round(response.specificDate[currentIndex].weather.wind_spd) +
-        " m/s"
-    },
-    {
-      key: "8",
       weatherField: "Wind Gust Speed",
       measure:
         Math.round(response.specificDate[currentIndex].weather.wind_gust_spd) +
         " m/s"
     },
     {
-      key: "9",
+      key: "7",
       weatherField: "Wind Direction",
       measure: response.specificDate[currentIndex].weather.wind_dir + " degrees"
     }
@@ -162,7 +148,6 @@ export const ResultsPage = ({
         <Step title="Select Prediction Date" />
         <Step title="View Analysis" />
       </Steps>
-
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card>
@@ -220,7 +205,6 @@ export const ResultsPage = ({
         <Col span={12}>
           <Card>
             <h2>Possible Damages</h2>
-
             <div
               style={{
                 display: "flex",
@@ -231,11 +215,15 @@ export const ResultsPage = ({
             >
               <Progress
                 type="circle"
-                percent={79}
-                width={280}
+                percent={Math.round(
+                  parseInt(response.damage.tree_coverage) / 3 +
+                    parseInt(response.damage.vicinity) / 3 +
+                    parseInt(response.damage.protected_area / 3)
+                )}
+                width={200}
                 strokeColor={{
-                  "0%": "green",
-                  "100%": "red"
+                  "0%": "#a4cfed",
+                  "100%": "#1890ff"
                 }}
               />
             </div>
@@ -243,29 +231,35 @@ export const ResultsPage = ({
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={Math.round(parseInt(response.damage.protected_area))}
+                percent={Math.round(parseInt(response.damage.vicinity))}
                 width={80}
-                strokeColor={"#30c263"}
               />
-              <h4 style={{ marginLeft: "10px" }}>
-                POPULATION: 1 million
-                <br /> DISTANCE TO NEARBY CITY: 4 miles
-                <br /> ANOTHER FIELD: another field
-              </h4>
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
             </div>
             <Divider orientation="left">Habitat</Divider>
             <div className="damage-component">
               <Progress
                 type="circle"
-                percent={80}
+                percent={Math.round(parseInt(response.damage.protected_area))}
                 width={80}
-                strokeColor={"#30c263"}
               />
-              <h4 style={{ marginLeft: "10px" }}>
-                POPULATION: 55 million
-                <br /> STATUS: Critically Endangered
-                <br /> ANOTHER FIELD: another field
-              </h4>
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
             </div>
             <Divider orientation="left">Tree Coverage</Divider>
             <div className="damage-component">
@@ -273,13 +267,16 @@ export const ResultsPage = ({
                 type="circle"
                 percent={Math.round(parseInt(response.damage.tree_coverage))}
                 width={80}
-                strokeColor={"#c26a30"}
               />
-              <h4 style={{ marginLeft: "10px" }}>
-                TREE TYPE: Some Valuable Tree
-                <br /> STATUS: Critically Endangered
-                <br /> ANOTHER FIELD: another field
-              </h4>
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
             </div>
           </Card>
         </Col>
@@ -330,9 +327,6 @@ export const ResultsPage = ({
                   />
                 </TabPane>
               </Tabs>
-              {/* <Divider orientation="left">Previous Fire Date</Divider>
-              Last fire in this location occurred on{" "}
-              {response.location.lastFireDate} */}
             </Col>
             <br />
             <Col span={12}>

@@ -21,13 +21,6 @@ export const ResultsPage = ({
   selectedLocation,
   rangeInDays
 }) => {
-  response = {
-    location: response.location,
-    geography: response.geography,
-    damage: response.damage,
-    specificDate: Object.value(response.specificDate)
-  };
-
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { TabPane } = Tabs;
@@ -94,46 +87,45 @@ export const ResultsPage = ({
     {
       key: "1",
       weatherField: "Max Temperature",
-      measure: response.specificDate[currentIndex].weather.max_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.max_temp) + " °C"
     },
     {
       key: "2",
       weatherField: "Min Temperature",
-      measure: response.specificDate[currentIndex].weather.min_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.min_temp) + " °C"
     },
     {
       key: "3",
       weatherField: "Mean Temperature",
-      measure: response.specificDate[currentIndex].weather.mean_temp + " °C"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.mean_temp) +
+        " °C"
     },
     {
       key: "4",
       weatherField: "Total Precipitation",
-      measure: response.specificDate[currentIndex].weather.total_precip + " mm"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.total_precip) +
+        " mm"
     },
     {
       key: "5",
       weatherField: "Total Snow",
-      measure: response.specificDate[currentIndex].weather.total_snow + " mm"
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.total_snow) +
+        " mm"
     },
     {
       key: "6",
-      weatherField: "Snow Depth",
-      measure: response.specificDate[currentIndex].weather.snow_dpth + " mm"
+      weatherField: "Wind Gust Speed",
+      measure:
+        Math.round(response.specificDate[currentIndex].weather.wind_gust_spd) +
+        " m/s"
     },
     {
       key: "7",
-      weatherField: "Wind Speed",
-      measure: response.specificDate[currentIndex].weather.wind_spd + " m/s"
-    },
-    {
-      key: "8",
-      weatherField: "Wind Gust Speed",
-      measure:
-        response.specificDate[currentIndex].weather.wind_gust_spd + " m/s"
-    },
-    {
-      key: "9",
       weatherField: "Wind Direction",
       measure: response.specificDate[currentIndex].weather.wind_dir + " degrees"
     }
@@ -156,82 +148,7 @@ export const ResultsPage = ({
         <Step title="Select Prediction Date" />
         <Step title="View Analysis" />
       </Steps>
-
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-        <Col span={12}>
-          <Card>
-            <h2>Ecozone {response.geography.zone} Information</h2>
-            {response.geography.description}
-            <Tabs
-              defaultActiveKey="1"
-              tabBarStyle={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center"
-              }}
-            >
-              <TabPane tab="Average Fire Duration" key="1">
-                <Bar
-                  data={fireDurationData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-              <TabPane tab="Average Fire Size" key="2">
-                <Bar
-                  data={fireSizeData}
-                  width={5}
-                  height={320}
-                  options={{
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              </TabPane>
-            </Tabs>
-            <Divider orientation="left">Previous Fire Date</Divider>
-            Last fire in this location occurred on{" "}
-            {response.location.lastFireDate}
-            <br />
-            <div
-              id="fullGoogleMap"
-              style={{ display: "block", marginTop: "20px" }}
-            >
-              <GMap
-                currentPage={"results"}
-                selectedLat={selectedLocation[0]}
-                selectedLng={selectedLocation[1]}
-                selectedLocation={selectedLocation[2]}
-              />
-            </div>
-            <div id="partialGoogleMap" style={{ display: "none" }}>
-              <div
-                style={{
-                  fontSize: "18px",
-                  textAlign: "center",
-                  width: "100%"
-                }}
-              >
-                <div
-                  data-show="true"
-                  className="ant-alert ant-alert-success ant-alert-no-icon"
-                >
-                  <span className="ant-alert-message">
-                    {selectedLocation[2]}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </Col>
         <Col span={12}>
           <Card>
             <h2>{currentDate.format("MMMM Do, YYYY").toString()} Prediction</h2>
@@ -262,12 +179,17 @@ export const ResultsPage = ({
             >
               <ReactSpeedometer
                 maxValue={100}
-                value={response.specificDate[currentIndex].riskScore * 100}
-                needleColor="black"
-                startColor="green"
+                value={Math.round(
+                  response.specificDate[currentIndex].riskScore * 100
+                )}
+                currentValueText={`${Math.round(
+                  response.specificDate[currentIndex].riskScore * 100
+                )}%`}
+                needleColor={"black"}
+                startColor={"green"}
                 segments={10}
-                endColor="red"
-                needleTransition="easeElastic"
+                endColor={"red"}
+                needleTransition={"easeElastic"}
               />
             </div>
             <br />
@@ -280,75 +202,164 @@ export const ResultsPage = ({
             />
           </Card>
         </Col>
+        <Col span={12}>
+          <Card>
+            <h2>Possible Damages</h2>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Progress
+                type="circle"
+                percent={Math.round(
+                  parseInt(response.damage.tree_coverage) / 3 +
+                    parseInt(response.damage.vicinity) / 3 +
+                    parseInt(response.damage.protected_area / 3)
+                )}
+                width={200}
+                strokeColor={{
+                  "0%": "#a4cfed",
+                  "100%": "#1890ff"
+                }}
+              />
+            </div>
+            <Divider orientation="left">Vicinity</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={Math.round(parseInt(response.damage.vicinity))}
+                width={80}
+              />
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
+            </div>
+            <Divider orientation="left">Habitat</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={Math.round(parseInt(response.damage.protected_area))}
+                width={80}
+              />
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
+            </div>
+            <Divider orientation="left">Tree Coverage</Divider>
+            <div className="damage-component">
+              <Progress
+                type="circle"
+                percent={Math.round(parseInt(response.damage.tree_coverage))}
+                width={80}
+              />
+              <p style={{ marginLeft: "10px" }}>
+                <b>Nearest City:</b> {response.vicinityData.city}
+                <br />
+                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
+                people
+                <br />
+                <b>Distance: </b>
+                {parseInt(response.vicinityData.distance)} kilometers
+              </p>
+            </div>
+          </Card>
+        </Col>
       </Row>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={32}>
           <Card>
-            <Col span={12}>
-              <h2>Possible Damages</h2>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: "80px"
-                }}
-              >
-                <Progress
-                  type="circle"
-                  percent={79}
-                  width={280}
-                  strokeColor={{
-                    "0%": "green",
-                    "100%": "red"
-                  }}
-                />
-              </div>
+            <Col span={24}>
+              <h2>Ecozone {response.geography.zone} Information</h2>
+              {response.geography.description}
             </Col>
             <Col span={12}>
-              <Divider orientation="left">Vacinity</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={response.damage.vicinity.toFixed(2)}
-                  width={80}
-                  strokeColor={"#3066c2"}
+              <Divider orientation="left">Previous Fire Date</Divider>
+              Last fire in this location occurred on{" "}
+              {response.location.lastFireDate}
+              <Tabs
+                defaultActiveKey="1"
+                tabBarStyle={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center"
+                }}
+              >
+                <TabPane tab="Average Fire Duration" key="1">
+                  <Bar
+                    data={fireDurationData}
+                    width={5}
+                    height={320}
+                    options={{
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: false
+                      }
+                    }}
+                  />
+                </TabPane>
+                <TabPane tab="Average Fire Size" key="2">
+                  <Bar
+                    data={fireSizeData}
+                    width={5}
+                    height={320}
+                    options={{
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: false
+                      }
+                    }}
+                  />
+                </TabPane>
+              </Tabs>
+            </Col>
+            <br />
+            <Col span={12}>
+              <div
+                id="fullGoogleMap"
+                style={{ display: "block", marginTop: "20px" }}
+              >
+                <Divider orientation="left">Current Location</Divider>
+
+                <GMap
+                  currentPage={"results"}
+                  selectedLat={selectedLocation[0]}
+                  selectedLng={selectedLocation[1]}
+                  selectedLocation={selectedLocation[2]}
                 />
-                <h4 style={{ marginLeft: "10px" }}>
-                  POPULATION: 1 million
-                  <br /> DISTANCE TO NEARBY CITY: 4 miles
-                  <br /> ANOTHER FIELD: another field
-                </h4>
               </div>
-              <Divider orientation="left">Habitat</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={response.damage.protected_area.toFixed(2)}
-                  width={80}
-                  strokeColor={"#30c263"}
-                />
-                <h4 style={{ marginLeft: "10px" }}>
-                  POPULATION: 55 million
-                  <br /> STATUS: Critically Endangered
-                  <br /> ANOTHER FIELD: another field
-                </h4>
-              </div>
-              <Divider orientation="left">Tree Coverage</Divider>
-              <div className="damage-component">
-                <Progress
-                  type="circle"
-                  percent={response.damage.tree_coverage.toFixed(2)}
-                  width={80}
-                  strokeColor={"#c26a30"}
-                />
-                <h4 style={{ marginLeft: "10px" }}>
-                  TREE TYPE: Some Valuable Tree
-                  <br /> STATUS: Critically Endangered
-                  <br /> ANOTHER FIELD: another field
-                </h4>
+              <div id="partialGoogleMap" style={{ display: "none" }}>
+                <div
+                  style={{
+                    fontSize: "18px",
+                    textAlign: "center",
+                    width: "100%"
+                  }}
+                >
+                  <div
+                    data-show="true"
+                    className="ant-alert ant-alert-success ant-alert-no-icon"
+                  >
+                    <span className="ant-alert-message">
+                      {selectedLocation[2]}
+                    </span>
+                  </div>
+                </div>
               </div>
             </Col>
           </Card>

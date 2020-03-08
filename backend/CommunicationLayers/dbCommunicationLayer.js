@@ -15,31 +15,37 @@ const uri =
 let dbQuery = {};
 
 dbQuery.findEcoData = function(locationKey) {
-  return new Promise(function(resolve, reject){
+  return new Promise(function(resolve, reject) {
     MongoClient.connect(uri, function(err, client) {
-      if(err) {
-        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+      if (err) {
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
       }
-      client.db("forestcasting")
+      client
+        .db("forestcasting")
         .collection("location_eco")
-        .findOne({"KEY": locationKey})
+        .findOne({ KEY: locationKey })
         .then(dbResult => {
           //close the connection
           client.close();
-          if(dbResult){
-              resolve(new EcoData(
-                  dbResult["KEY"],
-                  dbResult["ECOZONE"],
-                  dbResult["ECOREGION"],
-                  dbResult["ECODSTRICT"]
-              ))
-          }else{
-              reject(new Error(`EcoData not found using: ${locationKey}`))
+          if (dbResult) {
+            resolve(
+              new EcoData(
+                dbResult["KEY"],
+                dbResult["ECOZONE"],
+                dbResult["ECOREGION"],
+                dbResult["ECODSTRICT"]
+              )
+            );
+          } else {
+            reject(new Error(`EcoData not found using: ${locationKey}`));
           }
-        })
-    })
+        });
+    });
   });
-}
+};
 
 dbQuery.findHistoricData = function(locationKey) {
   return new Promise(function(resolve, reject) {
@@ -112,26 +118,26 @@ dbQuery.findEcoInfo = async function(ecoData) {
   });
 };
 
-dbQuery.findDamageStats = async function(location_key){
+dbQuery.findDamageStats = async function(location_key) {
   return new Promise(function(resolve, reject) {
     MongoClient.connect(uri, function(err, client) {
-      if(err){
+      if (err) {
         console.log(
           "Error occurred while connecting to MongoDB Atlas...\n",
           err
         );
       }
-      const collection = client.db("forestcasting").collection("damage_stats")
-      collection.findOne({LOCATION_KEY: location_key}).then(dbResult => {
-        client.close()
+      const collection = client.db("forestcasting").collection("damage_stats");
+      collection.findOne({ LOCATION_KEY: location_key }).then(dbResult => {
+        client.close();
         result = new DamageData(
           dbResult["PROTECTED_AREA"] * 100,
           dbResult["TREE_COVER_PERCENT"]
-        )
-        resolve(result)
-      })
-    })
-  })
-}
+        );
+        resolve(result);
+      });
+    });
+  });
+};
 
 module.exports = dbQuery;

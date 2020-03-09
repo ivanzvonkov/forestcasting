@@ -23,7 +23,7 @@ function get_weather(lat, lng) {
     lat +
     "," +
     lng +
-    "?exclude=minutely,flags,alerts,currently&extend=hourly";
+    "?exclude=minutely,flags,alerts,currently&extend=hourly?units=si";
   return new Promise(function(resolve, reject) {
     requests(url, { json: true }, (err, res, body) => {
       resolve(body);

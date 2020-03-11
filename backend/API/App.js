@@ -36,11 +36,15 @@ app.get("/api/analysis", async (req, res, next) => {
     let vicinityData = await vicinityAPI.findVicinityData(lat, lng);
     let protectedAreaData = await dbQuery.findProtectedAreaData(locationKey);
     await dbQuery.findEcoInfo(ecoData);
-    await damageData.setVicinity(
-      50 * vicinityData.normalizedDistance +
-        50 * vicinityData.normalizedPopulation
-    );
 
+    if (vicinityData.normalizedDistance && vicinityData.normalizedPopulation) {
+      await damageData.setVicinity(
+        50 * vicinityData.normalizedDistance +
+          50 * vicinityData.normalizedPopulation
+      );
+    } else {
+      damageData.setVicinity(0);
+    }
     let analysisResults = await analyze.getAnalysis(
       ecoData,
       weatherData,

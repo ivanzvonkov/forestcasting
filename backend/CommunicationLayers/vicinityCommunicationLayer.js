@@ -13,7 +13,7 @@ let vicinityAPI = {};
 
 vicinityAPI.findVicinityData = async function(lat, lng) {
   var dms = convertDMS(lat, lng);
-  let results;
+  let results = null;
 
   return waApi
     .getFull({
@@ -22,41 +22,75 @@ vicinityAPI.findVicinityData = async function(lat, lng) {
       format: "plaintext"
     })
     .then(res => {
-      res.pods.forEach(element => {
-        if (element.title == "Nearest city") {
-          for (var i = 0; i < element.numsubpods; i++) {
-            var nearestCityNumbers = element.subpods[i].plaintext
-              .match(/\d+/g)
-              .map(Number);
-            var cityName = element.subpods[i].plaintext.split("(");
-            results = {
-              city: cityName[0],
-              distance: nearestCityNumbers[0],
-              population: nearestCityNumbers[1],
-              normalizedDistance: normalizeDistance(
-                nearestCityNumbers[0],
-                MAX_DISTANCE,
-                MIN_DISTANCE
-              ),
-              normalizedPopulation: normalizePopulation(
-                nearestCityNumbers[1],
-                nearestCityNumbers[1] > MAX_POPULATION
-                  ? nearestCityNumbers[1]
-                  : MAX_POPULATION,
-                MIN_POPULATION
-              )
-            };
+      if (res && res.pods) {
+        res.pods.forEach(element => {
+          if (element.title == "Nearest city") {
+            results = extractNearestCityInfo(element);
+          } else if (element.title == "Nearest city center") {
+            let newResults = extractNearestCityInfo(element);
+            if (results && results.distance > newResults.distance) {
+              results = extractNearestCityInfo(element);
+            }
           }
-        }
-      });
-      console.log(results);
+        });
+      } else {
+        results = {
+          city: "Not available",
+          distance: "Not available",
+          population: "Not available",
+          normalizedDistance: 0,
+          normalizedPopulation: 0
+        };
+      }
+
       return results;
     })
     .catch(error => {
-      throw new Error(`Wolfram Alpha API returned: ${error}`);
+      console.log(error);
+      return (results = {
+        city: "Not available",
+        distance: "Not available",
+        population: "Not available",
+        normalizedDistance: 0,
+        normalizedPopulation: 0
+      });
     });
 };
 
+function extractNearestCityInfo(element) {
+  let text = element.subpods[0].plaintext;
+  let population = text.slice(text.indexOf("population: "));
+  population = population.match(/\d+/g).map(Number)[0];
+  let distance = element.subpods[0].plaintext.split("(")[1];
+  distance = Number(distance.replace(/[^0-9\.]+/g, ""));
+  var cityName = element.subpods[0].plaintext.split("(");
+  if (distance) {
+    var normalizedDistance = normalizeDistance(
+      distance,
+      MAX_DISTANCE,
+      MIN_DISTANCE
+    );
+  } else {
+    distance = 0;
+  }
+  if (population) {
+    var normalizedPopulation = normalizePopulation(
+      population,
+      population > MAX_POPULATION ? population : MAX_POPULATION,
+      MIN_POPULATION
+    );
+  } else {
+    population = 0;
+  }
+  let results = {
+    city: cityName[0] ? cityName[0] : "Not available",
+    distance: distance,
+    population: population,
+    normalizedDistance: normalizedDistance,
+    normalizedPopulation: normalizedPopulation
+  };
+  return results;
+}
 function normalizeDistance(val, max, min) {
   var normalizedVal = 1 - (val - min) / (max - min);
   return normalizedVal < 0 ? 0 : normalizedVal;

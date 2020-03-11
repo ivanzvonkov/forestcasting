@@ -132,8 +132,33 @@ dbQuery.findDamageStats = async function(location_key) {
         client.close();
         result = new DamageData(
           dbResult["PROTECTED_AREA"] * 100,
-          dbResult["TREE_COVER_PERCENT"]
+          dbResult["TREE_COVER_PERCENT"],
         );
+        resolve(result);
+      });
+    });
+  });
+};
+
+dbQuery.findProtectedAreaData = async function(location_key) {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(uri, function(err, client) {
+      if (err) {
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
+      }
+      const collection = client.db("forestcasting").collection("protected_area_data");
+      collection.find({LOCATION_KEY: location_key}).toArray().then(dbResult => {
+          result = [];
+          dbResult.forEach(res => {
+             result.push({
+               "area_name": res["ORIG_NAME"],
+               "area_type": res["DESIG"],
+               "mng_auth": res["MANG_AUTH"]
+             })
+          });
         resolve(result);
       });
     });

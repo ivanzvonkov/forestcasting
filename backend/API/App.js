@@ -34,6 +34,7 @@ app.get("/api/analysis", async (req, res, next) => {
     let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range);
     let damageData = await dbQuery.findDamageStats(locationKey);
     let vicinityData = await vicinityAPI.findVicinityData(lat, lng);
+    let protectedAreaData = await dbQuery.findProtectedAreaData(locationKey);
     await dbQuery.findEcoInfo(ecoData);
     await damageData.setVicinity(
       50 * vicinityData.normalizedDistance +
@@ -44,15 +45,14 @@ app.get("/api/analysis", async (req, res, next) => {
       ecoData,
       weatherData,
       historicData,
-      damageData,
-      vicinityData
     );
     res.json({
       location: historicData,
       geography: ecoData,
       damage: damageData,
       specificDate: analysisResults,
-      vicinityData
+      vicinityData,
+      protectedAreaData
     });
   } catch (err) {
     res.status(400).json({ message: err.toString() });

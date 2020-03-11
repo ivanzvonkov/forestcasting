@@ -1,7 +1,7 @@
-const request = require("request");
+request = require("request");
 let analyze = {};
 
-analyze.getAnalysis = async function(ecoData, weatherData, historicData, damageData) {
+analyze.getAnalysis = async function(ecoData, weatherData, historicData) {
   // create input array for predict using ecoData, weatherData, historicData
   // loop through weather data
   let modelInputs = [];

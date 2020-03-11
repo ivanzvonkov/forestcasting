@@ -210,7 +210,8 @@ export const ResultsPage = ({
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
+                margin: "40px"
               }}
             >
               <Progress
@@ -220,7 +221,7 @@ export const ResultsPage = ({
                     parseInt(response.damage.vicinity) / 3 +
                     parseInt(response.damage.protected_area / 3)
                 )}
-                width={200}
+                width={250}
                 strokeColor={{
                   "0%": "#a4cfed",
                   "100%": "#1890ff"
@@ -244,7 +245,7 @@ export const ResultsPage = ({
                 {parseInt(response.vicinityData.distance)} kilometers
               </p>
             </div>
-            <Divider orientation="left">Habitat</Divider>
+            <Divider orientation="left">Protected Area</Divider>
             <div className="damage-component">
               <Progress
                 type="circle"
@@ -252,13 +253,12 @@ export const ResultsPage = ({
                 width={80}
               />
               <p style={{ marginLeft: "10px" }}>
-                <b>Nearest City:</b> {response.vicinityData.city}
+                <b>Name of Protected Area:</b> Not available
                 <br />
-                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
-                people
+                <b>Type of Protected Area:</b> Not available
                 <br />
-                <b>Distance: </b>
-                {parseInt(response.vicinityData.distance)} kilometers
+                <b>Management Authority: </b>
+                Not available
               </p>
             </div>
             <Divider orientation="left">Tree Coverage</Divider>
@@ -269,13 +269,12 @@ export const ResultsPage = ({
                 width={80}
               />
               <p style={{ marginLeft: "10px" }}>
-                <b>Nearest City:</b> {response.vicinityData.city}
+                <b>Type of Vegitation:</b> Not Available
                 <br />
-                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
-                people
+                <b>Population:</b> Not available
                 <br />
                 <b>Distance: </b>
-                {parseInt(response.vicinityData.distance)} kilometers
+                Not available
               </p>
             </div>
           </Card>

@@ -233,9 +233,9 @@ export const ResultsPage = ({
               <Progress
                 type="circle"
                 percent={Math.round(parseInt(response.damage.vicinity))}
-                width={80}
+                width={100}
               />
-              <p style={{ marginLeft: "10px" }}>
+              <p style={{ margin: "10px" }}>
                 <b>Nearest City:</b> {response.vicinityData.city}
                 <br />
                 <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
@@ -250,9 +250,9 @@ export const ResultsPage = ({
               <Progress
                 type="circle"
                 percent={Math.round(parseInt(response.damage.protected_area))}
-                width={80}
+                width={100}
               />
-              <p style={{ marginLeft: "10px" }}>
+              <p style={{ margin: "10px" }}>
                 <b>Name of Protected Area:</b> Not available
                 <br />
                 <b>Type of Protected Area:</b> Not available
@@ -266,9 +266,9 @@ export const ResultsPage = ({
               <Progress
                 type="circle"
                 percent={Math.round(parseInt(response.damage.tree_coverage))}
-                width={80}
+                width={100}
               />
-              <p style={{ marginLeft: "10px" }}>
+              <p style={{ margin: "10px" }}>
                 <b>Type of Vegitation:</b> Not Available
                 <br />
                 <b>Population:</b> Not available

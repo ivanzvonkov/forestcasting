@@ -40,13 +40,21 @@ app.get("/api/analysis", async (req, res, next) => {
     let ecoData = await ecoPromise;
     let ecoInfoPromise = dbQuery.findEcoInfo(ecoData);
 
-    // wait for all required promises to return before moving on
-    let vicinityData = await vicinityPromise;
+    // wait for all required promises for analysis have returned before moving on
     let historicData = await historicPromise;
     let weatherData = await weatherPromise;
+    await ecoInfoPromise;
+
+    let analysisResults = await analyze.getAnalysis(
+      ecoData,
+      weatherData,
+      historicData,
+    );
+
+    //make sure promises not needed in analysis have returned
     let damageData = await damagePromise;
     let protectedAreaData = await protectedAreaPromise;
-    await ecoInfoPromise;
+    let vicinityData = await vicinityPromise;
 
     if (vicinityData.normalizedDistance && vicinityData.normalizedPopulation) {
       await damageData.setVicinity(
@@ -57,11 +65,6 @@ app.get("/api/analysis", async (req, res, next) => {
       damageData.setVicinity(0);
     }
 
-    let analysisResults = await analyze.getAnalysis(
-      ecoData,
-      weatherData,
-      historicData,
-    );
     res.json({
       location: historicData,
       geography: ecoData,

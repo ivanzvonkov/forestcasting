@@ -29,7 +29,6 @@ app.get("/api/analysis", async (req, res, next) => {
   let range = req.query.range ? req.query.range : 1;
   try {
     let locationKey = getLocationKey(lat, lng);
-    console.log(locationKey)
     //set up promises
     let ecoPromise =  dbQuery.findEcoData(locationKey);
     let historicPromise =  dbQuery.findHistoricData(locationKey);

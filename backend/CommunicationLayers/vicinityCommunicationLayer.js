@@ -82,7 +82,7 @@ function extractNearestCityInfo(element) {
   } else {
     population = 0;
   }
-  console.log(cityName)
+
   let results = {
     city: cityName[0] ? cityName[0] : "Not available",
     distance: distance,

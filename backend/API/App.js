@@ -29,7 +29,7 @@ app.get("/api/analysis", async (req, res, next) => {
   let range = req.query.range ? req.query.range : 1;
   try {
     let locationKey = getLocationKey(lat, lng);
-
+    console.log(locationKey)
     //set up promises
     let ecoPromise =  dbQuery.findEcoData(locationKey);
     let historicPromise =  dbQuery.findHistoricData(locationKey);
@@ -75,13 +75,6 @@ app.get("/api/analysis", async (req, res, next) => {
     res.status(400).json({ message: err.toString() });
   }
 });
-
-function getData(lat, lng, locationKey){
-  return new Promise(function(resolve, reject) {
-
-  })
-}
-
 
 const getLocationKey = (lat, lng) => {
   return parseCoordinate(lat) + "|" + parseCoordinate(lng);

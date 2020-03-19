@@ -101,9 +101,12 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
       entry["windSpeed"],
       entry["windGust"],
       entry["windBearing"],
-      entry["humidity"],
-      entry["dewPoint"]
+      entry["dewPoint"],
+      entry["humidity"]
     );
+
+    console.log("Daily Weather: ")
+    console.log(weatherDay)
 
     let weatherHours = weather["hourly"]["data"].filter(
       e =>
@@ -113,6 +116,9 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
     );
 
     weatherDay.addHourlyData(weatherHours);
+
+    console.log("Hourly Weather: ")
+    console.log(weatherDay)
 
     results.push(weatherDay);
   });

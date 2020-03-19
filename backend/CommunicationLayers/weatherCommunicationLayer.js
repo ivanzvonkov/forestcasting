@@ -105,9 +105,6 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
       entry["humidity"]
     );
 
-    console.log("Daily Weather: ")
-    console.log(weatherDay)
-
     let weatherHours = weather["hourly"]["data"].filter(
       e =>
         tools.epochToDate(e["time"]) == weatherDay.date &&
@@ -116,9 +113,6 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
     );
 
     weatherDay.addHourlyData(weatherHours);
-
-    console.log("Hourly Weather: ")
-    console.log(weatherDay)
 
     results.push(weatherDay);
   });

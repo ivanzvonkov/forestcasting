@@ -143,7 +143,7 @@ export const ResultsPage = ({
 
   return (
     <div id="divToPrint" style={{ height: "auto" }}>
-      <Steps current={3} style={{ marginBottom: "20px" }}>
+      <Steps current={2} style={{ marginBottom: "20px" }}>
         <Step title="Select Location" />
         <Step title="Select Prediction Date" />
         <Step title="View Analysis" />

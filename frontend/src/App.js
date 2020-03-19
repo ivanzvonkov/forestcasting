@@ -16,6 +16,7 @@ const App = () => {
   const [analysisResult, setAnalysisResult] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [rangeInDays, setRangeInDays] = useState(0);
+  
   const login = (username, password) => {
     const key = "updatable";
     message.loading({ content: "Logging in...", key });
@@ -41,7 +42,7 @@ const App = () => {
   ) => {
     //rest api call start
     const key = "updatable";
-    message.loading({ content: "Generating Analysis...", key });
+    message.loading({ content: "Generating Analysis...", key, duration: 0 });
     const stringDate = selectedDate.format("YYYY-MM-DD");
     axios
       .get(
@@ -55,24 +56,59 @@ const App = () => {
       )
       .then(
         response => {
-          message.success({ content: "Analysis Generated.", key });
-          setAnalysisResult(response.data);
-          setValidRange([selectedDate, endDate]);
-          setSelectedLocation([
-            selectedLatitude,
-            selectedLongitude,
-            selectedAddress
-          ]);
-          setRangeInDays(selectedRange);
-          setCurrentPage("results");
+          // Check response.data
+          const validKeys = ['location', 'geography', 'damage', 'specificDate', 'vicinityData', 'protectedAreaData'];
+          let validationError = false
+          for(const validKey of validKeys){
+            if(!(validKey in response.data)){
+              console.error('Missing:' + validKey);
+              validationError = true;
+            }else{
+              let val = response.data[validKey];
+              if(typeof val === 'object' && Object.entries(val).length === 0){
+                validationError = true;
+              }else if(Array.isArray(val)){
+                validationError = true;
+              }
+              if(validationError){
+                console.error(validKey + ' is empty.');
+              }   
+            }
+          }
+
+          if(validationError){
+            message.error({ content: "Analysis provided invalid response", key, duration: 3 });  
+          }else{
+            message.success({ content: "Analysis Generated.", key, duration: 3 });
+            setAnalysisResult(response.data);
+            setValidRange([selectedDate, endDate]);
+            setSelectedLocation([
+              selectedLatitude,
+              selectedLongitude,
+              selectedAddress
+            ]);
+            setRangeInDays(selectedRange);
+            setCurrentPage("results");
+          }
         },
         error => {
+          let errorMessage = '';
+          if(error.response && error.response.status === 400){
+              errorMessage = 'Insufficient information about grid.'
+              console.error(error.response.data.message);
+          }else if(error.response && error.response.status === 500){
+            errorMessage = 'Received 500 error, server unavailable.'
+              console.error(error.response.data);  
+          }else{
+            errorMessage = "Server error. Ensure server is up and running.";  
+            console.error(error);
+          }
           // rest api call done
           message.error({
-            content: "Server error. Ensure server is up and running.",
-            key
+            content: errorMessage,
+            key,
+            duration: 3
           });
-          console.error(error);
         }
       );
   };
@@ -184,7 +220,7 @@ const App = () => {
         </PageHeader>
       </Affix>
 
-      <Card style={{ width: "70vw", minWidth: "1200px" }}>
+      <Card style={{ width: "100%", maxWidth:'1800px' }}>
         {pageComponent[currentPage]}
       </Card>
     </MainDiv>

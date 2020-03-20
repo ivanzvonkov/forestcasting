@@ -89,10 +89,9 @@ export const MapPage = ({ selectLocationAndDate }) => {
           res.data.results[0].formatted_address.includes("YT YOB") ||
           res.data.results[0].formatted_address.includes("Nunavut X0A, Canada")
         ) {
-          message.error({
-            content: "Please select a valid location. Check our map of valid location here: ",
-            duration: 3,
-          });
+          message.error(
+            "Please select a valid location. Check Forestcasting's \"Supported Areas\" for more information "
+          );
           setValidLocationSelected(false);
         } else {
           message.success({content:"Valid location selected.", duration: 0.5});

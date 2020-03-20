@@ -30,3 +30,15 @@
 .ant-input-number {
   width: 80px !important;
 }
+.ant-collapse-header {
+  padding-top: 1px !important;
+  padding-bottom: 0px !important;
+  padding-right: 0px !important;
+}
+.ant-collapse {
+  background-color: white;
+}
+
+.ant-collapse-content-box {
+  padding: 10px !important;
+}

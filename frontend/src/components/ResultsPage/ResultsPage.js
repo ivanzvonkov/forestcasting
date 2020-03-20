@@ -9,8 +9,10 @@ import {
   Tabs,
   Steps,
   Progress,
-  InputNumber
+  InputNumber,
+  Collapse
 } from "antd";
+
 import { Bar, Pie } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
 import ReactSpeedometer from "react-d3-speedometer";
@@ -28,8 +30,10 @@ export const ResultsPage = ({
 
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const { TabPane } = Tabs;
   const { Step } = Steps;
+  const { Panel } = Collapse;
 
   const pieChartData = {
     labels: ["Vicinity", "Tree Coverage", "Protected Area"],
@@ -303,7 +307,7 @@ export const ResultsPage = ({
                   value={vicinityWeight}
                   onChange={value => {
                     setVicinityWeight(value);
-                    if (vicinityWeight + treeWeight + areayWeight != 1) {
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
                       var remainder = (1 - vicinityWeight) / 2;
                       setAreaWeight(remainder);
                       setTreeWeight(remainder);
@@ -312,7 +316,13 @@ export const ResultsPage = ({
                 />
               </div>
             </div>
-            <Divider orientation="left">Protected Area</Divider>
+            <Divider orientation="left">
+              {`${
+                response.protectedAreaData.length > 1
+                  ? "Protected Areas"
+                  : "Protected Area"
+              }`}
+            </Divider>
 
             <div className="damage-component-wrapper">
               <div className="damage-component">
@@ -322,14 +332,29 @@ export const ResultsPage = ({
                   width={100}
                   strokeColor={"#FFCE56"}
                 />
-                <p style={{ margin: "10px" }}>
-                  <b>Name of Protected Area:</b> Not available
-                  <br />
-                  <b>Type of Protected Area:</b> Not available
-                  <br />
-                  <b>Management Authority: </b>
-                  Not available
-                </p>
+                <div style={{ margin: "10px" }}>
+                  {response.protectedAreaData.length < 1 ? (
+                    <p>No protected areas found in this region.</p>
+                  ) : (
+                    <Collapse bordered={false} accordion>
+                      {response.protectedAreaData.map(function(data, index) {
+                        console.log(data, index);
+                        return (
+                          <Panel
+                            header={
+                              <p style={{ margin: "0px" }}>{data.area_name}</p>
+                            }
+                            key={index}
+                          >
+                            <b>Type:</b> {data.area_type} <br />
+                            <b>Authority: </b>
+                            {data.mng_auth}
+                          </Panel>
+                        );
+                      })}
+                    </Collapse>
+                  )}
+                </div>
               </div>
               <div
                 style={{
@@ -354,7 +379,7 @@ export const ResultsPage = ({
                   value={areayWeight}
                   onChange={value => {
                     setAreaWeight(value);
-                    if (vicinityWeight + treeWeight + areayWeight != 1) {
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
                       var remainder = (1 - areayWeight) / 2;
                       setVicinityWeight(remainder);
                       setTreeWeight(remainder);
@@ -405,7 +430,7 @@ export const ResultsPage = ({
                   value={treeWeight}
                   onChange={value => {
                     setTreeWeight(value);
-                    if (vicinityWeight + treeWeight + areayWeight != 1) {
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
                       var remainder = (1 - treeWeight) / 2;
                       setAreaWeight(remainder);
                       setVicinityWeight(remainder);

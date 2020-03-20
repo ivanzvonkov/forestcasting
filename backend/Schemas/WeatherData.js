@@ -1,7 +1,7 @@
 class WeatherData {
   constructor(){}
 
-  set_with_forecast(DATE, MAX_TEMP, MIN_TEMP, TOTAL_PRECIP, PRECIP_TYPE, WIND_GUST_SPD, WIND_DIR){
+  set_with_forecast(DATE, MAX_TEMP, MIN_TEMP, TOTAL_PRECIP, PRECIP_TYPE, WIND_GUST_SPD, WIND_DIR, DEW_PNT, REL_HUM){
     this.date = DATE //yyyy-mm-dd
     this.max_temp = MAX_TEMP
     this.min_temp = MIN_TEMP
@@ -27,6 +27,12 @@ class WeatherData {
 
     this.wind_gust_spd = WIND_GUST_SPD
     this.wind_dir = WIND_DIR
+
+    //temporarily set these values with daily values
+    // if hourly is unavailable they will stay as is
+    this.temp_12_4 = MAX_TEMP
+    this.dew_point_temp_12_4 = DEW_PNT
+    this.rel_hum_12_4 = REL_HUM
   }
 
   set_with_averages(DATE,MAX_TEMP,MIN_TEMP,MEAN_TEMP,TOTAL_RAIN,TOTAL_SNOW,TOTAL_PRECIP,SNOW_ON_GRND,DIR_OF_MAX_GUST,SPD_OF_MAX_GUST,TEMP_12_4,DEW_TEMP_12_4,REL_HUM_12_4){

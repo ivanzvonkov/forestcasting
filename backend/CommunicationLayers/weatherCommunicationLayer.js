@@ -101,8 +101,8 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
       entry["windSpeed"],
       entry["windGust"],
       entry["windBearing"],
-      entry["humidity"],
-      entry["dewPoint"]
+      entry["dewPoint"],
+      entry["humidity"]
     );
 
     let weatherHours = weather["hourly"]["data"].filter(

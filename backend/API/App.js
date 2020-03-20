@@ -29,13 +29,32 @@ app.get("/api/analysis", async (req, res, next) => {
   let range = req.query.range ? req.query.range : 1;
   try {
     let locationKey = getLocationKey(lat, lng);
-    let ecoData = await dbQuery.findEcoData(locationKey);
-    let historicData = await dbQuery.findHistoricData(locationKey);
-    let weatherData = await weatherAPI.findWeatherData(lat, lng, date, range);
-    let damageData = await dbQuery.findDamageStats(locationKey);
-    let vicinityData = await vicinityAPI.findVicinityData(lat, lng);
-    let protectedAreaData = await dbQuery.findProtectedAreaData(locationKey);
-    await dbQuery.findEcoInfo(ecoData);
+    //set up promises
+    let ecoPromise =  dbQuery.findEcoData(locationKey);
+    let historicPromise =  dbQuery.findHistoricData(locationKey);
+    let weatherPromise =  weatherAPI.findWeatherData(lat, lng, date, range);
+    let damagePromise =  dbQuery.findDamageStats(locationKey);
+    let vicinityPromise =  vicinityAPI.findVicinityData(lat, lng);
+    let protectedAreaPromise =  dbQuery.findProtectedAreaData(locationKey);
+
+    let ecoData = await ecoPromise;
+    let ecoInfoPromise = dbQuery.findEcoInfo(ecoData);
+
+    // wait for all required promises for analysis have returned before moving on
+    let historicData = await historicPromise;
+    let weatherData = await weatherPromise;
+    await ecoInfoPromise;
+
+    let analysisResults = await analyze.getAnalysis(
+      ecoData,
+      weatherData,
+      historicData,
+    );
+
+    //make sure promises not needed in analysis have returned
+    let damageData = await damagePromise;
+    let protectedAreaData = await protectedAreaPromise;
+    let vicinityData = await vicinityPromise;
 
     if (vicinityData.normalizedDistance && vicinityData.normalizedPopulation) {
       await damageData.setVicinity(
@@ -45,11 +64,7 @@ app.get("/api/analysis", async (req, res, next) => {
     } else {
       damageData.setVicinity(0);
     }
-    let analysisResults = await analyze.getAnalysis(
-      ecoData,
-      weatherData,
-      historicData,
-    );
+
     res.json({
       location: historicData,
       geography: ecoData,

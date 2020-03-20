@@ -8,9 +8,12 @@ import {
   Pagination,
   Tabs,
   Steps,
-  Progress
+  Progress,
+  InputNumber,
+  Collapse
 } from "antd";
-import { Bar } from "react-chartjs-2";
+
+import { Bar, Pie } from "react-chartjs-2";
 import { GMap } from "../MapPage/GMap/GMap";
 import ReactSpeedometer from "react-d3-speedometer";
 import "./styles.css";
@@ -21,10 +24,27 @@ export const ResultsPage = ({
   selectedLocation,
   rangeInDays
 }) => {
+  const [vicinityWeight, setVicinityWeight] = useState(0.33);
+  const [treeWeight, setTreeWeight] = useState(0.33);
+  const [areayWeight, setAreaWeight] = useState(0.33);
+
   const [currentDate, setCurrentDate] = useState(validRange[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const { TabPane } = Tabs;
   const { Step } = Steps;
+  const { Panel } = Collapse;
+
+  const pieChartData = {
+    labels: ["Vicinity", "Tree Coverage", "Protected Area"],
+    datasets: [
+      {
+        data: [vicinityWeight, treeWeight, areayWeight],
+        backgroundColor: ["#FF6384", "#4bc0c0", "#FFCE56"],
+        hoverBackgroundColor: ["#FF6384", "#4bc0c0", "#FFCE56"]
+      }
+    ]
+  };
 
   const columns = [
     {
@@ -205,21 +225,22 @@ export const ResultsPage = ({
         <Col span={12}>
           <Card>
             <h2>Possible Damages</h2>
+
             <div
               style={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "center",
                 alignItems: "center",
-                margin: "40px"
+                marginTop: "40px",
+                marginBottom: "40px"
               }}
             >
               <Progress
                 type="circle"
                 percent={Math.round(
-                  parseInt(response.damage.tree_coverage) / 3 +
-                    parseInt(response.damage.vicinity) / 3 +
-                    parseInt(response.damage.protected_area / 3)
+                  parseInt(response.damage.tree_coverage) * treeWeight +
+                    parseInt(response.damage.vicinity) * vicinityWeight +
+                    parseInt(response.damage.protected_area * areayWeight)
                 )}
                 width={250}
                 strokeColor={{
@@ -227,55 +248,196 @@ export const ResultsPage = ({
                   "100%": "#1890ff"
                 }}
               />
+
+              <Pie
+                data={pieChartData}
+                width={340}
+                height={200}
+                options={{
+                  title: {
+                    display: true,
+                    text: "Weighting"
+                  },
+                  responsive: false,
+                  legend: {
+                    display: false
+                  }
+                }}
+              />
             </div>
             <Divider orientation="left">Vicinity</Divider>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.vicinity))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
-                <b>Nearest City:</b> {response.vicinityData.city}
-                <br />
-                <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
-                people
-                <br />
-                <b>Distance: </b>
-                {parseInt(response.vicinityData.distance)} kilometers
-              </p>
+            <div className="damage-component-wrapper">
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={Math.round(parseInt(response.damage.vicinity))}
+                  width={100}
+                  strokeColor={"#FF6384"}
+                />
+                <p style={{ margin: "10px" }}>
+                  <b>Nearest City:</b> {response.vicinityData.city}
+                  <br />
+                  <b>Population:</b>{" "}
+                  {parseInt(response.vicinityData.population)} people
+                  <br />
+                  <b>Distance: </b>
+                  {parseInt(response.vicinityData.distance)} kilometers
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  marginLeft: "25px"
+                }}
+              >
+                <div
+                  style={{
+                    color: "@ Black 45%",
+                    fontSize: "14px"
+                  }}
+                >
+                  Weighting:
+                </div>
+                <InputNumber
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={vicinityWeight}
+                  onChange={value => {
+                    setVicinityWeight(value);
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
+                      var remainder = (1 - vicinityWeight) / 2;
+                      setAreaWeight(remainder);
+                      setTreeWeight(remainder);
+                    }
+                  }}
+                />
+              </div>
             </div>
-            <Divider orientation="left">Protected Area</Divider>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.protected_area))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
-                <b>Name of Protected Area:</b> Not available
-                <br />
-                <b>Type of Protected Area:</b> Not available
-                <br />
-                <b>Management Authority: </b>
-                Not available
-              </p>
+            <Divider orientation="left">
+              {`${
+                response.protectedAreaData.length > 1
+                  ? "Protected Areas"
+                  : "Protected Area"
+              }`}
+            </Divider>
+
+            <div className="damage-component-wrapper">
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={Math.round(parseInt(response.damage.protected_area))}
+                  width={100}
+                  strokeColor={"#FFCE56"}
+                />
+                <div style={{ margin: "10px" }}>
+                  {response.protectedAreaData.length < 1 ? (
+                    <p>No protected areas found in this region.</p>
+                  ) : (
+                    <Collapse bordered={false} accordion>
+                      {response.protectedAreaData.map(function(data, index) {
+                        console.log(data, index);
+                        return (
+                          <Panel
+                            header={
+                              <p style={{ margin: "0px" }}>{data.area_name}</p>
+                            }
+                            key={index}
+                          >
+                            <b>Type:</b> {data.area_type} <br />
+                            <b>Authority: </b>
+                            {data.mng_auth}
+                          </Panel>
+                        );
+                      })}
+                    </Collapse>
+                  )}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  marginLeft: "25px"
+                }}
+              >
+                <div
+                  style={{
+                    color: "@ Black 45%",
+                    fontSize: "14px"
+                  }}
+                >
+                  Weighting:
+                </div>
+                <InputNumber
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={areayWeight}
+                  onChange={value => {
+                    setAreaWeight(value);
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
+                      var remainder = (1 - areayWeight) / 2;
+                      setVicinityWeight(remainder);
+                      setTreeWeight(remainder);
+                    }
+                  }}
+                />
+              </div>
             </div>
+
             <Divider orientation="left">Tree Coverage</Divider>
-            <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.tree_coverage))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
-                <b>Type of Vegitation:</b> Not Available
-                <br />
-                <b>Population:</b> Not available
-                <br />
-                <b>Distance: </b>
-                Not available
-              </p>
+            <div className="damage-component-wrapper">
+              <div className="damage-component">
+                <Progress
+                  type="circle"
+                  percent={Math.round(parseInt(response.damage.tree_coverage))}
+                  width={100}
+                  strokeColor={"#4bc0c0"}
+                />
+                <p style={{ margin: "10px" }}>
+                  <b>Type of Vegitation:</b> Not Available
+                  <br />
+                  <b>Population:</b> Not available
+                  <br />
+                  <b>Distance: </b>
+                  Not available
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  marginLeft: "25px"
+                }}
+              >
+                <div
+                  style={{
+                    color: "@ Black 45%",
+                    fontSize: "14px"
+                  }}
+                >
+                  Weighting:
+                </div>
+                <InputNumber
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={treeWeight}
+                  onChange={value => {
+                    setTreeWeight(value);
+                    if (vicinityWeight + treeWeight + areayWeight !== 1) {
+                      var remainder = (1 - treeWeight) / 2;
+                      setAreaWeight(remainder);
+                      setVicinityWeight(remainder);
+                    }
+                  }}
+                />
+              </div>
             </div>
           </Card>
         </Col>

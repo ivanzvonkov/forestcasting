@@ -17,12 +17,13 @@ const App = () => {
   const [analysisResult, setAnalysisResult] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [rangeInDays, setRangeInDays] = useState(0);
+
   const showSupportedAreas = () => {
       Modal.info({
         title: "Areas Supported by Forestcasting",
         centered: "true",
         width: 1200,
-        height: 1040,
+        height: 1000,
         content:(
             <div>
               <div>

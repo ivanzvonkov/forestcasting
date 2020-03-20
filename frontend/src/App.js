@@ -57,7 +57,7 @@ const App = () => {
       .then(
         response => {
           // Check response.data
-          const validKeys = ['location', 'geography', 'damage', 'specificDate', 'vicinityData', 'protectedAreaData'];
+          const validKeys = ['location', 'geography', 'damage', 'specificDate', 'vicinityData'];//, 'protectedAreaData'];
           let validationError = false
           for(const validKey of validKeys){
             if(!(validKey in response.data)){

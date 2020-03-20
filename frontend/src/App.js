@@ -4,18 +4,45 @@ import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
-import { Button, Card, message, PageHeader, Affix } from "antd";
+import { Modal, Button, Card, message, PageHeader, Affix } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from "axios";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const App = () => {
+  const supportedAreas = require("./assets/supportedAreas.PNG")
   const queryString = require("query-string");
   const [currentPage, setCurrentPage] = useState("map");
   const [analysisResult, setAnalysisResult] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [rangeInDays, setRangeInDays] = useState(0);
+
+  const showSupportedAreas = () => {
+      Modal.info({
+        title: "Areas Supported by Forestcasting",
+        centered: "true",
+        width: '75%',
+        content:(
+            <div>
+              <div>
+                <img
+                  src={supportedAreas}
+                  style={{
+                    height: "460px",
+                    display: "center",
+                    marginLeft: "0px"
+                  }}
+                />
+              </div>,
+              <div>
+                <p>Image depicts Pythia's proprietary universal grid system. Invalid areas are shown in gray, while valid areas are shown in green & black grids.</p>
+              </div>
+            </div>
+            ),
+      });
+  }
+
   const login = (username, password) => {
     const key = "updatable";
     message.loading({ content: "Logging in...", key });
@@ -126,6 +153,10 @@ const App = () => {
         <Button onClick={goBackToMap} style={{ marginRight: "1em" }}>
           Back to Map
         </Button>
+      )}
+
+      {(currentPage === "map" || currentPage === "results") && (
+        <Button onClick={showSupportedAreas} style={{ marginRight: "1em" }}>Supported Areas</Button>
       )}
 
       {(currentPage === "map" || currentPage === "results") && (

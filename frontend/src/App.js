@@ -22,15 +22,14 @@ const App = () => {
       Modal.info({
         title: "Areas Supported by Forestcasting",
         centered: "true",
-        width: 1200,
-        height: 1000,
+        width: '75%',
         content:(
             <div>
               <div>
                 <img
                   src={supportedAreas}
                   style={{
-                    height: "520px",
+                    height: "460px",
                     display: "center",
                     marginLeft: "0px"
                   }}

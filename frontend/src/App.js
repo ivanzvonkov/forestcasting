@@ -28,13 +28,14 @@ const App = () => {
               <div>
                 <img
                   src={supportedAreas}
+                  alt='Valid areas map'
                   style={{
-                    height: "460px",
-                    display: "center",
-                    marginLeft: "0px"
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    display: "center"
                   }}
                 />
-              </div>,
+              </div>
               <div>
                 <p>Image depicts Pythia's proprietary universal grid system. Invalid areas are shown in gray, while valid areas are shown in green & black grids.</p>
               </div>

@@ -83,7 +83,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
           res.data.results[0].formatted_address.includes("Nunavut X0A, Canada")
         ) {
           message.error(
-            "Please select a valid location. Check our map of valid location here: "
+            "Please select a valid location. Check Forestcasting's \"Supported Areas\" for more information "
           );
           setValidLocationSelected(false);
         } else {

@@ -14,11 +14,14 @@ Get list of relevant weather stations in Canada
  * World Shapefile/World_Shapefile.zip
  * {province} Location/{province}_grid_system.csv.gz
 * Outputs: {province}_grid_system_with_station.csv.gz
+
+## Setup
 """
 
-# Imports
+!pip install aiohttp
 !pip install geopandas
 
+# Imports
 import pandas as pd
 import numpy as np
 import geopandas as gpd
@@ -29,12 +32,15 @@ from descartes import PolygonPatch
 import random
 from google.colab import drive
 import zipfile
+import asyncio
+import aiohttp
+import time
 
 # Mount Google Drive
 drive.mount('/content/gdrive')
 root_path = '/content/gdrive/My Drive/Capstone Public Folder/Data/'
 
-province = 'AL'
+province = 'QB'
 
 # Read in data
 stations = pd.read_csv(root_path + 'Weather - Stations/station_inventory.csv')
@@ -45,6 +51,8 @@ stations.head()
 file_path = root_path + 'World Shapefile/World_Shapefile.zip'
 with zipfile.ZipFile(file_path,"r") as zip_ref:
   zip_ref.extractall('.')
+
+"""## Clean up stations"""
 
 # Check the column names
 list(stations)
@@ -76,6 +84,34 @@ print('Total stations active before 2000: '+str(len(stations[active_for_last_20]
 st = stations[current & active_for_last_20]
 print('Total current stations active for last 20 yrs: '+str(len(st)))
 
+"""## Flag valid hourly weather"""
+
+st['hourly'] = False
+
+# Mark provinces that have hourly data
+async def check_hourly_weather(session, stationID):
+  url = "http://climate.weather.gc.ca/climate_data/bulk_data_e.html?format=csv&" +\
+            f"stationID={stationID}&Year=2018&Month=1&Day=14&timeframe=1&submit=Download+Data"
+  async with session.get(url) as response:
+    byte_code = await response.content.read()
+    st.loc[st['Station ID'] == stationID, 'hourly'] = True
+
+async def caller():
+  async with aiohttp.ClientSession() as session:
+    tasks = []
+    index = 0
+    for stationID in st['Station ID']:
+      tasks.append(check_hourly_weather(session, stationID))
+    await asyncio.gather(*tasks, return_exceptions=True)
+
+start = time.time()
+loop = asyncio.get_event_loop()
+loop.run_until_complete(caller())
+end = time.time()
+print(end - start)
+
+"""## Geometry"""
+
 # Set up geometry
 geometry = [Point(xy)
              for xy in  zip(
@@ -99,7 +135,7 @@ st.to_csv(root_path + 'Weather - Stations/current_station_inventory.csv.gz', ind
 """Map current station to given coordinate system"""
 
 # Read in grid data
-grid = pd.read_csv(root_path + f'{province} Location/working_{province}_grid_system.csv.gz')
+grid = pd.read_csv(root_path + f'{province} Location/{province}_grid_system.csv.gz')
 
 # Check data is read in
 grid
@@ -111,26 +147,36 @@ def distance(lat1, lon1, lat2, lon2):
     a = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p)*cos(lat2*p) * (1-cos((lon2-lon1)*p)) / 2
     return 12742 * asin(sqrt(a))
 
+lat_key = 'Latitude (Decimal Degrees)'
+long_key = 'Longitude (Decimal Degrees)'
+
 def closest(grid_location):
     st_dict = st.to_dict('records')
-    closest_station = min(st_dict, key=lambda s: distance(
-        grid_location['LATITUDE']+0.1,
-        grid_location['LONGITUDE']+0.1,
-        s['Latitude (Decimal Degrees)'],
-        s['Longitude (Decimal Degrees)']))
+    st_dict_hourly = st[st['hourly'] == True].to_dict('records')
+    grid_lat = grid_location['LATITUDE']+0.1
+    grid_long = grid_location['LONGITUDE']+0.1
+
+
+    closest_station = min(st_dict, key=lambda s: distance(grid_lat, grid_long, s[lat_key], s[long_key]))
+    closest_hourly_station = min(st_dict_hourly, key=lambda s: distance(grid_lat, grid_long, s[lat_key], s[long_key]))
     
     st_dict.remove(closest_station)
-    second_closest_station = min(st_dict, key=lambda s: distance(
-        grid_location['LATITUDE']+0.1,
-        grid_location['LONGITUDE']+0.1,
-        s['Latitude (Decimal Degrees)'],
-        s['Longitude (Decimal Degrees)']))
+    st_dict_hourly.remove(closest_hourly_station)
 
-    
+    second_closest_station = min(st_dict, key=lambda s: distance(grid_lat, grid_long, s[lat_key], s[long_key]))
+    second_closest_hourly_station = min(st_dict_hourly, key=lambda s: distance(grid_lat, grid_long, s[lat_key], s[long_key]))
+
     grid_location['STATION_ID'] = closest_station['Station ID']
-    grid_location['STATION_LATITUDE'] = closest_station['Latitude (Decimal Degrees)']
-    grid_location['STATION_LONGITUDE'] = closest_station['Longitude (Decimal Degrees)']
+    grid_location['STATION_LATITUDE'] = closest_station[lat_key]
+    grid_location['STATION_LONGITUDE'] = closest_station[long_key]
+
+    grid_location['HOURLY_STATION_ID'] = closest_hourly_station['Station ID']
+    grid_location['HOURLY_STATION_LATITUDE'] = closest_hourly_station[lat_key]
+    grid_location['HUORLY_STATION_LONGITUDE'] = closest_hourly_station[long_key]
+
     grid_location['BACKUP_STATION_ID'] = second_closest_station['Station ID']
+    grid_location['BACKUP_HOURLY_STATION_ID'] = second_closest_hourly_station['Station ID']
+
     return grid_location
 
 # Go through grid
@@ -147,10 +193,14 @@ def set_shape(row):
     y = row.LATITUDE 
     x2 = row['STATION_LONGITUDE']
     y2 = row['STATION_LATITUDE']
+    x3 = row['HUORLY_STATION_LONGITUDE']
+    y3 = row['HOURLY_STATION_LATITUDE']
     
     row['box'] = box(x,y,x+0.2, y+0.2) 
     row['line'] = LineString([(x+0.1,y+0.1), (x2,y2)])
     row['point'] = Point((x2,y2))
+    row['hourly_line'] = LineString([(x+0.1,y+0.1), (x3,y3)])
+    row['hourly_point'] = Point((x3,y3))
     
     return row
     
@@ -159,10 +209,13 @@ point_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['point'])
 box_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['box'])
 line_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['line'])
 
-# Plot Canada, zoom in on Alberta
-base = canada.plot(figsize=(10,10))
-base.set_xlim(-123, -107.5) 
-base.set_ylim(48, 61)
+hourly_point_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['hourly_point'])
+hourly_line_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['hourly_line'])
+
+# Plot Canada
+base = canada.plot(figsize=(20,10))
+base.set_xlim(-141, -57.5) 
+base.set_ylim(41, 82)
 
 # Plot grid colors based on station ID
 colors = plt.cm.plasma(np.linspace(0,1,box_gdf['STATION_ID'].nunique()))
@@ -186,8 +239,79 @@ base = point_gdf.plot(
 
 base.set_xlabel('Latitude')
 base.set_ylabel('Longitude')
-base.set_title('Closest Weather Stations (Alberta)')
+base.set_title('Closest Weather Stations '+ province)
 base.legend()
+
+# Plot Canada
+base = canada.plot(figsize=(20,10))
+base.set_xlim(-86, -56) 
+base.set_ylim(44, 66)
+
+# Plot grid colors based on station ID
+colors = plt.cm.plasma(np.linspace(0,1,box_gdf['STATION_ID'].nunique()))
+color = iter(colors)
+for name, group in box_gdf.groupby('STATION_ID'):
+    base = group.plot(ax=base, edgecolor='white', color=next(color))
+
+# Plot weather station points
+base = point_gdf.plot(
+    ax=base,  
+    color='red', 
+    markersize=5,
+    label='Weather stations');
+
+base = line_gdf.plot(
+    ax=base, 
+    color='white',
+    linewidth=0.3,
+    label='Distance to grid')
+
+base.set_xlabel('Longitude')
+base.set_ylabel('Latitude')
+base.set_title('Closest Weather Stations '+ province)
+base.legend()
+
+# Plot Canada
+base = canada.plot(figsize=(20,10))
+base.set_xlim(-121, -57.5) 
+base.set_ylim(41, 82)
+
+# Plot grid colors based on station ID
+colors = plt.cm.plasma(np.linspace(0,1,box_gdf['STATION_ID'].nunique()))
+color = iter(colors)
+for name, group in box_gdf.groupby('STATION_ID'):
+    base = group.plot(ax=base, edgecolor='white', color=next(color))
+
+# Plot lines from each grid to closest weather station
+base = hourly_line_gdf.plot(
+    ax=base, 
+    color='white',
+    linewidth=0.3,
+    label='Distance to grid')
+
+# Plot weather station points
+base = hourly_point_gdf.plot(
+    ax=base,  
+    color='red', 
+    markersize=5,
+    label='Hourly Weather stations');
+
+base.set_xlabel('Latitude')
+base.set_ylabel('Longitude')
+base.set_title('Closest Hourly Weather Stations '+ province)
+base.legend()
+
+# Set up grid geometry
+def set_shape(row):
+    x = row.LONGITUDE
+    y = row.LATITUDE     
+    row['box'] = box(x,y,x+0.2, y+0.2) 
+    return row
+    
+grid_with_shapes = grid.apply(lambda row: set_shape(row), axis=1)
+box2_gdf = GeoDataFrame(grid.copy(), geometry=grid_with_shapes['box'])
+
+grid[grid['LATITUDE'] == 46.0]
 
 slim_grid = grid[['KEY','STATION_ID', 'BACKUP_STATION_ID']]
 slim_grid.head()

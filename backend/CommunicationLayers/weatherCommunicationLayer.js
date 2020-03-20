@@ -131,7 +131,6 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
     }
 
     // Wait for all promises to complete
-    console.log('before promise')
     return Promise.all(weatherPromises).then(daily_avgs => {
       results = [...results, ...daily_avgs]
       return results;  

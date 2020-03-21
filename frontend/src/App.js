@@ -220,13 +220,11 @@ const App = () => {
           Back to Map
         </Button>
       )}
-
       {currentPage === "results" && (
         <Button onClick={handleDownloadPDF} style={{ marginRight: "1em" }}>
           Generate PDF
         </Button>
       )}
-
       {(currentPage === "map" || currentPage === "results") && (
         <Button onClick={showSupportedAreas} style={{ marginRight: "1em" }}>
           Supported Areas

@@ -161,6 +161,7 @@ export const ResultsPage = ({
     setCurrentIndex(event - 1);
   };
 
+  console.log(response);
   return (
     <div style={{ height: "auto" }}>
       <Steps current={2} style={{ marginBottom: "20px" }}>
@@ -478,12 +479,11 @@ export const ResultsPage = ({
                     </div>
                   </Col>
                   <p style={{ margin: "10px" }}>
-                    <b>Vegetation:</b> Not Available
+                    <b>Vegetation:</b> {response.treeCoverageData}
                     <br />
                     <b>Elevation:</b> Not available
                     <br />
-                    <b>Water Cover Percentage: </b>
-                    Not available
+                    <b>Water Coverage: </b> % Not available
                   </p>
                 </div>
                 <div

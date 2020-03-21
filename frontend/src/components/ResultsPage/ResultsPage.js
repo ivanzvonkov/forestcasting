@@ -504,7 +504,7 @@ export const ResultsPage = ({
                   </div>
                   {response.treeCoverageData ? (
                     <p style={{ margin: "10px" }}>
-                      <b>Vegetation:</b>{" "}
+                      <b>Vegetation Index:</b>{" "}
                       {Math.round(response.treeCoverageData[0].vegetation)}
                       <br />
                       <b>Elevation:</b>{" "}

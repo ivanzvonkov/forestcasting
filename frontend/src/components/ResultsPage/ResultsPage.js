@@ -10,7 +10,9 @@ import {
   Steps,
   Progress,
   InputNumber,
-  Collapse
+  Collapse,
+  Popover,
+  Button
 } from "antd";
 
 import { Bar, Pie } from "react-chartjs-2";
@@ -188,7 +190,20 @@ export const ResultsPage = ({
               </div>
             </div>
             <br />
-            <Divider orientation="left">Risk Measure</Divider>
+            <Divider orientation="left">
+              Risk Measure 
+              <Popover content={
+                  <div style={{maxWidth:'28em'}}>
+                    <p><strong>Model:</strong> RandomForestClassifier</p>
+                    <p><strong>AUC ROC</strong>: 91.3%</p>
+                    <p>Area under the ROC curve is interpreted as the probability that a day-grid with fire will receive a higher risk score than a day-grid with no fire.</p>
+                  </div>
+                } 
+                title="ML Analytics"  
+                placement='right'>
+                <Button type="primary" size='small' shape="circle" icon="info" style={{marginLeft: '0.5em'}} />
+              </Popover>
+            </Divider>
             <div
               style={{
                 display: "flex",

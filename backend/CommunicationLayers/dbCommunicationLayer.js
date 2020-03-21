@@ -165,4 +165,29 @@ dbQuery.findProtectedAreaData = async function(location_key) {
   });
 };
 
+dbQuery.findTreeCoverageData = async function(location_key) {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(uri, function(err, client) {
+      if (err) {
+        console.log(
+          "Error occurred while connecting to MongoDB Atlas...\n",
+          err
+        );
+      }
+      const collection = client.db("forestcasting").collection("tree_coverage_data");
+      collection.find({LOCATION_KEY: location_key}).toArray().then(dbResult => {
+          result = [];
+          dbResult.forEach(res => {
+             result.push({
+               "elevation": res["ELEVATION"],
+               "vegetation": res["VEGETATION"],
+               "water_cover_percent": res["WATER_COVER_PERCENT"]
+             })
+          });
+        resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = dbQuery;

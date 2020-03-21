@@ -4,15 +4,11 @@ import "./App.css";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { MapPage } from "./components/MapPage/MapPage";
 import { ResultsPage } from "./components/ResultsPage/ResultsPage";
-import { PDFPage } from "./components/PDFPage/PDFPage";
 import { Button, Card, message, PageHeader, Affix } from "antd";
 import { MainDiv } from "./components/styled/MainDiv";
 import axios from "axios";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { pdfjs } from 'react-pdf';
-import moment from "moment";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const App = () => {
   const queryString = require("query-string");
@@ -43,12 +39,6 @@ const App = () => {
     endDate,
     selectedAddress
   ) => {
-    localStorage.setItem('persistent_selectedLatitude',selectedLatitude);
-    localStorage.setItem('persistent_selectedLongitude' , selectedLongitude);
-    localStorage.setItem('persistent_selectedDate' , selectedDate);
-    localStorage.setItem('persistent_selectedRange' , selectedRange);
-    localStorage.setItem('persistent_endDate' , endDate);
-    localStorage.setItem('persistent_selectedAddress' , selectedAddress);
     //rest api call start
     const key = "updatable";
     message.loading({ content: "Generating Analysis...", key });
@@ -87,76 +77,41 @@ const App = () => {
       );
   };
 
-  const selectPDFLocationAndDate = () => {
-      var selectedLatitude = localStorage.getItem("persistent_selectedLatitude");
-      var selectedLongitude = localStorage.getItem("persistent_selectedLongitude");
-      var selectedDate = localStorage.getItem("persistent_selectedDate");
-      var selectedRange = localStorage.getItem("persistent_selectedRange");
-      var endDate = localStorage.getItem("persistent_endDate");
-      var selectedAddress = localStorage.getItem("persistent_selectedAddress");
-
-      var selectedDate = localStorage.getItem("persistent_selectedDate");
-      console.log("persistent_selectedDate after" + selectedDate);
-    //rest api call start
-    const key = "updatable";
-    message.loading({ content: "Generating PDF...", key });
-    console.log("stringDate before " + new Date(selectedDate));
-    const stringDate =  moment(new Date(selectedDate)).format("YYYY-MM-DD")
-    console.log("stringDate " + stringDate);
-    axios
-      .get(
-        "/api/analysis?" +
-          queryString.stringify({
-            lat: selectedLatitude,
-            lng: selectedLongitude,
-            date: stringDate,
-            range: selectedRange
-          })
-      )
-      .then(
-        response => {
-          message.success({ content: "PDF Generated.", key });
-          setAnalysisResult(response.data);
-          setValidRange([selectedDate, endDate]);
-          setSelectedLocation([
-            selectedLatitude,
-            selectedLongitude,
-            selectedAddress
-          ]);
-          setRangeInDays(selectedRange);
-          setCurrentPage("pdf");
-        },
-        error => {
-          // rest api call done
-          message.error({
-            content: "Server error. Ensure server is up and running.",
-            key
-          });
-          console.error(error);
-        }
-      );
-  };
-
   const handleDownloadPDF = () => {
     window.scrollTo(0, 0);
-    // document.getElementById("fullGoogleMap").style.display = "none";
-    // document.getElementById("partialGoogleMap").style.display = "block";
+    document.getElementById("fullGoogleMap").style.display = "none";
+    document.getElementById("navbarText").style.display = "block";
+    document.getElementById("possibleCircle").style.display = "none";
+    document.getElementById("damageCircle").style.display = "none";
+    document.getElementById("protectedCircle").style.display = "none";
+    document.getElementById("coverageCircle").style.display = "none";
+    document.getElementById("partialGoogleMap").style.display = "block";
+    document.getElementById("possibleLine").style.display = "block";
+    document.getElementById("damageLine").style.display = "block";
+    document.getElementById("protectedLine").style.display = "block";
+    document.getElementById("coverageLine").style.display = "block";
     html2canvas(document.querySelector("#divToPrint")).then(function(canvas) {
       const imgData = canvas.toDataURL("image/png");
 
-      const imgWidth = 210;
+      const imgWidth = 207;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      console.log("canvas height = " + canvas.height);
-      console.log("canvas width = " + canvas.width);
-      console.log("imgHeight = " + imgHeight);
       const doc = new jsPDF("p", "mm");
 
       doc.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
       doc.save("Results.pdf");
     });
-    // document.getElementById("fullGoogleMap").style.display = "block";
-    // document.getElementById("partialGoogleMap").style.display = "none";
+    document.getElementById("fullGoogleMap").style.display = "block";
+    document.getElementById("navbarText").style.display = "none";
+    document.getElementById("possibleCircle").style.display = "flex";
+    document.getElementById("damageCircle").style.display = "block";
+    document.getElementById("protectedCircle").style.display = "block";
+    document.getElementById("coverageCircle").style.display = "block";
+    document.getElementById("partialGoogleMap").style.display = "none";
+    document.getElementById("possibleLine").style.display = "none";
+    document.getElementById("damageLine").style.display = "none";
+    document.getElementById("protectedLine").style.display = "none";
+    document.getElementById("coverageLine").style.display = "none";
   };
 
   const goBackToMap = () => {
@@ -174,21 +129,13 @@ const App = () => {
         selectedLocation={selectedLocation}
         rangeInDays={rangeInDays}
       />
-    ),
-    pdf: (
-      <PDFPage
-        response={analysisResult}
-        validRange={validRange}
-        selectedLocation={selectedLocation}
-        rangeInDays={rangeInDays}
-      />
     )
   };
 
   let cardTopButton = (
     <>
       {currentPage === "results" && (
-        <Button onClick={selectPDFLocationAndDate} style={{ marginRight: "1em" }}>
+        <Button onClick={handleDownloadPDF} style={{ marginRight: "1em" }}>
           Generate PDF
         </Button>
       )}

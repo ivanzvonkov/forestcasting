@@ -142,12 +142,13 @@ export const ResultsPage = ({
   };
 
   return (
-    <div id="divToPrint" style={{ height: "auto" }}>
+    <div style={{height: "auto"}}>
       <Steps current={3} style={{ marginBottom: "20px" }}>
         <Step title="Select Location" />
         <Step title="Select Prediction Date" />
         <Step title="View Analysis" />
       </Steps>
+      <div id="divToPrint" style={{ height: "auto" }}>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         <Col span={12}>
           <Card>
@@ -190,6 +191,7 @@ export const ResultsPage = ({
                 segments={10}
                 endColor={"red"}
                 needleTransition={"easeElastic"}
+                height={200}
               />
             </div>
             <br />
@@ -203,9 +205,24 @@ export const ResultsPage = ({
           </Card>
         </Col>
         <Col span={12}>
+            <Card id="navbarText" style={{
+              textAlign: "center",
+              display: "none"
+            }}>
+              <img
+                src="forestcasting_logo_final.png"
+                style={{
+                  height: "80px",
+                  display: "inline",
+                  marginLeft: "20px"
+                }}
+                alt=""
+              />
+          </Card>
+
           <Card>
             <h2>Possible Damages</h2>
-            <div
+            <div id="possibleCircle"
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -214,28 +231,48 @@ export const ResultsPage = ({
                 margin: "40px"
               }}
             >
+                <Progress
+                  type="circle"
+                  percent={Math.round(
+                    parseInt(response.damage.tree_coverage) / 3 +
+                      parseInt(response.damage.vicinity) / 3 +
+                      parseInt(response.damage.protected_area / 3)
+                  )}
+                  width={250}
+                  strokeColor={{
+                    "0%": "#a4cfed",
+                    "100%": "#1890ff"
+                  }}
+                />
+            </div>
+            <div id="possibleLine" style={{ display: "none" }}>
               <Progress
-                type="circle"
+                type="line"
                 percent={Math.round(
                   parseInt(response.damage.tree_coverage) / 3 +
                     parseInt(response.damage.vicinity) / 3 +
                     parseInt(response.damage.protected_area / 3)
                 )}
-                width={250}
-                strokeColor={{
-                  "0%": "#a4cfed",
-                  "100%": "#1890ff"
-                }}
               />
             </div>
             <Divider orientation="left">Vicinity</Divider>
             <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.vicinity))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
+              <Col span={12}>
+                <div id="damageCircle">
+                  <Progress
+                    type="circle"
+                    percent={Math.round(parseInt(response.damage.vicinity))}
+                    width={100}
+                  />
+                </div>
+                <div id="damageLine" style={{ display: "none" }}>
+                  <Progress
+                    type="line"
+                    percent={Math.round(parseInt(response.damage.vicinity))}
+                  />
+                </div>
+              </Col>
+              <p style={{ marginTop: "20px" }}>
                 <b>Nearest City:</b> {response.vicinityData.city}
                 <br />
                 <b>Population:</b> {parseInt(response.vicinityData.population)}{" "}
@@ -247,12 +284,22 @@ export const ResultsPage = ({
             </div>
             <Divider orientation="left">Protected Area</Divider>
             <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.protected_area))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
+              <Col span={12}>
+                <div id="protectedCircle">
+                  <Progress
+                    type="circle"
+                    percent={Math.round(parseInt(response.damage.protected_area))}
+                    width={100}
+                  />
+                </div>
+                <div id="protectedLine" style={{ display: "none" }}>
+                  <Progress
+                    type="line"
+                    percent={Math.round(parseInt(response.damage.protected_area))}
+                  />
+                </div>
+              </Col>
+              <p style={{ marginTop: "20px" }}>
                 <b>Name of Protected Area:</b> Not available
                 <br />
                 <b>Type of Protected Area:</b> Not available
@@ -263,12 +310,22 @@ export const ResultsPage = ({
             </div>
             <Divider orientation="left">Tree Coverage</Divider>
             <div className="damage-component">
-              <Progress
-                type="circle"
-                percent={Math.round(parseInt(response.damage.tree_coverage))}
-                width={100}
-              />
-              <p style={{ margin: "10px" }}>
+              <Col span={12}>
+                <div id="coverageCircle">
+                  <Progress
+                    type="circle"
+                    percent={Math.round(parseInt(response.damage.tree_coverage))}
+                    width={100}
+                  />
+                </div>
+                <div id="coverageLine" style={{ display: "none" }}>
+                  <Progress
+                    type="line"
+                    percent={Math.round(parseInt(response.damage.tree_coverage))}
+                  />
+                </div>
+              </Col>
+              <p style={{ marginTop: "20px" }}>
                 <b>Type of Vegitation:</b> Not Available
                 <br />
                 <b>Population:</b> Not available
@@ -343,6 +400,7 @@ export const ResultsPage = ({
                 />
               </div>
               <div id="partialGoogleMap" style={{ display: "none" }}>
+                <Divider orientation="left">Current Location</Divider>
                 <div
                   style={{
                     fontSize: "18px",
@@ -364,6 +422,7 @@ export const ResultsPage = ({
           </Card>
         </Col>
       </Row>
+    </div>
     </div>
   );
 };

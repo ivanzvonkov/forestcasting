@@ -42,3 +42,6 @@
 .ant-collapse-content-box {
   padding: 10px !important;
 }
+.ant-table-tbody tr td {
+  border: 0px !important;
+}

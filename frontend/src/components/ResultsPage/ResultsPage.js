@@ -220,19 +220,20 @@ export const ResultsPage = ({
               pagination={false}
               showHeader={false}
             />
+            <br />
           </Card>
         </Col>
         <Col span={12}>
           <Card>
             <h2>Possible Damages</h2>
-
             <div
               style={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 marginTop: "40px",
-                marginBottom: "40px"
+                marginBottom: "40px",
+                marginLeft: "35px"
               }}
             >
               <Progress
@@ -399,11 +400,11 @@ export const ResultsPage = ({
                   strokeColor={"#4bc0c0"}
                 />
                 <p style={{ margin: "10px" }}>
-                  <b>Type of Vegitation:</b> Not Available
+                  <b>Vegetation:</b> Not Available
                   <br />
-                  <b>Population:</b> Not available
+                  <b>Elevation:</b> Not available
                   <br />
-                  <b>Distance: </b>
+                  <b>Water Cover Percentage: </b>
                   Not available
                 </p>
               </div>

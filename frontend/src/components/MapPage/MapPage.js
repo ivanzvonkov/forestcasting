@@ -71,9 +71,16 @@ export const MapPage = ({ selectLocationAndDate }) => {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${event.lat},${event.lng}&key=${process.env.REACT_APP_GEOCODING_API_KEY}`
       )
       .then(res => {
-        setSelectedLocation(res.data.results[0].formatted_address);
+        let zeroResults = res.data.results.length === 0;
+        if(!zeroResults){
+          setSelectedLocation(res.data.results[0].formatted_address);
+        }else{
+          setSelectedLocation('Uknown address');
+        }
+        
         // Check if selected location is Canada
         if (
+          zeroResults ||
           !res.data.results[0].formatted_address.includes("Canada") ||
           res.data.results[0].formatted_address.includes("NT, Canada") ||
           res.data.results[0].formatted_address.includes("NT XOE, Canada") ||
@@ -83,11 +90,11 @@ export const MapPage = ({ selectLocationAndDate }) => {
           res.data.results[0].formatted_address.includes("Nunavut X0A, Canada")
         ) {
           message.error(
-            "Please select a valid location. Check our map of valid location here: "
+            "Please select a valid location. Check Forestcasting's \"Supported Areas\" for more information "
           );
           setValidLocationSelected(false);
         } else {
-          message.success("Valid location selected.");
+          message.success({content:"Valid location selected.", duration: 0.5});
           setValidLocationSelected(true);
         }
       });
@@ -180,8 +187,8 @@ export const MapPage = ({ selectLocationAndDate }) => {
       )}
 
       <div style={{ paddingTop: "1em", textAlign: "center" }}>
-        {!isCalendarDisplayed && selectedLat && (
-          <Button type="primary" onClick={() => setCurrent(current + 1)}>
+        {!isCalendarDisplayed && (
+          <Button type="primary" disabled={!selectedLat || !validLocationSelected} onClick={() => setCurrent(current + 1)}>
             Next
           </Button>
         )}

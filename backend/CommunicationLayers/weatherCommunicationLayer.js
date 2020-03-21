@@ -111,7 +111,11 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
         tools.epochToHour(e["time"]) >= 12 &&
         tools.epochToHour(e["time"]) <= 16
     );
-    weatherDay.addHourlyData(weatherHours);
+
+    if (weatherHours.length != 0){
+      weatherDay.addHourlyData(weatherHours);
+    }
+
     results.push(weatherDay);
   });
 
@@ -122,9 +126,9 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
     dates.sort((a, b) => (a > b ? 1 : -1));
 
     let remaining_dates = dates.slice(remaining * -1);
-    
+
     let weatherPromises = [];
-    
+
     // Create list of promises
     for(let i = 0; i < remaining_dates.length; i++){
       weatherPromises.push(get_average_weather(lat, lng, remaining_dates[i]))
@@ -133,7 +137,7 @@ weatherAPI.findWeatherData = async function(lat, lng, date, range) {
     // Wait for all promises to complete
     return Promise.all(weatherPromises).then(daily_avgs => {
       results = [...results, ...daily_avgs]
-      return results;  
+      return results;
     });
 
   }else{

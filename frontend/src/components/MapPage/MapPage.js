@@ -38,7 +38,7 @@ export const MapPage = ({ selectLocationAndDate }) => {
     return Math.abs(
       moment(fromDate, "YYYY-MM-DD")
         .startOf("day")
-        .diff(moment(toDate, "YYYY-MM-DD").startOf("day"), "days")
+        .diff(moment(toDate, "YYYY-MM-DD").add('days', 1).startOf("day"), "days")
     );
   };
 

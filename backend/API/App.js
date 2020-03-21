@@ -30,13 +30,13 @@ app.get("/api/analysis", async (req, res, next) => {
   try {
     let locationKey = getLocationKey(lat, lng);
     //set up promises
-    let ecoPromise =  dbQuery.findEcoData(locationKey);
-    let historicPromise =  dbQuery.findHistoricData(locationKey);
-    let weatherPromise =  weatherAPI.findWeatherData(lat, lng, date, range);
-    let damagePromise =  dbQuery.findDamageStats(locationKey);
-    let vicinityPromise =  vicinityAPI.findVicinityData(lat, lng);
-    let protectedAreaPromise =  dbQuery.findProtectedAreaData(locationKey);
-    let treeCoveragePromise =  dbQuery.findTreeCoverageData(locationKey);
+    let ecoPromise = dbQuery.findEcoData(locationKey);
+    let historicPromise = dbQuery.findHistoricData(locationKey);
+    let weatherPromise = weatherAPI.findWeatherData(lat, lng, date, range);
+    let damagePromise = dbQuery.findDamageStats(locationKey);
+    let vicinityPromise = vicinityAPI.findVicinityData(lat, lng);
+    let protectedAreaPromise = dbQuery.findProtectedAreaData(locationKey);
+    let treeCoveragePromise = dbQuery.findTreeCoverageData(locationKey);
 
     let ecoData = await ecoPromise;
     let ecoInfoPromise = dbQuery.findEcoInfo(ecoData);
@@ -49,7 +49,7 @@ app.get("/api/analysis", async (req, res, next) => {
     let analysisResults = await analyze.getAnalysis(
       ecoData,
       weatherData,
-      historicData,
+      historicData
     );
 
     //make sure promises not needed in analysis have returned

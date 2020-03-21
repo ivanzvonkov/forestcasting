@@ -161,7 +161,6 @@ export const ResultsPage = ({
     setCurrentIndex(event - 1);
   };
 
-  console.log(response);
   return (
     <div style={{ height: "auto" }}>
       <Steps current={2} style={{ marginBottom: "20px" }}>
@@ -305,23 +304,21 @@ export const ResultsPage = ({
               <Divider orientation="left">Vicinity</Divider>
               <div className="damage-component-wrapper">
                 <div className="damage-component">
-                  <Col span={7} style={{ padding: "0px" }}>
-                    <div id="damageCircle">
-                      <Progress
-                        type="circle"
-                        percent={Math.round(parseInt(response.damage.vicinity))}
-                        width={100}
-                        strokeColor={"#FF6384"}
-                      />
-                    </div>
-                    <div id="damageLine" style={{ display: "none" }}>
-                      <Progress
-                        type="line"
-                        percent={Math.round(parseInt(response.damage.vicinity))}
-                        strokeColor={"#FF6384"}
-                      />
-                    </div>
-                  </Col>
+                  <div id="damageCircle">
+                    <Progress
+                      type="circle"
+                      percent={Math.round(parseInt(response.damage.vicinity))}
+                      width={100}
+                      strokeColor={"#FF6384"}
+                    />
+                  </div>
+                  <div id="damageLine" style={{ display: "none" }}>
+                    <Progress
+                      type="line"
+                      percent={Math.round(parseInt(response.damage.vicinity))}
+                      strokeColor={"#FF6384"}
+                    />
+                  </div>
                   <p style={{ margin: "10px" }}>
                     <b>Nearest City:</b> {response.vicinityData.city}
                     <br />
@@ -374,27 +371,25 @@ export const ResultsPage = ({
 
               <div className="damage-component-wrapper">
                 <div className="damage-component">
-                  <Col span={6} style={{ padding: "0px" }}>
-                    <div id="protectedCircle">
-                      <Progress
-                        type="circle"
-                        percent={Math.round(
-                          parseInt(response.damage.protected_area)
-                        )}
-                        width={100}
-                        strokeColor={"#FFCE56"}
-                      />
-                    </div>
-                    <div id="protectedLine" style={{ display: "none" }}>
-                      <Progress
-                        type="line"
-                        strokeColor={"#FFCE56"}
-                        percent={Math.round(
-                          parseInt(response.damage.protected_area)
-                        )}
-                      />
-                    </div>
-                  </Col>
+                  <div id="protectedCircle">
+                    <Progress
+                      type="circle"
+                      percent={Math.round(
+                        parseInt(response.damage.protected_area)
+                      )}
+                      width={100}
+                      strokeColor={"#FFCE56"}
+                    />
+                  </div>
+                  <div id="protectedLine" style={{ display: "none" }}>
+                    <Progress
+                      type="line"
+                      strokeColor={"#FFCE56"}
+                      percent={Math.round(
+                        parseInt(response.damage.protected_area)
+                      )}
+                    />
+                  </div>
                   <div style={{ margin: "10px" }}>
                     {response.protectedAreaData.length < 1 ? (
                       <p>No protected areas found in this region.</p>
@@ -457,34 +452,43 @@ export const ResultsPage = ({
               <Divider orientation="left">Tree Coverage</Divider>
               <div className="damage-component-wrapper">
                 <div className="damage-component">
-                  <Col span={7} style={{ padding: "0px" }}>
-                    <div id="coverageCircle">
-                      <Progress
-                        type="circle"
-                        percent={Math.round(
-                          parseInt(response.damage.tree_coverage)
-                        )}
-                        width={100}
-                        strokeColor={"#4bc0c0"}
-                      />
-                    </div>
-                    <div id="coverageLine" style={{ display: "none" }}>
-                      <Progress
-                        type="line"
-                        strokeColor={"#4bc0c0"}
-                        percent={Math.round(
-                          parseInt(response.damage.tree_coverage)
-                        )}
-                      />
-                    </div>
-                  </Col>
-                  <p style={{ margin: "10px" }}>
-                    <b>Vegetation:</b> {response.treeCoverageData}
-                    <br />
-                    <b>Elevation:</b> Not available
-                    <br />
-                    <b>Water Coverage: </b> % Not available
-                  </p>
+                  <div id="coverageCircle">
+                    <Progress
+                      type="circle"
+                      percent={Math.round(
+                        parseInt(response.damage.tree_coverage)
+                      )}
+                      width={100}
+                      strokeColor={"#4bc0c0"}
+                    />
+                  </div>
+                  <div id="coverageLine" style={{ display: "none" }}>
+                    <Progress
+                      type="line"
+                      strokeColor={"#4bc0c0"}
+                      percent={Math.round(
+                        parseInt(response.damage.tree_coverage)
+                      )}
+                    />
+                  </div>
+                  {response.treeCoverageData ? (
+                    <p style={{ margin: "10px" }}>
+                      <b>Vegetation:</b>{" "}
+                      {Math.round(response.treeCoverageData[0].vegetation)}
+                      <br />
+                      <b>Elevation:</b>{" "}
+                      {Math.round(response.treeCoverageData[0].elevation)}{" "}
+                      meters
+                      <br />
+                      <b>Water Coverage:</b>
+                      {Math.round(
+                        response.treeCoverageData[0].water_cover_percent
+                      )}
+                      %
+                    </p>
+                  ) : (
+                    "No tree coverage data available for this region."
+                  )}
                 </div>
                 <div
                   style={{

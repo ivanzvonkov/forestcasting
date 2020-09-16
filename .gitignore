@@ -1,7 +1,3 @@
-# Directory to store data
-data/*
-!data/.gitkeep
-
 # Common
 .DS_Store
 

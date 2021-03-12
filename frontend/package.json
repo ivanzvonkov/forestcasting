@@ -14,7 +14,7 @@
     "d3": "^5.14.2",
     "google-map-react": "^1.1.5",
     "html2canvas": "^1.0.0-rc.5",
-    "jspdf": "^1.4.1",
+    "jspdf": "^2.3.1",
     "moment": "^2.24.0",
     "query-string": "^6.10.1",
     "react": "^16.12.0",
